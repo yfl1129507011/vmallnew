@@ -1,0 +1,65 @@
+<?php include APP_PATH . '/views/'.strtolower(APP_NAME).'/include/head.phtml'; ?>
+<div class="content-wrapper">
+        <!-- Content Header (页眉) -->
+        <section class="content-header">
+            <h1>
+                通知
+                <small>消息通知</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-bell"></i> 通知</a></li>
+                <li class="active">消息通知</li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li><a href="/message/1">订单</a></li>
+                        <li><a href="/message/2">商品</a></li>
+                    </ul>
+
+                    <div class="col-md-3 overlay" id="refresh">
+                        <i class="fa fa-spinner fa-spin"></i>
+                    </div>
+
+                    <div class="-box-content">
+
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+        <!-- /.content -->
+</div>
+<?php include APP_PATH . '/views/'.strtolower(APP_NAME).'/include/foot.phtml'; ?>
+<script>
+    $(function () {
+
+        $('.-box-content').on('click','.setRead',function () {
+            var self = $(this),
+                url = self.attr('url'),
+                msgId = self.attr('msgId');
+            if (!url || !msgId) {
+                alert('非法错误');
+                return false;
+            }
+            $.post(url,{msgId:msgId},function (data) {
+                if (data.code==200){
+                    self.remove();
+                    var msgcnt = $('#msg-cnt').text()-1;
+                    if(msgcnt<0) msgcnt = 0;
+                    $('#msg-cnt').text(msgcnt);
+                }else{
+                    alert(data.msg);
+                }
+            });
+        })
+    })
+</script>

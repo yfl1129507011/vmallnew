@@ -1,0 +1,33 @@
+<div class="box-body">
+    <table id="example1" class="table table-bordered table-striped">
+        <?php foreach ($results as $v):?>
+            <tr>
+                <td>
+                    <?php if ($v['status']==0):?>
+                        <a href="javascript:void(0);" url="/read" class="setRead" msgId="<?php echo $v['id']?>">
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    <?php endif;?>
+                </td>
+                <td class="gettime"><?php echo date('Y-m-d H:i:s', strtotime($v['gmtCreated']))?></td>
+                <td>
+                    <a href="#"
+                       <?php if ($v['status']==0):?>
+                            url="/read" class="setRead" msgId="<?php echo $v['id']?>"
+                       <?php endif;?>
+                    >
+                        <?php echo $v['message'];?>
+                    </a>
+                </td>
+            </tr>
+        <?php endforeach;?>
+    </table>
+</div>
+<!-- /.box-body -->
+<div style="float: right;margin-right: 20px;">
+    <div class="dataTables_paginate paging_bootstrap">
+        <ul class="pagination" req_uri="<?=$req_uri?>">
+            <?php echo $page; ?>
+        </ul>
+    </div>
+</div>

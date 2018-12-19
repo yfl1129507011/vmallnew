@@ -1,0 +1,43 @@
+<?php include APP_PATH . '/views/'.strtolower(APP_NAME).'/include/head.phtml'; ?>
+<div class="content-wrapper">
+    <!-- Content Header (页眉) -->
+    <section class="content-header">
+        <h1>
+            商品
+            <small>商品管理</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-gift"></i> 商品</a></li>
+            <li><a href="#"> 商品管理</a></li>
+            <li class="active">商品列表</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li><a href="/message/1">商品列表</a></li>
+                        <li><a href="/message/2">添加商品</a></li>
+                        <li><a href="/message/2">回收站</a></li>
+                    </ul>
+
+                    <div class="col-md-3 overlay" id="refresh">
+                        <i class="fa fa-spinner fa-spin"></i>
+                    </div>
+
+                    <div class="-box-content">
+
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+<?php include APP_PATH . '/views/'.strtolower(APP_NAME).'/include/foot.phtml'; ?>

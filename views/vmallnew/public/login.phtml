@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>微生活TS | 登录</title>
+    <!-- 告诉浏览器该页面是自适应布局 -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/css/AdminLTE.min.css">
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+    <div class="login-logo">
+        <a href="#">电商管理后台</a>
+    </div>
+    <!-- /.login-logo -->
+    <div class="login-box-body">
+        <p class="login-box-msg">帐户登录</p>
+
+        <form action="/login" method="post">
+            <span id="check-tips" style="font-weight: bold;color: red"></span>
+            <div class="form-group has-feedback">
+                <input type="text" name="username" class="form-control" placeholder="账号">
+            </div>
+            <div class="form-group has-feedback">
+                <input type="password" name="password" class="form-control" placeholder="密码">
+            </div>
+            <div class="form-group">
+                <input type="text" name="captcha" class="form-control" autocomplete="off" placeholder="验证码" required>
+                <img id="captchaImg" data-click="captcha" src="/captcha" alt="验证码">
+                <a href="javascript:void()" id="getImg" style="color:red; font-size:12px; text-decoration:none;">看不清，换一张</a>
+            </div>
+            <div class="row">
+                <!-- /.col -->
+                <div class="col-xs-4">
+                    <button type="submit" class="btn btn-primary btn-block btn-flat">立即登录</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+<script src="/js/jquery-2.2.3.min.js"></script>
+<script>
+    $(function(){
+        $("#getImg").on('click', function () {
+            var refresh_captcha_uri = $("#captchaImg").attr('src');
+            var imgUrl = refresh_captcha_uri+'?'+Math.random();
+            $("#captchaImg").attr('src', imgUrl);
+        });
+        $("input[name=username]").focus();
+
+        $("form").submit(function(){
+            var self = $(this);
+            $.post(self.attr("action"), self.serialize(), success, "json");
+            return false;
+            function success(data){
+                if(data.code==200){
+                    window.location.href = data.return_url;
+                } else {
+                    self.find("#check-tips").text(data.msg);
+                    //刷新验证码
+                    $("#getImg").click();
+                }
+            }
+        });
+
+        $(document).keydown(function(event){
+            if(event.keyCode == 13){
+                $('form').submit();
+                return false;
+            }
+        });
+
+    })
+</script>
+</body>
+</html>
