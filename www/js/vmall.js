@@ -11,8 +11,8 @@ $(function () {
         $('.-box-content').html('');
         $('#refresh').show();
         $.post(url, function (data) {
-            $('#refresh').hide();
             $('.-box-content').html(data);
+            $('#refresh').hide();
             return false;
         });
         //console.log(url);
@@ -40,10 +40,50 @@ $(function () {
         $('#refresh').show();
         var url = req_uri+''+href;
         $.post(url, function (data) {
-            $('#refresh').hide();
             $('.-box-content').html(data);
+            $('#refresh').hide();
             return false;
         });
         return false;
+    });
+
+    // icheck点击操作
+    $(".-box-content").on('click','.icheck-ajax',function () {
+        var self = $(this), url = self.attr('url'),pid = self.attr('pid'),
+            icheck = self.find('.icheckbox_flat-green'),
+            type = icheck.attr('aria-checked');
+        if(!confirm('确定进行此操作')) return false;
+        if(!type || !url || !pid){
+            alert('参数错误');return false;
+        }
+        $.post(url,{pid:pid,type:type},function (data) {
+            if (data.code==200){
+                if (type == 1) {
+                    icheck.removeClass('checked');
+                    icheck.attr('aria-checked', 2);
+                }else{
+                    icheck.addClass('checked');
+                    icheck.attr('aria-checked', 1);
+                }
+            } else{
+                alert(data.msg);
+            }
+        });
+
+        return false;
+    });
+
+    $(".-box-content").on('click','.btn_del',function () {
+        var self = $(this),url = self.attr('url'),text = self.text(),
+        tr = $(this).parent().parent().parent();
+        if(!url) return false;
+        if(text && !confirm('确认执行'+text)) return false;
+        $.post(url,function(data){
+            if (data.code == 200) {
+                tr.remove();
+            }else{
+                alert(data.msg);
+            }
+        });
     });
 });

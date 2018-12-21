@@ -10,6 +10,7 @@ class VmallNewModel {
     protected $baseUrl = '';
     protected $apiUri = '';
     protected $cls = '';
+    protected $sellId = '';
     public $head = array(
         "Content-type: application/json;charset='utf-8'",
         "Accept: application/json",
@@ -17,10 +18,14 @@ class VmallNewModel {
         "Pragma: no-cache",
     );
 
-    public function __construct($sellId)
+    /**
+     * VmallNewModel constructor.
+     */
+    public function __construct()
     {
-        $this->baseUrl = Config::get('Vmall.shopbridge.vmall_api_url');
-        $this->apiUri = $this->baseUrl.$this->modules.$sellId.$this->cls;
+        $this->apiUri = Config::get('Vmall.shopbridge.vmall_api_url');
+        $this->sellId = SELLER_ID;
+        $this->baseUrl = $this->apiUri.$this->modules.$this->sellId;
     }
 
     /**
@@ -30,12 +35,44 @@ class VmallNewModel {
      * @return string
      */
     protected function getUrl($module='', $params=array()){
-        $url = $this->apiUri.$module;
+        $url = $this->baseUrl.$this->cls.$module;
         if(!empty($params)) {
             $query = http_build_query($params, '', '&');
             $url .= '?' . $query;
         }
         return $url;
+    }
+
+    /**
+     * @param string $module
+     * @param array $params
+     * @return string
+     * 获取V2的接口地址
+     */
+    protected function getV2Url($module='', $params=array()){
+        $url = $this->baseUrl.'/v2'.$this->cls.$module;
+        if(!empty($params)) {
+            $query = http_build_query($params, '', '&');
+            $url .= '?' . $query;
+        }
+        return $url;
+    }
+
+    /**
+     * @param $result
+     * @param $url
+     * @return array|bool
+     * 检测数据接口的结果
+     */
+    protected function checkApiResult($result, $url){
+        if($result) {
+            if ($result['success'] == true || $result['code'] == 200) {
+                return $result;
+            } else {
+                Logger::error("[{$url}]请求错误信息：" . $result['message']);
+            }
+        }
+        return false;
     }
 
     /**
@@ -90,16 +127,5 @@ class VmallNewModel {
         }
         $res = json_decode($data, true);
         return $res;
-    }
-
-    protected function checkApiResult(array $result, $url){
-        if($result) {
-            if ($result['success'] == true || $result['code'] == 200) {
-                return $result;
-            } else {
-                Logger::error("[{$url}]请求错误信息：" . $result['message']);
-            }
-        }
-        return false;
     }
 }

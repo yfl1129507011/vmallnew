@@ -17,9 +17,9 @@ class Vmallnew_IndexController extends Vmallnew_BaseController {
         $curPage = $this->_request->get('page', 1);
         $conditions['topic'] = $arr[$topic];
         $conditions['curPage'] = $curPage;
-        $message = new Admin_MessageModel($this->_getLoginInfo('bid'));
+        $message = new Admin_MessageModel();
         $res = $message->getMessage($conditions);
-        if (!$res) exit();
+        if (!$res) exit('数据获取失败！');
         $results = $res['results'];
         if(1==$topic) {
             $results = array_map(function ($v) {
@@ -29,10 +29,10 @@ class Vmallnew_IndexController extends Vmallnew_BaseController {
                     $v['gmtCreated'] = $v['gmtCreated'] / 1000;
                 }
                 return $v;
-            }, $results);
+            }, (array)$results);
         }
         $pageOptions = array(
-            'perPage'=>1,
+            'perPage'=>10,
             'currentPage'=>$curPage,
             'curPageClass' => 'active',
             'totalItems' => $res['count']
@@ -52,7 +52,7 @@ class Vmallnew_IndexController extends Vmallnew_BaseController {
             $retData['msg'] = '参数错误';
             $this->ajaxReturn($retData);
         }
-        $message = new Admin_MessageModel($this->_getLoginInfo('bid'));
+        $message = new Admin_MessageModel();
         if (false === $message->readMsg($msgId)){
             $retData['code'] = 402;
             $retData['msg'] = '标记已读信息失败';

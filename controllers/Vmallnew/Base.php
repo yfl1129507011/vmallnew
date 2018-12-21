@@ -20,13 +20,17 @@ class Vmallnew_BaseController extends Yaf_Controller_Abstract {
         $this->_view->assign('req_uri', $this->_request->getRequestUri());
 
         $this->_view->assign('ctrl_name', strtolower(strstr($this->_request->getControllerName(),'_')));
-        $this->_view->assign('action_name', strtolower($this->_request->getActionName()));
+        $action_name = strtolower($this->_request->getActionName());
+        if (strpos($action_name,'_') !== false){
+            $action_name = strstr($action_name,'_',true);
+        }
+        $this->_view->assign('action_name', $action_name);
 
         $this->_view->assign('managerName', $this->_getLoginInfo('mName'));
         $this->_view->assign('bBrandName', $this->_getLoginInfo('biz_name'));
 
         // 提取未读消息数
-        $message = new Admin_MessageModel($this->_getLoginInfo('bid'));
+        $message = new Admin_MessageModel();
         $msgCnt = $message->getUnreadCnt();
         $this->_view->assign('_msgCnt', $msgCnt);
     }
@@ -129,7 +133,11 @@ class Vmallnew_BaseController extends Yaf_Controller_Abstract {
         if (empty($bid) || empty($mid)){
             return false;
         }
-
-        return $this->_generateSign($bid, $mid) == $this->_request->getCookie('manager_sign');
+        $checkSign = $this->_generateSign($bid, $mid) == $this->_request->getCookie('manager_sign');
+        if($checkSign){
+            define('SELLER_ID', $bid);
+            return true;
+        }
+        return false;
     }
 }

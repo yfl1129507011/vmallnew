@@ -1,0 +1,89 @@
+<div class="box-body">
+    <table id="example1" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="check-all" ></th>
+                <th>ID</th>
+                <th>商品名称</th>
+                <th>商品价格</th>
+                <th>商品类型</th>
+                <th>分类</th>
+                <th>上架</th>
+                <th>推荐</th>
+                <th width="6%">排序</th>
+                <th>库存</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <?php if (!empty($results)):?>
+        <?php foreach ($results as $k=>$v):?>
+        <tr>
+            <td><input type="checkbox" value="<?=$v['id']?>" class="id-checkbox"></td>
+            <td><?=$v['id']?></td>
+            <td title="<?=$v['name']?>"><?=$v['name']?></td>
+            <td><?=$v['price']?></td>
+            <td><?=( $v['type']== 1) ?'商品':'礼品'?></td>
+            <td><?=$cats[$v['cid']]?></td>
+            <td>
+                <label class="icheck-ajax" pid="<?=$v['id']?>" url="product/listing" title="点击执行操作">
+                    <div class="icheckbox_flat-green <?=$v['status']?'checked':''?>" aria-checked="<?=$v['status']?1:2?>" aria-disabled="false" style="position: relative;">
+                        <input type="checkbox" class="flat-red" checked="" style="position: absolute; opacity: 0;">
+                        <ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
+                    </div>
+                </label>
+            </td>
+            <td>
+                <label class="icheck-ajax" pid="<?=$v['id']?>" url="product/hot" title="点击执行操作">
+                    <div class="icheckbox_flat-green <?=$v['hot']?'checked':''?>" aria-checked="<?=$v['hot']?'1':'2'?>" aria-disabled="false" style="position: relative;">
+                        <input type="checkbox" class="flat-red" checked="" style="position: absolute; opacity: 0;">
+                        <ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
+                    </div>
+                </label>
+            </td>
+            <td>
+                <input readonly type="text" class="form-control" id="<?=$v['id']?>" value="<?=$v['order']?>" type-data="<?=$v['type']?>">
+            </td>
+            <td>
+                <?php if(empty($v['sku'])):?>
+                    <input readonly type="text" class="form-control" id="<?=$v['id']?>" value="<?=$v['stock']?>" type-data="<?=$v['type']?>">
+                <?php else:?>
+                    <?=$v['stock']?>
+                <?php endif;?>
+            </td>
+            <td>
+                <div class="btn-group">
+                    <button type="button" url="" class="btn btn-default btn-edit">编辑</button>
+                    <button type="button" url="" class="btn btn-default btn-ajax">二维码</button>
+                    <button type="button" url="/product/del?id=<?=$v['id']?>" class="btn btn-danger btn_del">删除</button>
+                </div>
+            </td>
+        </tr>
+        <?php endforeach;?>
+        <?php endif;?>
+    </table>
+    <div class="row" style="margin-top: 10px;">
+        <div class="col-xs-3">
+            <div class="input-group">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default">批量操作</button>
+                </div><!-- /btn-group -->
+                <select class="form-control bulk-select" name='poAuditStatus'>
+                    <option value="0" selected>请选择</option>
+                    <option value="1" >批量下架</option>
+                    <option value="2" >批量删除</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-xs-2">
+            <button type="submit" url="/product/bulk" class="btn btn-success" id="bulk-ajax">确定</button>
+        </div>
+    </div>
+</div>
+
+<div style="float: right;margin-right: 20px;">
+    <div class="dataTables_paginate paging_bootstrap">
+        <ul class="pagination" req_uri="<?=$req_uri?>">
+            <?php echo $page; ?>
+        </ul>
+    </div>
+</div>

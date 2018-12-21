@@ -8,8 +8,7 @@
         </h1>
         <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-gift"></i> 商品</a></li>
-            <li><a href="#"> 商品管理</a></li>
-            <li class="active">商品列表</li>
+            <li class="active">商品管理</li>
         </ol>
     </section>
 
@@ -19,13 +18,66 @@
             <div class="col-xs-12">
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
-                        <li><a href="/message/1">商品列表</a></li>
-                        <li><a href="/message/2">添加商品</a></li>
-                        <li><a href="/message/2">回收站</a></li>
+                        <li><a href="/product/list">商品列表</a></li>
+                        <li><a href="/product/add">添加商品</a></li>
+                        <li><a href="/product/trash">回收站</a></li>
                     </ul>
 
-                    <div class="col-md-3 overlay" id="refresh">
-                        <i class="fa fa-spinner fa-spin"></i>
+                    <div class="box-body">
+                        <form method="post" action="">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="input-group">
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-default">商品名称</button>
+                                        </div><!-- /btn-group -->
+                                        <input type="text" class="form-control" name='poid' value="" placeholder="订单ID">
+                                    </div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <div class="input-group">
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-default">商品ID</button>
+                                        </div><!-- /btn-group -->
+                                        <input type="text" class="form-control" name='paName' value="">
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <div class="input-group">
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-default">商品分类</button>
+                                        </div><!-- /btn-group -->
+                                        <select class="form-control" name='poAuditStatus'>
+                                            <option value="0" selected>全部</option>
+                                            <option value="2" >待审核</option>
+                                            <option value="3" >初审通过</option>
+                                            <option value="4" >已通过</option>
+                                            <option value="5" >已驳回</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 10px;">
+                                <div class="col-xs-3">
+                                    <div class="input-group">
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-default">商品类型</button>
+                                        </div><!-- /btn-group -->
+                                        <select class="form-control" name='poAuditStatus'>
+                                            <option value="0" selected>全部</option>
+                                            <option value="1" >商品</option>
+                                            <option value="2" >礼品</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-2">
+                                    <button type="submit" class="btn btn-success">搜索</button>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="col-md-3 overlay" id="refresh">
+                            <i class="fa fa-spinner fa-spin"></i>
+                        </div>
                     </div>
 
                     <div class="-box-content">
@@ -41,3 +93,34 @@
     <!-- /.content -->
 </div>
 <?php include APP_PATH . '/views/'.strtolower(APP_NAME).'/include/foot.phtml'; ?>
+<script>
+    $(function () {
+        // 全选
+        $(".-box-content").on('click','#check-all', function () {
+            $('.id-checkbox').prop('checked', $(this).prop('checked'));
+        });
+
+        // 批量操作
+        $(".-box-content").on('click','#bulk-ajax',function () {
+            var self = $(this),
+                url = self.attr('url'),
+                select = $('.bulk-select option:selected'),
+                title = select.text(),
+                type = select.val(), idArr = [];
+            $('.id-checkbox:checked').each(function () {
+                idArr.push($(this).val());
+            });
+            if (!url) {alert('参数错误');return;}
+            if (0==type){alert('请选择批量操作方式');return;}
+            if (!idArr.length){alert('请选择要批量操作的对象');return;}
+            if(!title || !confirm('确认执行【'+title+'】')) return;
+            var ids = idArr.join(',');
+            $.post(url, {type:type,ids:ids},function (data) {
+                alert(data.msg);
+                if (data.code == 200){
+                    location.reload();
+                }
+            });
+        })
+    })
+</script>

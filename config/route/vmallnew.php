@@ -58,6 +58,34 @@ $routes['Goods'] = array(
         'match' => '#/product$#',
         'map' => array(),
     ),
+    'product_list'=>array(
+        'match' => '#/product/list$#',
+        'map' => array(),
+    ),
+    'product_add'=>array(
+        'match' => '#/product/add$#',
+        'map' => array(),
+    ),
+    'product_trash'=>array(
+        'match' => '#/product/trash$#',
+        'map' => array(),
+    ),
+    'product_bulk'=>array(
+        'match' => '#/product/bulk$#',
+        'map' => array(),
+    ),
+    'product_listing'=>array(
+        'match' => '#/product/listing$#',
+        'map' => array(),
+    ),
+    'product_hot'=>array(
+        'match' => '#/product/hot$#',
+        'map' => array(),
+    ),
+    'product_del'=>array(
+        'match' => '#/product/del$#',
+        'map' => array(),
+    ),
 );
 
 
