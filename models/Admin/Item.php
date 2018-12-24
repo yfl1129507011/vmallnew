@@ -99,4 +99,16 @@ class Admin_ItemModel extends VmallNewModel{
         $res = $this->curl($url,'put');
         return $this->checkApiResult($res, $url);
     }
+
+    /**
+     * 商品删除操作
+     * @param $pid
+     * @return array|bool
+     */
+    public function removeItem($pid){
+        if (empty($pid)) return false;
+        $url = $this->getUrl('/'.$pid);
+        $res = $this->curl($url,'delete');
+        return $this->checkApiResult($res, $url);
+    }
 }

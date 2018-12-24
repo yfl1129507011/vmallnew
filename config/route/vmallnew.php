@@ -70,6 +70,10 @@ $routes['Goods'] = array(
         'match' => '#/product/trash$#',
         'map' => array(),
     ),
+    'product_modify'=>array(
+        'match' => '#/product/modify$#',
+        'map' => array(),
+    ),
     'product_bulk'=>array(
         'match' => '#/product/bulk$#',
         'map' => array(),
@@ -84,6 +88,10 @@ $routes['Goods'] = array(
     ),
     'product_del'=>array(
         'match' => '#/product/del$#',
+        'map' => array(),
+    ),
+    'product_remove'=>array(
+        'match' => '#/product/remove$#',
         'map' => array(),
     ),
 );

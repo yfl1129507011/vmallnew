@@ -17,21 +17,23 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="nav-tabs-custom">
-                    <ul class="nav nav-tabs">
-                        <li><a href="/product/list">商品列表</a></li>
+                    <ul class="nav nav-tabs" finish-status="true">
+                        <li search-class="product-list"><a href="/product/list">商品列表</a></li>
                         <li><a href="/product/add">添加商品</a></li>
-                        <li><a href="/product/trash">回收站</a></li>
+                        <li search-class="product-trash"><a href="/product/trash">回收站</a></li>
+                        <li class="tabs-modify" style="display: none"><a href="/product/modify">编辑商品</a></li>
                     </ul>
 
                     <div class="box-body">
-                        <form method="post" action="">
+                        <div class="search-body product-list">
+                            <form method="post" action="/product/list" class="search-form">
                             <div class="row">
                                 <div class="col-xs-4">
                                     <div class="input-group">
                                         <div class="input-group-btn">
                                             <button type="button" class="btn btn-default">商品名称</button>
                                         </div><!-- /btn-group -->
-                                        <input type="text" class="form-control" name='poid' value="" placeholder="订单ID">
+                                        <input type="text" class="form-control" name='name' value="" placeholder="商品名称">
                                     </div>
                                 </div>
                                 <div class="col-xs-4">
@@ -39,7 +41,7 @@
                                         <div class="input-group-btn">
                                             <button type="button" class="btn btn-default">商品ID</button>
                                         </div><!-- /btn-group -->
-                                        <input type="text" class="form-control" name='paName' value="">
+                                        <input type="text" class="form-control" name='id' value="" placeholder="商品ID">
                                     </div>
                                 </div>
                                 <div class="col-xs-3">
@@ -47,12 +49,13 @@
                                         <div class="input-group-btn">
                                             <button type="button" class="btn btn-default">商品分类</button>
                                         </div><!-- /btn-group -->
-                                        <select class="form-control" name='poAuditStatus'>
+                                        <select class="form-control" name='cid'>
                                             <option value="0" selected>全部</option>
-                                            <option value="2" >待审核</option>
-                                            <option value="3" >初审通过</option>
-                                            <option value="4" >已通过</option>
-                                            <option value="5" >已驳回</option>
+                                            <?php if(!empty($cats)):?>
+                                            <?php foreach ($cats as $k=>$v):?>
+                                            <option value="<?=$k?>" ><?=$v?></option>
+                                            <?php endforeach;?>
+                                            <?php endif;?>
                                         </select>
                                     </div>
                                 </div>
@@ -63,7 +66,7 @@
                                         <div class="input-group-btn">
                                             <button type="button" class="btn btn-default">商品类型</button>
                                         </div><!-- /btn-group -->
-                                        <select class="form-control" name='poAuditStatus'>
+                                        <select class="form-control" name='typeid'>
                                             <option value="0" selected>全部</option>
                                             <option value="1" >商品</option>
                                             <option value="2" >礼品</option>
@@ -75,6 +78,47 @@
                                 </div>
                             </div>
                         </form>
+                        </div>
+                        <div class="search-body product-trash">
+                            <form method="post" action="/product/trash" class="search-form">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <div class="input-group">
+                                            <div class="input-group-btn">
+                                                <button type="button" class="btn btn-default">商品名称</button>
+                                            </div><!-- /btn-group -->
+                                            <input type="text" class="form-control" name='name' value="" placeholder="商品名称">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <div class="input-group">
+                                            <div class="input-group-btn">
+                                                <button type="button" class="btn btn-default">商品ID</button>
+                                            </div><!-- /btn-group -->
+                                            <input type="text" class="form-control" name='id' value="" placeholder="商品ID">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <div class="input-group">
+                                            <div class="input-group-btn">
+                                                <button type="button" class="btn btn-default">商品分类</button>
+                                            </div><!-- /btn-group -->
+                                            <select class="form-control" name='cid'>
+                                                <option value="0" selected>全部</option>
+                                                <?php if(!empty($cats)):?>
+                                                    <?php foreach ($cats as $k=>$v):?>
+                                                        <option value="<?=$k?>" ><?=$v?></option>
+                                                    <?php endforeach;?>
+                                                <?php endif;?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <button type="submit" class="btn btn-success">搜索</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                         <div class="col-md-3 overlay" id="refresh">
                             <i class="fa fa-spinner fa-spin"></i>
                         </div>
@@ -93,6 +137,7 @@
     <!-- /.content -->
 </div>
 <?php include APP_PATH . '/views/'.strtolower(APP_NAME).'/include/foot.phtml'; ?>
+<script type="text/javascript" src="/js/wangEditor.js"></script>
 <script>
     $(function () {
         // 全选
@@ -118,9 +163,32 @@
             $.post(url, {type:type,ids:ids},function (data) {
                 alert(data.msg);
                 if (data.code == 200){
-                    location.reload();
+                    if(self.hasClass('reload')) {
+                        location.reload();
+                    }else {
+                        $('.id-checkbox:checked').parent().parent().remove();
+                    }
                 }
             });
         })
+
+        // 搜索
+        $('.search-form').submit(function () {
+            var self = $(this);
+            $('.-box-content').html('');
+            $('#refresh').show();
+            $.post(self.attr("action"), self.serialize(),function(data){
+                $('.-box-content').html(data);
+                $('#refresh').hide();
+                return false;
+            });
+            return false;
+        });
+
+        // 编辑
+        $(".-box-content").on('click','.btn-edit',function () {
+            $(".tabs-modify").click().show();
+        })
+
     })
 </script>

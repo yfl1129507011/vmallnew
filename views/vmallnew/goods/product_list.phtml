@@ -53,7 +53,7 @@
             <td>
                 <div class="btn-group">
                     <button type="button" url="" class="btn btn-default btn-edit">编辑</button>
-                    <button type="button" url="" class="btn btn-default btn-ajax">二维码</button>
+                    <button type="button" url="" class="btn btn-default">二维码</button>
                     <button type="button" url="/product/del?id=<?=$v['id']?>" class="btn btn-danger btn_del">删除</button>
                 </div>
             </td>
@@ -67,7 +67,7 @@
                 <div class="input-group-btn">
                     <button type="button" class="btn btn-default">批量操作</button>
                 </div><!-- /btn-group -->
-                <select class="form-control bulk-select" name='poAuditStatus'>
+                <select class="form-control bulk-select">
                     <option value="0" selected>请选择</option>
                     <option value="1" >批量下架</option>
                     <option value="2" >批量删除</option>
@@ -75,7 +75,7 @@
             </div>
         </div>
         <div class="col-xs-2">
-            <button type="submit" url="/product/bulk" class="btn btn-success" id="bulk-ajax">确定</button>
+            <button type="submit" url="/product/bulk" class="btn btn-success reload" id="bulk-ajax">确定</button>
         </div>
     </div>
 </div>

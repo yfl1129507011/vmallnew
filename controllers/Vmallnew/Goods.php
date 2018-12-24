@@ -7,7 +7,21 @@
  */
 class Vmallnew_GoodsController extends Vmallnew_BaseController{
 
+    /**
+     * 向页面传递商品分类信息
+     */
+    protected function assignProductCat(){
+        $itemCat = new Admin_ItemCatModel();
+        $catRes = $itemCat->getCat(array('pageSize' => 9999));
+        if(!empty($catRes['results'])){
+            $cats = array_column($catRes['results'], 'name', 'id');
+            $this->_view->assign('cats',$cats);
+        }
+    }
+
     public function product_indexAction(){
+        # 传递商品分类信息
+        $this->assignProductCat();
         $this->display();
     }
 
@@ -43,17 +57,11 @@ class Vmallnew_GoodsController extends Vmallnew_BaseController{
             'curPageClass' => 'active',
             'totalItems' => $res['count']
         );
+        # 传递商品分类信息
+        $this->assignProductCat();
         $this->_view->assign('page', Pager::makeLinks($pageOptions));
         $this->_view->assign('results',$results);
 
-        // 获取商品分类
-        $itemCat = new Admin_ItemCatModel();
-        $catRes = $itemCat->getCat(array('pageSize' => 9999));
-        //$this->ajaxReturn($catRes);
-        if(!empty($catRes['results'])){
-            $cats = array_column($catRes['results'], 'name', 'id');
-            $this->_view->assign('cats',$cats);
-        }
         $this->display();
     }
 
@@ -136,6 +144,70 @@ class Vmallnew_GoodsController extends Vmallnew_BaseController{
         if ($pid) {
             $item = new Admin_ItemModel();
             $res = $item->recyleBin($pid, $type);
+            if ($res) {
+                $returnArr['msg'] = '操作成功';
+            } else {
+                $returnArr['code'] = 401;
+                $returnArr['msg'] = '操作失败';
+            }
+        }
+        $this->ajaxReturn($returnArr);
+    }
+
+    #商品编辑
+    public function product_modifyAction(){
+        Yaf_Dispatcher::getInstance()->disableView();
+        echo '商品编辑';
+    }
+
+    #商品添加
+    public function product_addAction(){
+        if($this->_request->isPost()){
+
+        }
+
+        $this->display('product_modify');
+    }
+
+    #商品回收站列表
+    public function product_trashAction(){
+        $curPage = $this->_request->get('page', 1);
+        $id = trim($this->_request->getRequest('id'));
+        $name = trim($this->_request->getRequest('name'));
+        $cid = trim($this->_request->getRequest('cid'));
+
+        $conditions = array();
+        $conditions['inRecyleBin'] = 1;
+        $conditions['curPage'] = $curPage;
+        if (!empty($id)) $conditions['numIid'] = $id;
+        if (!empty($name)) $conditions['name'] = $name;
+        if (!empty($cid)) $conditions['cid'] = $cid;
+
+        $item = new Admin_ItemModel();
+        $res = $item->getList($conditions);
+        if (!$res) exit('数据获取失败！');
+        $pageOptions = Array(
+            'perPage' => 10,
+            'currentPage' => $curPage,
+            'curPageClass' => 'active',
+            'totalItems' => $res['count']
+        );
+        # 传递商品分类信息
+        $this->assignProductCat();
+        $this->_view->assign('page', Pager::makeLinks($pageOptions));
+        $this->_view->assign('results',$res['results']);
+
+        $this->display();
+    }
+
+    #商品删除
+    public function product_removeAction(){
+        $pid = (int)$this->_request()->getRequest('id');
+        $returnArr = array();
+        $returnArr['code'] = 200;
+        if ($pid){
+            $item = new Admin_ItemModel();
+            $res = $item->removeItem($pid);
             if ($res) {
                 $returnArr['msg'] = '操作成功';
             } else {

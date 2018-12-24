@@ -1,0 +1,56 @@
+<div class="box-body">
+    <table id="example1" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="check-all" ></th>
+                <th>ID</th>
+                <th>商品名称</th>
+                <th>普通会员价</th>
+                <th>分类</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <?php if (!empty($results)):?>
+        <?php foreach ($results as $k=>$v):?>
+        <tr>
+            <td><input type="checkbox" value="<?=$v['id']?>" class="id-checkbox"></td>
+            <td><?=$v['id']?></td>
+            <td title="<?=$v['name']?>"><?=$v['name']?></td>
+            <td><?=$v['price']?></td>
+            <td><?=$cats[$v['cid']]?></td>
+            <td>
+                <div class="btn-group">
+                    <button type="button" url="/product/del?type=2&id=<?=$v['id']?>" class="btn btn-default btn_del">还原</button>
+                    <button type="button" url="/product/remove?id=<?=$v['id']?>" class="btn btn-danger btn_del">删除</button>
+                </div>
+            </td>
+        </tr>
+        <?php endforeach;?>
+        <?php endif;?>
+    </table>
+    <div class="row" style="margin-top: 10px;">
+        <div class="col-xs-3">
+            <div class="input-group">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default">批量操作</button>
+                </div><!-- /btn-group -->
+                <select class="form-control bulk-select">
+                    <option value="0" selected>请选择</option>
+                    <option value="3" >批量还原</option>
+                    <option value="4" >批量删除</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-xs-2">
+            <button type="submit" url="/product/bulk" class="btn btn-success" id="bulk-ajax">确定</button>
+        </div>
+    </div>
+</div>
+
+<div style="float: right;margin-right: 20px;">
+    <div class="dataTables_paginate paging_bootstrap">
+        <ul class="pagination" req_uri="<?=$req_uri?>">
+            <?php echo $page; ?>
+        </ul>
+    </div>
+</div>
