@@ -190,5 +190,68 @@
             $(".tabs-modify").click().show();
         })
 
+        // 添加规格值
+        $(".-box-content").on('click','.add_btn',function () {
+            var form_group = $(this).parents('.form-group'),
+                form_group_new = form_group.clone(true);
+            form_group_new.find('input').val('');
+            form_group.after(form_group_new);
+            $(this).removeClass('add_btn').addClass('del_btn');
+            $(this).find('i').removeClass('fa-plus').addClass('fa-minus').text('删除规格值');
+        });
+        // 删除规格值
+        $(".-box-content").on('click','.del_btn',function () {
+            $(this).parents('.form-group').remove();
+            createSkuInfo();
+        });
+        // 模拟可编辑的select框
+        $(".-box-content").on('change','.select-input',function () {
+            $(this).parent().find('input').val($(this).val());
+            setSkuInfo($(this))
+        });
+
+        function setSkuInfo(self) {
+            var val = self.val(),
+                id_name = self.attr('id_name'),
+                sku_name = self.attr('sku_name');
+            if(id_name){
+                if(sku_name != 1 && val && !$("input[name='skuNameOne']").val()){
+                    $("input[name='skuNameOne']").focus();return false;
+                }
+                $(".sku-info").show();
+                $("#"+id_name).text(val);
+            }
+            createSkuInfo();
+            return true;
+        }
+
+        function createSkuInfo(){
+            var tr_num_one = [], tr_num_two = [];
+            $(".tr_num_one input").each(function () {
+                tr_num_one.push($(this).val());
+            });
+            $(".tr_num_two input").each(function () {
+                tr_num_two.push($(this).val());
+            });
+            var html = '';
+            for(var i=0; i<tr_num_one.length; i++){
+                for(var j=0; j<tr_num_two.length; j++){
+                    if(!tr_num_one[i] && !tr_num_two[j]) continue;
+                    html += "<tr>";
+                    html += "<td>"+tr_num_one[i]+"</td>";
+                    html += "<td>"+tr_num_two[j]+"</td>";
+                    html += '<td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>';
+                }
+            }
+            $(".sku-info tbody").html(html);
+            if(!$("input[name=skuNameOne]").val() && !$("input[name=skuNameOne]").val()) {
+                $(".sku-info").hide();
+            }
+        }
+
+        // 规格信息产生
+        $(".-box-content").on('input propertychange', '.sku_input', function () {
+            setSkuInfo($(this));
+        })
     })
 </script>

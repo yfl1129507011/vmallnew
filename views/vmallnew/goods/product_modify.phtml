@@ -54,21 +54,89 @@
                 </div>
             </div>
 
-            <div class="box-header">
-                <h4 class="box-title">商品规格</h4>
-                <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">一级规格名</label>
-
-                    <div class="col-sm-5">
-                        <input type="text" class="form-control" id="inputEmail3" placeholder="一级规格名">
+            <div class="box">
+                <div class="box-header">
+                    <h4 class="box-title">商品规格</h4>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">一级规格名</label>
+                        <div class="col-sm-3">
+                            <select class="form-control select-input" id_name="one_sku_name" sku_name="1">
+                                <option value="">请选择</option>
+                                <option value="系列">系列</option>
+                                <option value="选项">选项</option>
+                            </select>
+                            <input id_name="one_sku_name" sku_name="1" type="text" class="form-control sku_input" name="skuNameOne" maxlength="4" style="position:absolute;width: 70%;top: 0;">
+                        </div>
+                        <label class="control-label" data-toggle="tooltip" title="" data-original-title="仅支持为第一组规格设置规格图片，买家选择不同规格会看到对应规格图片，建议尺寸：800 x 800像素"><i class="fa fa-info-circle"></i></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">规格值</label>
+                        <div class="col-sm-3 tr_num_one">
+                            <select class="form-control select-input">
+                                <option value="">请选择</option>
+                                <option value="夏之味蕾">夏之味蕾</option>
+                                <option value="冬之催眠">冬之催眠</option>
+                            </select>
+                            <input type="text" class="form-control sku_input" name="skuValOne[]" maxlength="6" style="position:absolute;width: 70%;top: 0;">
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="file">
+                        </div>
+                        <div class="col-sm-3">
+                            <button type="button" class="btn btn-default add_btn skuValOne"><i class="fa fa-plus">添加规格值</i></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">二级规格名</label>
+                        <div class="col-sm-3">
+                            <select class="form-control select-input" id_name="two_sku_name" sku_name="2">
+                                <option value="">请选择</option>
+                                <option value="口味">口味</option>
+                                <option value="选项">选项</option>
+                            </select>
+                            <input id_name="two_sku_name" type="text" class="form-control sku_input" name="skuNameTwo" maxlength="4" style="position:absolute;width: 70%;top: 0;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">规格值</label>
+                        <div class="col-sm-3 tr_num_two">
+                            <select class="form-control select-input">
+                                <option value="">请选择</option>
+                                <option value="海鲜味">海鲜味</option>
+                                <option value="孜然味">孜然味</option>
+                            </select>
+                            <input type="text" class="form-control sku_input" name="skuValTwo[]" maxlength="6" style="position:absolute;width: 70%;top: 0;">
+                        </div>
+                        <div class="col-sm-3">
+                            <button type="button" class="btn btn-default add_btn"><i class="fa fa-plus">添加规格值</i></button>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="inputPassword3" class="col-sm-2 control-label">二级规格名</label>
-
-                    <div class="col-sm-5">
-                        <input type="text" class="form-control" id="inputPassword3" placeholder="二级规格名">
+                <div class="sku-info" style="display: none">
+                    <div class="box-body">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr style="background: #eee">
+                                <th id="one_sku_name"></th>
+                                <th id="two_sku_name"></th>
+                                <th><span class="text-red">*</span>库存</th>
+                                <th>重量(kg)</th>
+                                <th><span class="text-red">*</span>售价(元)</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody></table>
                     </div>
+                    <div class="box-footer clearfix" style="border: none;">
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">批量设置</label>
+                        <div class="col-sm-5 btn-group">
+                                <button type="button" class="btn btn-default text-blue">编辑</button>
+                                <button type="button" class="btn btn-default text-blue">二维码</button>
+                                <button type="button" class="btn btn-default text-blue">删除</button>
+                        </div>
+                    </div>
+                </div>
                 </div>
             </div>
 
@@ -95,7 +163,7 @@
                 <div class="col-sm-5">
                     <input type="file">
                 </div>
-                <span data-toggle="tooltip" title="" data-original-title="请上传500kb以内；建议图片尺寸为750px*630px；格式为jpeg,jpg,png的图片"><i class="fa fa-info-circle"></i></span>
+                <label class="control-label" data-toggle="tooltip" title="" data-original-title="请上传500kb以内；建议图片尺寸为750px*630px；格式为jpeg,jpg,png的图片"><i class="fa fa-info-circle"></i><label/>
             </div>
 
             <div class="form-group has-success">
@@ -108,7 +176,7 @@
                     <input type="file"><p class="help-block">相册5</p>
                     <input type="file"><p class="help-block">相册6</p>
                 </div>
-                <span data-toggle="tooltip" title="" data-original-title="请上传500kb以内；建议图片尺寸为750px*630px；格式为jpeg,jpg,png的图片"><i class="fa fa-info-circle"></i></span>
+                <label class="control-label" data-toggle="tooltip" title="" data-original-title="请上传500kb以内；建议图片尺寸为750px*630px；格式为jpeg,jpg,png的图片"><i class="fa fa-info-circle"></i></label>
             </div>
 
             <div class="form-group">
@@ -168,6 +236,6 @@
 
             // result 必须是一个 JSON 格式字符串！！！否则报错
         }
-    }
+    };
     editor.create();
 </script>
