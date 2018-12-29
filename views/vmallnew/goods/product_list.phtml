@@ -25,7 +25,7 @@
             <td><?=( $v['type']== 1) ?'商品':'礼品'?></td>
             <td><?=$cats[$v['cid']]?></td>
             <td>
-                <label class="icheck-ajax" pid="<?=$v['id']?>" url="product/listing" title="点击执行操作">
+                <label class="icheck-ajax" opt_id="<?=$v['id']?>" url="product/listing" title="点击执行操作">
                     <div class="icheckbox_flat-green <?=$v['status']?'checked':''?>" aria-checked="<?=$v['status']?1:2?>" aria-disabled="false" style="position: relative;">
                         <input type="checkbox" class="flat-red" checked="" style="position: absolute; opacity: 0;">
                         <ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
@@ -33,7 +33,7 @@
                 </label>
             </td>
             <td>
-                <label class="icheck-ajax" pid="<?=$v['id']?>" url="product/hot" title="点击执行操作">
+                <label class="icheck-ajax" field="hot" opt_id="<?=$v['id']?>" url="product/field" title="点击执行操作">
                     <div class="icheckbox_flat-green <?=$v['hot']?'checked':''?>" aria-checked="<?=$v['hot']?'1':'2'?>" aria-disabled="false" style="position: relative;">
                         <input type="checkbox" class="flat-red" checked="" style="position: absolute; opacity: 0;">
                         <ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
@@ -41,11 +41,11 @@
                 </label>
             </td>
             <td>
-                <input readonly type="text" class="form-control" id="<?=$v['id']?>" value="<?=$v['order']?>" type-data="<?=$v['type']?>">
+                <input text-name="排序" id="order_<?=$v['id']?>" opt_id="<?=$v['id']?>" field="order" data-toggle="modal" data-target=".input_dialog" readonly type="text" class="form-control modify_field" value="<?=$v['order']?>">
             </td>
             <td>
                 <?php if(empty($v['sku'])):?>
-                    <input readonly type="text" class="form-control" id="<?=$v['id']?>" value="<?=$v['stock']?>" type-data="<?=$v['type']?>">
+                    <input text-name="库存" id="stock_<?=$v['id']?>" opt_id="<?=$v['id']?>" field="stock" data-toggle="modal" data-target=".input_dialog"  readonly type="text" class="form-control modify_field" value="<?=$v['stock']?>">
                 <?php else:?>
                     <?=$v['stock']?>
                 <?php endif;?>
@@ -87,3 +87,28 @@
         </ul>
     </div>
 </div>
+
+<!-- 批量设置弹窗模块 start -->
+<div class="modal fade input_dialog" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="form-group">
+                    <label for="" class="col-sm-2 control-label">请输入</label>
+                    <div class="col-sm-5">
+                        <input type="number" field="" opt_id="" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" url="/product/field" class="btn btn-primary dialog_save" data-dismiss="modal">保存</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- 弹窗模块 end -->

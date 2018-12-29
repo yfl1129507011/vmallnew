@@ -1,19 +1,23 @@
 <div class="box-body">
-    <form class="form-horizontal">
+    <form id="product_modify_form" class="form-horizontal" action="/product/add" method="post" enctype="multipart/form-data">
         <div class="box-body">
-            <div class="form-group has-success">
+            <div class="form-group has-success required_box">
                 <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>商品名称</label>
-
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" id="" placeholder="商品名称">
+                    <input type="text" name="name" maxlength="20" class="form-control" id="" placeholder="商品名称">
                 </div>
+                <label class="control-label" data-toggle="tooltip" title="" data-original-title="商品名称长度不可超过20个字符"><i class="fa fa-info-circle"></i></label>
             </div>
-            <div class="form-group has-success">
+            <div class="form-group has-success required_box">
                 <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>商品分类</label>
                 <div class="col-sm-5">
-                    <select class="form-control">
-                        <option>选项 1</option>
-                        <option>选项 2</option>
+                    <select class="form-control" name="cid">
+                        <option value="">请选择</option>
+                        <?php if(!empty($cats)): ?>
+                        <?php foreach ($cats as $k=>$v):?>
+                        <option value="<?=$v['id'].'_'.$v['quantityUnit']?>"><?=$v['name']?></option>
+                        <?php endforeach;?>
+                        <?php endif;?>
                     </select>
                 </div>
             </div>
@@ -22,7 +26,7 @@
                 <div class="col-sm-5">
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox"> 加入推荐
+                            <input value="1" type="checkbox" name="hot"> 加入推荐
                         </label>
                     </div>
                 </div>
@@ -30,16 +34,20 @@
             <div class="form-group">
                 <label for="" class="col-sm-2 control-label">商品标签</label>
                 <div class="col-sm-5">
-                    <select class="form-control">
-                        <option>选项 1</option>
-                        <option>选项 2</option>
+                    <select class="form-control" name="tags">
+                        <option value="">请选择</option>
+                        <?php if(!empty($tags)):?>
+                        <?php foreach ($tags as $_k=>$_v):?>
+                        <option value="<?=$_v['id']?>"><?=$_v['tag']?></option>
+                        <?php endforeach;?>
+                        <?php endif;?>
                     </select>
                 </div>
             </div>
-            <div class="form-group has-success">
+            <div class="form-group has-success required_box">
                 <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>商品售价</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" id="" placeholder="商品售价">
+                    <input name="price" type="text" class="form-control" id="" placeholder="商品售价" oninput="this.value=this.value.match(/\d+(\.\d{0,2})?/)?this.value.match(/\d+(\.\d{0,2})?/)[0]:''">
                 </div>
             </div>
             <div class="form-group">
@@ -47,7 +55,7 @@
                 <div class="col-sm-10">
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox"> 支持送礼
+                            <input value="2" name="type" type="checkbox"> 支持送礼
                             <span class="text-yellow"> <i class="fa fa-bullhorn"></i>礼品需包邮且在小程序商城礼品赠送区域</span>
                         </label>
                     </div>
@@ -60,12 +68,15 @@
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">一级规格名</label>
                         <div class="col-sm-3">
-                            <select class="form-control select-input" id_name="one_sku_name" sku_name="1">
+                            <select class="form-control select-input" id_name="one_sku_name">
                                 <option value="">请选择</option>
-                                <option value="系列">系列</option>
-                                <option value="选项">选项</option>
+                                <?php if(!empty($skuNames)):?>
+                                <?php foreach ($skuNames as $key=>$val):?>
+                                <option value="<?=$val['id'].'-'.$val['name'];?>"><?=$val['name']?></option>
+                                <?php endforeach;?>
+                                <?php endif;?>
                             </select>
-                            <input id_name="one_sku_name" sku_name="1" type="text" class="form-control sku_input" name="skuNameOne" maxlength="4" style="position:absolute;width: 70%;top: 0;">
+                            <input id_name="one_sku_name" type="text" class="form-control sku_input" name="skuNameOne" maxlength="4" style="position:absolute;width: 70%;top: 0;">
                         </div>
                         <label class="control-label" data-toggle="tooltip" title="" data-original-title="仅支持为第一组规格设置规格图片，买家选择不同规格会看到对应规格图片，建议尺寸：800 x 800像素"><i class="fa fa-info-circle"></i></label>
                     </div>
@@ -74,8 +85,11 @@
                         <div class="col-sm-3 tr_num_one">
                             <select class="form-control select-input">
                                 <option value="">请选择</option>
-                                <option value="夏之味蕾">夏之味蕾</option>
-                                <option value="冬之催眠">冬之催眠</option>
+                                <?php if(!empty($skuVals)):?>
+                                <?php foreach ($skuVals as $_key=>$_val):?>
+                                <option value="<?=$_key.'-'.$_val?>"><?=$_val?></option>
+                                <?php endforeach;?>
+                                <?php endif;?>
                             </select>
                             <input type="text" class="form-control sku_input" name="skuValOne[]" maxlength="6" style="position:absolute;width: 70%;top: 0;">
                         </div>
@@ -89,10 +103,13 @@
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">二级规格名</label>
                         <div class="col-sm-3">
-                            <select class="form-control select-input" id_name="two_sku_name" sku_name="2">
+                            <select class="form-control select-input" id_name="two_sku_name">
                                 <option value="">请选择</option>
-                                <option value="口味">口味</option>
-                                <option value="选项">选项</option>
+                                <?php if(!empty($skuNames)):?>
+                                    <?php foreach ($skuNames as $key=>$val):?>
+                                        <option value="<?=$val['id'].'-'.$val['name'];?>"><?=$val['name']?></option>
+                                    <?php endforeach;?>
+                                <?php endif;?>
                             </select>
                             <input id_name="two_sku_name" type="text" class="form-control sku_input" name="skuNameTwo" maxlength="4" style="position:absolute;width: 70%;top: 0;">
                         </div>
@@ -102,8 +119,11 @@
                         <div class="col-sm-3 tr_num_two">
                             <select class="form-control select-input">
                                 <option value="">请选择</option>
-                                <option value="海鲜味">海鲜味</option>
-                                <option value="孜然味">孜然味</option>
+                                <?php if(!empty($skuVals)):?>
+                                    <?php foreach ($skuVals as $_key=>$_val):?>
+                                        <option value="<?=$_key.'-'.$_val?>"><?=$_val?></option>
+                                    <?php endforeach;?>
+                                <?php endif;?>
                             </select>
                             <input type="text" class="form-control sku_input" name="skuValTwo[]" maxlength="6" style="position:absolute;width: 70%;top: 0;">
                         </div>
@@ -112,69 +132,68 @@
                         </div>
                     </div>
                 </div>
-                <div class="sku-info" style="display: none">
-                    <div class="box-body">
-                        <table class="table table-bordered">
-                            <thead>
-                            <tr style="background: #eee">
-                                <th id="one_sku_name"></th>
-                                <th id="two_sku_name"></th>
-                                <th><span class="text-red">*</span>库存</th>
-                                <th>重量(kg)</th>
-                                <th><span class="text-red">*</span>售价(元)</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody></table>
-                    </div>
-                    <div class="box-footer clearfix" style="border: none;">
+                <div class="box-body sku-info" style="display: none">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr style="background: #eee">
+                            <th id="one_sku_name"></th>
+                            <th id="two_sku_name"></th>
+                            <th><span class="text-red">*</span>库存</th>
+                            <th>重量(kg)</th>
+                            <th><span class="text-red">*</span>售价(元)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody></table>
+                </div>
+                <div class="box-footer clearfix bulk_box" style="border: none;display: none">
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">批量设置</label>
-                        <div class="col-sm-5 btn-group">
-                                <button type="button" class="btn btn-default text-blue">编辑</button>
-                                <button type="button" class="btn btn-default text-blue">二维码</button>
-                                <button type="button" class="btn btn-default text-blue">删除</button>
+                        <div class="col-sm-5 btn-group bulk_set_btn">
+                                <button type="button" class="btn btn-default text-blue" data-toggle="modal" data-target=".bulk_set" class_name="kc">库存</button>
+                                <button type="button" class="btn btn-default text-blue" data-toggle="modal" data-target=".bulk_set" class_name="zl">重量</button>
+                                <button type="button" class="btn btn-default text-blue" data-toggle="modal" data-target=".bulk_set" class_name="sj">售价</button>
                         </div>
                     </div>
                 </div>
-                </div>
             </div>
 
-            <div class="form-group has-success">
+            <div class="form-group has-success required_box">
                 <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>商品库存</label>
-
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" id="" placeholder="商品库存">
+                    <input type="number" oninput="this.value=this.value.replace(/\D/g,'')" name="stock" class="form-control" id="" placeholder="商品库存">
                 </div>
             </div>
-            <div class="form-group has-success">
+            <div class="form-group has-success required_box">
                 <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>运费计算</label>
                 <div class="col-sm-5">
-                    <select class="form-control">
-                        <option>选项 1</option>
-                        <option>选项 2</option>
+                    <select class="form-control" name="deliveryTemplateId">
+                        <option value="">请选择</option>
+                        <?php if(!empty($tpls)):?>
+                        <?php foreach ($tpls as $kk=>$vv):?>
+                        <option value="<?=$vv['id']?>" data-type="<?=$vv['valuation']?>"><?=$vv['name']?></option>
+                        <?php endforeach;?>
+                        <?php endif;?>
                     </select>
                 </div>
                 <label class="text-yellow control-label"> <i class="fa fa-bullhorn"></i>若按重量计费类模板，请务必填写商品重量<label/>
             </div>
-
-            <div class="form-group has-success">
+            <div class="form-group has-success required_box">
                 <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>商品封面图</label>
                 <div class="col-sm-5">
-                    <input type="file">
+                    <input name="picUrl" type="file">
                 </div>
                 <label class="control-label" data-toggle="tooltip" title="" data-original-title="请上传500kb以内；建议图片尺寸为750px*630px；格式为jpeg,jpg,png的图片"><i class="fa fa-info-circle"></i><label/>
             </div>
-
-            <div class="form-group has-success">
+            <div class="form-group has-success required_box">
                 <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>商品相册</label>
                 <div class="col-sm-5">
-                    <input type="file"><p class="help-block">相册1</p>
-                    <input type="file"><p class="help-block">相册2</p>
-                    <input type="file"><p class="help-block">相册3</p>
-                    <input type="file"><p class="help-block">相册4</p>
-                    <input type="file"><p class="help-block">相册5</p>
-                    <input type="file"><p class="help-block">相册6</p>
+                    <input name="album[]" type="file"><p class="help-block">相册1</p>
+                    <input name="album[]" type="file"><p class="help-block">相册2</p>
+                    <input name="album[]" type="file"><p class="help-block">相册3</p>
+                    <input name="album[]" type="file"><p class="help-block">相册4</p>
+                    <input name="album[]" type="file"><p class="help-block">相册5</p>
+                    <input name="album[]" type="file"><p class="help-block">相册6</p>
                 </div>
                 <label class="control-label" data-toggle="tooltip" title="" data-original-title="请上传500kb以内；建议图片尺寸为750px*630px；格式为jpeg,jpg,png的图片"><i class="fa fa-info-circle"></i></label>
             </div>
@@ -182,30 +201,33 @@
             <div class="form-group">
                 <label for="" class="col-sm-2 control-label">库存警告</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" id="" placeholder="库存警告">
+                    <input name="warnNum" type="number" oninput="this.value=this.value.replace(/\D/g,'')" class="form-control" id="" placeholder="库存警告">
                 </div>
             </div>
             <div class="form-group">
                 <label for="" class="col-sm-2 control-label">产地</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" id="" placeholder="产地">
+                    <input name="location" type="text" class="form-control" id="" placeholder="产地">
                 </div>
             </div>
             <div class="form-group">
                 <label for="" class="col-sm-2 control-label">储存条件</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" id="" placeholder="储存条件">
+                    <input name="storageCondition" type="text" class="form-control" id="" placeholder="储存条件">
                 </div>
             </div>
             <div class="form-group">
                 <label for="" class="col-sm-2 control-label">商品品牌</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" id="" placeholder="商品品牌">
+                    <input name="brand" type="text" class="form-control" id="" placeholder="商品品牌">
                 </div>
             </div>
             <div class="form-group">
                 <label for="" class="col-sm-2 control-label">商品详情</label>
                 <div class="col-sm-10" id="editor"></div>
+                <div style="display:none">
+                    <textarea name="desc" value=""></textarea>
+                </div>
             </div>
         </div>
         <!-- /.box-body -->
@@ -215,6 +237,33 @@
         <!-- /.box-footer -->
     </form>
 </div>
+
+
+<!-- 批量设置弹窗模块 start -->
+<div class="modal fade bulk_set" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="form-group">
+                    <label for="" class="col-sm-2 control-label">请输入</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" id="bulk_val">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary bulk_save" class_name="" data-dismiss="modal">保存</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- 弹窗模块 end -->
+
 <script>
     var E = window.wangEditor;
     var editor = new E('#editor');

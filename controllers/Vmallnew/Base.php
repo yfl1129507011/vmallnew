@@ -61,7 +61,8 @@ class Vmallnew_BaseController extends Yaf_Controller_Abstract {
      * @access protected
      * @param mixed $data 要返回的数据
      * @param String $type AJAX返回数据格式
-     * @param int $json_option 传递给json_encode的option参数
+     * @param int $json_option  320 = JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES
+     * 传递给json_encode的option参数
      * @return void
      */
     protected function ajaxReturn($data, $type = 'json', $json_option = 320)

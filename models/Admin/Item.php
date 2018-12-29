@@ -21,6 +21,13 @@ class Admin_ItemModel extends VmallNewModel{
         '1'=>'/put-recyle-bin', # 放到回收站
         '2'=>'/out-recyle-bin',  # 回收站还原
     );
+    # 商品添加修改时必填字段信息
+    private $requireFileds = array(
+        'name','cid','stock','deliveryTemplateId',
+        'file'=>array('picUrl','album'),
+    );
+    # 图片类型
+    private $imgType = array('jpg','jpeg','png');
 
     /**
      * @param array $params
@@ -111,4 +118,148 @@ class Admin_ItemModel extends VmallNewModel{
         $res = $this->curl($url,'delete');
         return $this->checkApiResult($res, $url);
     }
+
+    public function productModify(array $data){
+        if (empty($data)) return false;
+        if(!$this->checkRequiredFields($data)) return -1;  # 必填字段没有填写
+
+        $data = $this->checkData($data);
+        if(!$data) return -2; # 数据不完整
+
+        $data = $this->checkUploadImg($data);
+        if (!$data) return -3; # 上传失败
+    }
+
+    /**
+     * @param array $data
+     * @return bool
+     * 检测必填字段
+     */
+    private function checkRequiredFields(array $data){
+        if(!empty($data) && !empty($this->requireFileds)){
+            foreach ($this->requireFileds as $k=>$v){
+                if('file'==$k){
+                    if (empty($data['upFile'])) return false;
+                    foreach ($v as $_k=>$_v){
+                        $_name = $data['upFile'][$_v]['name'];
+                        if(is_array($data['upFile'][$_v]['name'])){  // 多个文件上传
+                            $_name = $_name[0];
+                        }
+                        if(empty($_name)) return false;
+                    }
+                }else{
+                    if(empty($data[$v])) return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private function checkData(array $data){
+        $newData = array();
+        # 商品名称
+        $newData['name'] = (string)$data['name'];
+        if(mb_strlen($newData['name'],'utf8') > 20){
+            $newData['name'] = mb_substr($newData['name'],0,20,'utf8');
+        }
+        # 商品类型
+        $cidArr = explode('_', (string)$data['cid']);
+        $newData['cid'] = (int)$cidArr[0];
+        $newData['quantityUnit'] = $cidArr[1];
+        # 是否推荐
+        $newData['hot'] = empty($data['hot'])?false:true;
+        # 商品标签
+        $newData['tags'] = (int)$data['tags'];
+        # 是否支持送礼
+        $newData['type'] = empty($data['type'])?1:2;
+        # 商品价格
+        $newData['price'] = sprintf("%.2f",(float)$data['price']);
+        # 商品库存
+        $newData['stock'] = (int)$data['stock'];
+        # 运费模板
+        $newData['deliveryTemplateId'] = (int)$data['deliveryTemplateId'];
+
+    }
+
+    /**
+     * @param array $data
+     * @return array|bool
+     * 图片上传检测
+     */
+    private function checkUploadImg(array $data){
+        if (empty($data)) return false;
+        if(empty($data['upFile'])) return false;
+        $upFile = (array)$data['upFile'];
+        foreach ($upFile as $k=>$v){
+            if(is_array($v['name'])){
+                $upArr = $this->formatPlusUpload($v);
+                $_plusArr = array();
+                foreach ($upArr as $key=>$_file){
+                    $_url = $this->uploadImg($_file);
+                    if($_url<0){  # 上传失败
+                        Logger::error("【{$key}】图片【{$_file['name']}】上传失败code[{$_url}]");
+                    }else {
+                        $_plusArr[] = $_url;
+                    }
+                }
+                if(empty($_plusArr)) return false;
+                $data[$k] = $_plusArr;
+            }else{
+                $_url = $this->uploadImg($v);
+                if($_url<0){  # 上传失败
+                    Logger::error("【{$k}】图片【{$v['name']}】上传失败code[{$_url}]");
+                    return false;
+                }
+                $data[$k] = $_url;
+            }
+        }
+        unset($data['upFile']);
+        return $data;
+    }
+
+    /**
+     * @param array $upFile
+     * @return array
+     * 格式化多文件上传的信息
+     */
+    private function formatPlusUpload(array $upFile){
+        $data = array();
+        if (empty($upFile) || !is_array($upFile['name'])) return $data;
+        foreach ($upFile['name'] as $i=>$j) {
+            if (empty($j)) break;
+            $tmp = array();
+            foreach ($upFile as $k => $v) {
+                $tmp[$k] = $v[$i];
+            }
+            $data[] = $tmp;
+        }
+        return $data;
+    }
+
+    /**
+     * @param array $upFile
+     * @return int
+     * 图片上传
+     */
+    private function __uploadImg(array $upFile){
+        if(empty($upFile) || empty($upFile['name']) || $upFile['error']>0) return -1;
+        $_type = $upFile['type'];
+        $sizeLimit = 500*1024;
+        $ext = substr($_type, strrpos($_type,'/')+1);
+        $_size = $upFile['size'];
+        if (!in_array($ext, $this->imgType) || $_size>$sizeLimit) return -2;
+
+        $dir = '/vmallnew/item/'.SELLER_ID. '/'.time().$ext;
+        $_FILES['file'] = $upFile;
+        $upload = new WL_FileUploader($this->imgType, $sizeLimit);
+        $res = $upload->handleUploadOSS(Config::get('WeLife.oss.global'), $dir, false ,Config::get('WeLife.oss.global.buckets.wlpublicmedias'));
+        if (!empty($res['errcode']) || !empty($res['result']['url'])) {
+            return -3; # 上传失败
+        }
+        return $res['result']['url'];
+    }
+
+
+
 }

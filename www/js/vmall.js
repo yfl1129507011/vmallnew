@@ -57,14 +57,18 @@ $(function () {
 
     // icheck点击操作
     $(".-box-content").on('click','.icheck-ajax',function () {
-        var self = $(this), url = self.attr('url'),pid = self.attr('pid'),
+        var self = $(this), url = self.attr('url'),opt_id = self.attr('opt_id'),
             icheck = self.find('.icheckbox_flat-green'),
-            type = icheck.attr('aria-checked');
+            type = icheck.attr('aria-checked'), field = self.attr('field'),
+            postData = {};
         if(!confirm('确定进行此操作')) return false;
-        if(!type || !url || !pid){
+        if(!type || !url || !opt_id){
             alert('参数错误');return false;
         }
-        $.post(url,{pid:pid,type:type},function (data) {
+        postData.opt_id = opt_id;
+        postData.type = type;
+        if(field) postData.field = field;
+        $.post(url,postData,function (data) {
             if (data.code==200){
                 if (type == 1) {
                     icheck.removeClass('checked');
@@ -95,4 +99,7 @@ $(function () {
             }
         });
     });
+
+
+
 });

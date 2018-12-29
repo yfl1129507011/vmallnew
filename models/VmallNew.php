@@ -128,4 +128,39 @@ class VmallNewModel {
         $res = json_decode($data, true);
         return $res;
     }
+
+    /**
+     * @param array $upFile
+     * @param float|int $sizeLimit 大小限制（单位字节B）
+     * @param array $type  类型限制
+     * @return int
+     * 图片上传
+     */
+    protected function uploadImg(array $upFile, array $type, $sizeLimit=10485760){
+        if(empty($upFile) || empty($upFile['name']) || $upFile['error']>0) return false;
+        $dir = '/vmallnew/'.get_class($this).'/'.SELLER_ID. '/'.time().'/';
+        $_FILES['file'] = $upFile;
+        $upload = new WL_FileUploader($type, $sizeLimit);
+        $res = $upload->handleUploadOSS(Config::get('WeLife.oss.global'), $dir, false ,Config::get('WeLife.oss.global.buckets.wlpublicmedias'));
+        if (!empty($res['errcode']) || empty($res['result']['url'])) {
+            return false; # 上传失败
+        }
+        return $res['result']['url'];
+    }
+
+    /**
+     * @param $data
+     * @param $len
+     * @return string
+     * 格式化字符长度
+     */
+    public function formatLen($data, $len){
+        $data = (string)$data;
+        if(empty($data) || empty($len)) return $data;
+        if(mb_strlen($data,'utf8') > $len){
+            $data = mb_substr($data,0,$len,'utf8');
+        }
+        return $data;
+    }
+
 }

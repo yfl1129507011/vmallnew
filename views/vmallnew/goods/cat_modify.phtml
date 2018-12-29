@@ -1,0 +1,55 @@
+<div class="box-body">
+    <form id="cat_modify_form" class="form-horizontal" action="/cat/update" method="post" enctype="multipart/form-data">
+        <div class="box-body">
+            <div class="form-group has-success required_box">
+                <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>分类名称</label>
+                <div class="col-sm-5">
+                    <input type="text" name="name" maxlength="9" class="form-control" id="" placeholder="分类名称">
+                </div>
+                <label class="control-label" data-toggle="tooltip" title="" data-original-title="名称长度不可超过9个字符"><i class="fa fa-info-circle"></i></label>
+            </div>
+            <div class="form-group has-success required_box">
+                <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>分类LOGO</label>
+                <div class="col-sm-5">
+                    <input name="icon" type="file" size-limit="500">
+                    <span class="text-red" style="display: none">图片大小不能超过500kb</span>
+                </div>
+                <label class="control-label" data-toggle="tooltip" title="" data-original-title="请上传500kb以内；建议图片尺寸为750px*630px；格式为jpeg,jpg,png的图片"><i class="fa fa-info-circle"></i><label/>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label">分类排序</label>
+                <div class="col-sm-5">
+                    <input name="order" type="number" oninput="this.value=this.value.replace(/\D/g,'')" class="form-control" id="" placeholder="分类排序">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label">是否加入热推</label>
+                <div class="col-sm-5">
+                    <div class="checkbox">
+                        <label>
+                            <input value="1" type="checkbox" name="hot"> 加入热推
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label">是否显示</label>
+                <div class="col-sm-10">
+                    <div class="checkbox">
+                        <label style="padding-left: 0;">
+                            <input value="1" checked name="status" type="radio"> 显示
+                        </label>
+                        <label>
+                            <input value="0" name="status" type="radio"> 隐藏
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+            <button type="submit" class="btn btn-primary">提交</button>
+        </div>
+        <!-- /.box-footer -->
+    </form>
+</div>

@@ -54,6 +54,7 @@ $routes['Public'] = array(
 );
 
 $routes['Goods'] = array(
+    # 商品管理
     'product_index'=>array(
         'match' => '#/product$#',
         'map' => array(),
@@ -82,8 +83,8 @@ $routes['Goods'] = array(
         'match' => '#/product/listing$#',
         'map' => array(),
     ),
-    'product_hot'=>array(
-        'match' => '#/product/hot$#',
+    'product_field'=>array(
+        'match' => '#/product/field$#',
         'map' => array(),
     ),
     'product_del'=>array(
@@ -92,6 +93,32 @@ $routes['Goods'] = array(
     ),
     'product_remove'=>array(
         'match' => '#/product/remove$#',
+        'map' => array(),
+    ),
+
+    # 分类管理
+    'cat_index'=>array(
+        'match' => '#/cat$#',
+        'map' => array(),
+    ),
+    'cat_list'=>array(
+        'match' => '#/cat/list$#',
+        'map' => array(),
+    ),
+    'cat_hot'=>array(
+        'match' => '#/cat/hot$#',
+        'map' => array(),
+    ),
+    'cat_del'=>array(
+        'match' => '#/cat/del$#',
+        'map' => array(),
+    ),
+    'cat_modify'=>array(
+        'match' => '#/cat/modify$#',
+        'map' => array(),
+    ),
+    'cat_update'=>array(
+        'match' => '#/cat/update$#',
         'map' => array(),
     ),
 );

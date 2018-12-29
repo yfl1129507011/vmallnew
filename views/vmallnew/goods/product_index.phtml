@@ -19,7 +19,7 @@
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs" finish-status="true">
                         <li search-class="product-list"><a href="/product/list">商品列表</a></li>
-                        <li><a href="/product/add">添加商品</a></li>
+                        <li><a href="/product/modify">添加商品</a></li>
                         <li search-class="product-trash"><a href="/product/trash">回收站</a></li>
                         <li class="tabs-modify" style="display: none"><a href="/product/modify">编辑商品</a></li>
                     </ul>
@@ -185,10 +185,39 @@
             return false;
         });
 
-        // 编辑
+        // 执行库存或排序的弹窗
+        $(".-box-content").on('click','.modify_field',function () {
+            var self = $(this), pname = self.parents("tr").find("td:eq(2)").text(),
+                text_name = self.attr('text-name'), field = self.attr('field'),
+                opt_id = self.attr('opt_id'), val = self.val();
+            $(".input_dialog").find(".modal-title").text("修改商品【"+pname+"】的"+text_name);
+            $(".input_dialog").find("input").attr('field',field);
+            $(".input_dialog").find("input").attr('opt_id',opt_id);
+            $(".input_dialog").find("input").val(val);
+        });
+
+        // 执行库存或排序的修改
+        $(".-box-content").on('click', '.dialog_save',function () {
+            var input = $(".input_dialog").find('input'),
+                field = input.attr("field"), opt_id = input.attr("opt_id"),
+                type = input.val(), url = $(this).attr('url');
+            if(!field || !opt_id || !type || !url){
+                alert('参数错误');
+            }else {
+                $.post(url, {opt_id: opt_id, type: type, field: field}, function (data) {
+                    if (data.code == 200) {
+                        $("#" + field + "_" + opt_id).val(type);
+                    } else {
+                        alert(data.msg);
+                    }
+                });
+            }
+        });
+
+        // 编辑按钮操作
         $(".-box-content").on('click','.btn-edit',function () {
             $(".tabs-modify").click().show();
-        })
+        });
 
         // 添加规格值
         $(".-box-content").on('click','.add_btn',function () {
@@ -203,55 +232,167 @@
         $(".-box-content").on('click','.del_btn',function () {
             $(this).parents('.form-group').remove();
             createSkuInfo();
+            calcKc();
         });
         // 模拟可编辑的select框
         $(".-box-content").on('change','.select-input',function () {
-            $(this).parent().find('input').val($(this).val());
+            var val = $(this).val();
+            if(val){
+                val = $(this).find("option:selected").text();
+            }
+            $(this).parent().find('input').val(val);
             setSkuInfo($(this))
         });
 
         function setSkuInfo(self) {
             var val = self.val(),
-                id_name = self.attr('id_name'),
-                sku_name = self.attr('sku_name');
+                id_name = self.attr('id_name');
+            if(val && !$("input[name='skuNameOne']").val()){
+                $("input[name='skuNameOne']").focus();
+                self.parent().find('input').val('');
+                self.val('');return false;
+            }
             if(id_name){
-                if(sku_name != 1 && val && !$("input[name='skuNameOne']").val()){
-                    $("input[name='skuNameOne']").focus();return false;
+                if(val){
+                    val = self.find("option:selected").text();
                 }
-                $(".sku-info").show();
                 $("#"+id_name).text(val);
             }
+            $(".sku-info").show();
             createSkuInfo();
             return true;
         }
 
         function createSkuInfo(){
-            var tr_num_one = [], tr_num_two = [];
+            var tr_num_one = [], tr_num_two = [], trNum = 0;
             $(".tr_num_one input").each(function () {
-                tr_num_one.push($(this).val());
+                var val = $(this).val();
+                tr_num_one.push(val);
             });
             $(".tr_num_two input").each(function () {
-                tr_num_two.push($(this).val());
+                var val = $(this).val();
+                tr_num_two.push(val);
             });
-            var html = '';
+            $(".sku-info tbody tr").each(function () {
+                trNum++;
+            });
+            var html = '', trInx = 0;
             for(var i=0; i<tr_num_one.length; i++){
                 for(var j=0; j<tr_num_two.length; j++){
-                    if(!tr_num_one[i] && !tr_num_two[j]) continue;
-                    html += "<tr>";
-                    html += "<td>"+tr_num_one[i]+"</td>";
-                    html += "<td>"+tr_num_two[j]+"</td>";
-                    html += '<td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>';
+                    if(trNum){
+                        if (!tr_num_one[i] && !tr_num_two[j]){
+                            $(".sku-info tbody tr:eq("+trInx+")").remove();
+                        }else {
+                            $(".sku-info tbody tr:eq(" + trInx + ")").find("td:eq(0)").text(tr_num_one[i]);
+                            $(".sku-info tbody tr:eq(" + trInx + ")").find("td:eq(1)").text(tr_num_two[j]);
+                            trInx++;
+                        }
+                        trNum--;
+                    }else {
+                        if (tr_num_one[i] || tr_num_two[j]) {
+                            html += "<tr>";
+                            html += "<td>" + tr_num_one[i] + "</td>";
+                            html += "<td>" + tr_num_two[j] + "</td>";
+                            html += '<td><input class="kc_val" type="number" oninput="this.value=this.value.replace(/\\D/g,\'\')"></td>';
+                            html += '<td><input class="zl_val" type="text" oninput="this.value=this.value.match(/\\d+(\\.\\d{0,2})?/)?this.value.match(/\\d+(\\.\\d{0,2})?/)[0]:\'\'"></td>';
+                            html += '<td><input class="sj_val" name="" type="text" oninput="this.value=this.value.match(/\\d+(\\.\\d{0,2})?/)?this.value.match(/\\d+(\\.\\d{0,2})?/)[0]:\'\'"></td></tr>';
+                        }
+                    }
                 }
             }
-            $(".sku-info tbody").html(html);
+            if(trNum){
+                while (trNum--){
+                    $(".sku-info tbody tr:eq("+trInx+")").remove();
+                }
+            }
+            if(!tr_num_one[0] && !tr_num_two[0]) {
+                $(".bulk_box").hide();
+                $("input[name=price]").parents('.form-group').addClass('required_box').show();
+                $("input[name=stock]").prop('readonly', false).val('');
+            }else{
+                $(".bulk_box").show();
+                $("input[name=price]").parents('.form-group').removeClass('required_box').hide();
+                $("input[name=stock]").prop('readonly', true);
+            }
+            $(".sku-info tbody").append(html);
             if(!$("input[name=skuNameOne]").val() && !$("input[name=skuNameOne]").val()) {
-                $(".sku-info").hide();
+                $(".sku-info").hide();$(".bulk_box").hide();
             }
         }
 
+        // 计算规格信息中的库存总值
+        function calcKc(){
+            var kc = 0;
+            $(".sku-info .kc_val").each(function () {
+                kc += parseInt($(this).val());
+            });
+            if(!kc) kc = '';
+            $("input[name=stock]").val(kc);
+        }
+
         // 规格信息产生
-        $(".-box-content").on('input propertychange', '.sku_input', function () {
-            setSkuInfo($(this));
-        })
+        $(".-box-content").on('input propertychange', '.sku_input, .kc_val', function () {
+            if($(this).hasClass('kc_val')){
+                calcKc();
+            }else {
+                setSkuInfo($(this));
+            }
+        });
+
+        // 批量设置弹窗
+        $(".-box-content").on('click', '.bulk_set_btn button', function () {
+            var self = $(this), text = self.text(),
+                class_name = self.attr("class_name"),
+                data_target = self.attr("data-target");
+            if(!text || !data_target || !class_name) {
+                alert('参数错误');return false;
+            }
+            $(data_target).find(".modal-title").text("批量设置"+text);
+            $(data_target).find(".control-label").text(text);
+            $(data_target).find(".bulk_save").attr('class_name', class_name);
+        });
+        // 批量保存
+        $(".-box-content").on('click', '.bulk_save', function () {
+            var class_name = $(this).attr("class_name"),
+                bulk_val = parseFloat($("#bulk_val").val());
+            if(isNaN(bulk_val)) bulk_val = '';
+            $(".sku-info").find("."+class_name+"_val").val(bulk_val);
+            $("#bulk_val").val("");
+            if(class_name == 'kc'){
+                calcKc();
+            }
+        });
+        
+        // 商品表单提交
+        $(".-box-content").on('submit', '#product_modify_form', function () {
+           if(checkRequired($(this))){
+               // 编辑器赋值
+               $("textarea[name=desc]").val(editor.txt.html());
+           }else{
+               return false;
+           }
+        });
+        
+        // 检测必填字段
+        function checkRequired(self) {
+            if(!self) return true;
+            var inx = 0;
+            self.find(".required_box").each(function () {
+                var input = $(this).find('input').length ? $(this).find('input') : $(this).find('select'),
+                    fa = $(this).find('.fa');
+                if(!input.val()){
+                    $(this).removeClass("has-success").addClass("has-error");
+                    fa.removeClass("fa-check-circle").addClass("fa-times-circle");
+                    if(inx==0){
+                        input.focus();inx++;
+                    }
+                }else{
+                    $(this).removeClass("has-error").addClass("has-success");
+                    fa.removeClass("fa-times-circle").addClass("fa-check-circle");
+                }
+            });
+
+            return (inx==0)?true:false;
+        }
     })
 </script>
