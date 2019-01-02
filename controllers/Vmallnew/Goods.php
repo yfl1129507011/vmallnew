@@ -356,7 +356,7 @@ class Vmallnew_GoodsController extends Vmallnew_BaseController{
     # 分类编辑和添加处理接口
     public function cat_updateAction(){
         $data = $this->_request->getPost();
-        $data['icon'] = $_FILES['icon'];
+        $data['file_icon'] = $_FILES['icon'];
         $itemCat = new Admin_ItemCatModel();
         $res = $itemCat->modifyCat($data);
         $this->ajaxReturn($res);
@@ -364,7 +364,175 @@ class Vmallnew_GoodsController extends Vmallnew_BaseController{
 
     # 分类编辑或添加展示
     public function cat_modifyAction(){
+        $data = $this->_request->getRequest();
+        if($data){
+            $this->_view->assign('data',$data);
+        }
         $this->display();
     }
 ### 分类管理 END ###
+
+### 标签管理 START ###
+    public function tag_indexAction(){
+        $this->display();
+    }
+
+    # 标签列表
+    public function tag_listAction(){
+        $curPage = (int)$this->_request->get("page",1);
+        $data = array();
+        $data['curPage'] = $curPage;
+        $itemTag = new Admin_ItemTagModel();
+        $res = $itemTag->getTags($data);
+        if(!$res) exit("数据获取失败");
+        $pageOptions = array(
+            'perPage' => 10,
+            'currentPage' => $curPage,
+            'curPageClass' => 'active',
+            'totalItems' => $res['count']
+        );
+        $this->_view->assign('page', Pager::makeLinks($pageOptions));
+        $this->_view->assign('results', $res['results']);
+        $this->display();
+    }
+
+    # 删除标签
+    public function tag_delAction(){
+        $tid = (int)$this->_request->getRequest('id');
+        $returnArr = array();
+        $returnArr['code'] = 200;
+        if($tid){
+            $itemTag = new Admin_ItemTagModel();
+            $res = $itemTag->delTag($tid);
+            if(!$res){
+                $returnArr['code'] = 401;
+                $returnArr['msg'] = '操作失败';
+            }else{
+                $returnArr['msg'] = '操作成功';
+            }
+        }
+        $this->ajaxReturn($returnArr);
+    }
+
+    # 添加或编辑标签展示
+    public function tag_modifyAction(){
+        $data = $this->_request->getRequest();
+        if($data){
+            $this->_view->assign('data',$data);
+        }
+        $this->display();
+    }
+
+    # 处理添加或编辑标签
+    public function tag_updateAction(){
+        $data = $this->_request->getPost();
+        $itemTag = new Admin_ItemTagModel();
+        $res = $itemTag->modifyTag($data);
+        $this->ajaxReturn($res);
+    }
+### 标签管理 END ###
+
+### 评价管理 START ###
+    public function rate_indexAction(){
+        $this->display();
+    }
+
+    # 评价列表
+    public function rate_listAction(){
+        $curPage = (int)$this->_request->get('page',1);
+        $data = array();
+        $data['curPage'] = $curPage;
+        $ratingText = trim($this->_request->getRequest('ratingText'));
+        if($ratingText) $data['content'] = $ratingText;
+        $rate = new Admin_RateModel('3405474861');
+        $res = $rate->getRates($data);
+        if (!$res) exit('获取数据失败');
+
+        $pageOptions = array(
+            'perPage' => 10,
+            'currentPage' => $curPage,
+            'curPageClass' => 'active',
+            'totalItems' => $res['count']
+        );
+
+        $this->_view->assign('page', Pager::makeLinks($pageOptions));
+        $this->_view->assign('results', $res['results']);
+        $this->display();
+    }
+
+    # 删除评价
+    public function rate_delAction(){
+        $rid = (int)$this->_request->getRequest('id');
+        $ids = trim($this->_request->getRequest('ids'));
+        $returnArr = $delData = array();
+        $returnArr['code'] = 200;
+        $delData['ids'] = $rid?$rid:$ids;
+        if($delData){
+            $rate = new Admin_RateModel('3405474861');
+            $res = $rate->rateDel($delData);
+            if(!$res){
+                $returnArr['code'] = 401;
+                $returnArr['msg'] = '操作失败';
+            }else{
+                $returnArr['msg'] = '操作成功';
+            }
+        }
+        $this->ajaxReturn($returnArr);
+    }
+
+    # 是否显示评论
+    public function rate_showAction(){
+        $rid = (int)$this->_request->getRequest('opt_id');
+        $type = (int)$this->_request->getRequest('type');
+        $ids = trim($this->_request->getRequest('ids'));
+        $returnArr = $showData = array();
+        $returnArr['code'] = 200;
+        $showData['ids'] = $rid?$rid:$ids;
+        if($showData && $type && in_array($type,array(1,2))){
+            $showData['show'] = ($type==1)?false:true;
+            $rate = new Admin_RateModel('3405474861');
+            $res = $rate->rateShow($showData);
+            if(!$res){
+                $returnArr['code'] = 401;
+                $returnArr['msg'] = '操作失败';
+            }else{
+                $returnArr['msg'] = '操作成功';
+            }
+        }
+        $this->ajaxReturn($returnArr);
+    }
+
+    # 评论回复处理
+    public function rate_handleAction(){
+        $rid = (int)$this->_request->getPost('id');
+        $reply = htmlspecialchars(trim($this->_request->getPost('reply')));
+        $show = (int)$this->_request->getPost('show');
+        $returnArr = $hlData = array();
+        $returnArr['code'] = 200;
+        if($rid && $reply && $show && in_array($show, array(1,2))){
+            $hlData['id'] = $rid;
+            $hlData['reply'] = $reply;
+            $hlData['show'] = ($show==1)?false:true;
+            $rate = new Admin_RateModel('3405474861');
+            $res = $rate->rateHandle($hlData);
+            if(!$res){
+                $returnArr['code'] = 401;
+                $returnArr['msg'] = '操作失败';
+            }else{
+                $returnArr['msg'] = '操作成功';
+            }
+        }
+        $this->ajaxReturn($returnArr);
+    }
+
+    # 评论回复展示
+    public function rate_modifyAction(){
+        $data = $this->_request->getRequest();
+        $this->_view->assign('data',$data);
+        $this->display();
+    }
+### 评价管理 END ###
+
+
+
 }

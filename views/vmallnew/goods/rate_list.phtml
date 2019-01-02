@@ -1,0 +1,111 @@
+<div class="box-body">
+    <table id="example1" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="check-all" ></th>
+                <th>ID</th>
+                <th>会员昵称</th>
+                <th width="25%">评价内容</th>
+                <th>评价等级</th>
+                <th>评价时间</th>
+                <th>是否显示</th>
+                <th>状态</th>
+                <th width="15%">操作</th>
+            </tr>
+        </thead>
+        <?php if (!empty($results)):?>
+        <?php
+            $ratingType = array(
+                '1'=>'好评',
+                '2'=>'中评',
+                '3'=>'差评',
+            );
+        ?>
+        <?php foreach ($results as $k=>$v):?>
+        <tr>
+            <td><input type="checkbox" value="<?=$v['id']?>" class="id-checkbox"></td>
+            <td><?=$v['id']?></td>
+            <td><?=htmlspecialchars($v['nickName'])?></td>
+            <td><?=htmlspecialchars($v['ratingText'])?></td>
+            <td><img width="40" height="40" src="<?=$v['picUrl']?>">&nbsp;&nbsp;<?=$ratingType[$v['rating']]?></td>
+            <td><?=date("Y-m-d H:i:s",strtotime($v['gmtCreated']))?></td>
+            <td>
+                <label class="icheck-ajax" opt_id="<?=$v['id']?>" url="rate/show" title="点击执行操作">
+                    <div class="icheckbox_flat-green <?=$v['isShow']?'checked':''?>" aria-checked="<?=$v['isShow']?1:2?>" aria-disabled="false" style="position: relative;">
+                        <input type="checkbox" class="flat-red" checked="" style="position: absolute; opacity: 0;">
+                        <ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
+                    </div>
+                </label>
+            </td>
+            <td><?=$v['sellerRatingText']?'已回复':'未回复'?></td>
+            <td>
+                <div class="btn-group">
+                    <form action="/rate/modify" class="edit_form">
+                        <input type="hidden" name="nickName" value="<?=htmlspecialchars($v['nickName'])?>">
+                        <input type="hidden" name="ratingText" value="<?=htmlspecialchars($v['ratingText'])?>">
+                        <input type="hidden" name="picUrl" value="<?=$v['picUrl']?>">
+                        <input type="hidden" name="rating" value="<?=$v['rating']?>">
+                        <input type="hidden" name="isShow" value="<?=$v['isShow']?>">
+                        <input type="hidden" name="sellerRatingText" value="<?=htmlspecialchars($v['sellerRatingText'])?>">
+                        <input type="hidden" name="id" value="<?=$v['id']?>">
+                    </form>
+                    <button type="button" url="" class="btn btn-default btn-edit">处理</button>
+                    <button type="button" url="/rate/del?id=<?=$v['id']?>" class="btn btn-danger btn_del">删除</button>
+                </div>
+            </td>
+        </tr>
+        <?php endforeach;?>
+        <?php endif;?>
+    </table>
+    <div class="row" style="margin-top: 10px;">
+        <div class="col-xs-3">
+            <div class="input-group">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default">批量操作</button>
+                </div><!-- /btn-group -->
+                <select class="form-control bulk-select">
+                    <option value="0" selected>请选择</option>
+                    <option value="/rate/del" >批量删除</option>
+                    <option value="1" >批量隐藏</option>
+                    <option value="2" >批量显示</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-xs-2">
+            <button type="submit" url="/rate/show" class="btn btn-success reload" id="bulk-ajax">确定</button>
+        </div>
+    </div>
+</div>
+
+<div style="float: right;margin-right: 20px;">
+    <div class="dataTables_paginate paging_bootstrap">
+        <ul class="pagination" req_uri="<?=$req_uri?>">
+            <?php echo $page; ?>
+        </ul>
+    </div>
+</div>
+
+<!-- 批量设置弹窗模块 start -->
+<div class="modal fade btn_dialog" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">处理评论</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="form-group">
+                    <label for="" class="col-sm-2 control-label">请输入</label>
+                    <div class="col-sm-5">
+                        <input type="number" field="" opt_id="" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" url="/product/field" class="btn btn-primary dialog_save" data-dismiss="modal">保存</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- 弹窗模块 end -->

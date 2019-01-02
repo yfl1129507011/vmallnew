@@ -1,0 +1,21 @@
+<div class="box-body">
+    <form id="modify_form" class="form-horizontal" action="/tag/update" method="post" enctype="multipart/form-data">
+        <div class="box-body">
+            <div class="form-group has-success required_box">
+                <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>标签名称</label>
+                <div class="col-sm-5">
+                    <input value="<?=$data['tag']?>" type="text" name="tag" maxlength="4" class="form-control" id="" placeholder="标签名称">
+                </div>
+                <label class="control-label" data-toggle="tooltip" title="" data-original-title="名称长度不可超过4个字符"><i class="fa fa-info-circle"></i></label>
+            </div>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+            <button type="submit" class="btn btn-primary">提交</button>
+            <?php if (!empty($data)):?>
+                <input type="hidden" name="id" value="<?=$data['id']?>">
+            <?php endif;?>
+        </div>
+        <!-- /.box-footer -->
+    </form>
+</div>

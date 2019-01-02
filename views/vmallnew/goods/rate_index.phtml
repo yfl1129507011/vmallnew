@@ -1,0 +1,142 @@
+<?php include APP_PATH . '/views/'.strtolower(APP_NAME).'/include/head.phtml'; ?>
+<div class="content-wrapper">
+    <!-- Content Header (页眉) -->
+    <section class="content-header">
+        <h1>
+            商品
+            <small>评价管理</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-gift"></i> 商品</a></li>
+            <li class="active">评价管理</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs" finish-status="true">
+                        <li search-class="rate-list"><a href="/rate/list">评价列表</a></li>
+                        <li class="tabs-modify" style="display: none"><a href="/rate/handle">评价处理</a></li>
+                    </ul>
+
+                    <div class="box-body">
+                        <div class="search-body rate-list">
+                            <form method="post" action="/rate/list" class="search-form">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="input-group">
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-default">评价内容</button>
+                                        </div><!-- /btn-group -->
+                                        <input type="text" class="form-control" name='ratingText' value="" placeholder="评价内容">
+                                    </div>
+                                </div>
+                                <div class="col-xs-2">
+                                    <button type="submit" class="btn btn-success">搜索</button>
+                                </div>
+                            </div>
+                        </form>
+                        </div>
+                        <div class="col-md-3 overlay" id="refresh">
+                            <i class="fa fa-spinner fa-spin"></i>
+                        </div>
+                    </div>
+
+                    <div class="-box-content">
+
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+<?php include APP_PATH . '/views/'.strtolower(APP_NAME).'/include/foot.phtml'; ?>
+<script type="text/javascript" src="/js/wangEditor.js"></script>
+<script>
+    $(function () {
+        // 全选
+        $(".-box-content").on('click','#check-all', function () {
+            $('.id-checkbox').prop('checked', $(this).prop('checked'));
+        });
+
+        // 批量操作
+        $(".-box-content").on('click','#bulk-ajax',function () {
+            var self = $(this),
+                url = self.attr('url'),
+                select = $('.bulk-select option:selected'),
+                title = select.text(),
+                type = select.val(), idArr = [];
+            $('.id-checkbox:checked').each(function () {
+                idArr.push($(this).val());
+            });
+            if(isNaN(parseInt(type))){ // 批量删除
+                url = type;
+            }
+            if (!url) {alert('参数错误');return;}
+            if (0==type){alert('请选择批量操作方式');return;}
+            if (!idArr.length){alert('请选择要批量操作的对象');return;}
+            if(!title || !confirm('确认执行【'+title+'】')) return;
+            var ids = idArr.join(',');
+            $.post(url, {type:type,ids:ids},function (data) {
+                alert(data.msg);
+                if (data.code == 200){
+                    location.reload();
+                }
+            });
+        })
+
+        // 搜索
+        $('.search-form').submit(function () {
+            var self = $(this);
+            $('.-box-content').html('');
+            $('#refresh').show();
+            $.post(self.attr("action"), self.serialize(),function(data){
+                $('.-box-content').html(data);
+                $('#refresh').hide();
+                return false;
+            });
+            return false;
+        });
+
+        // 处理按钮操作
+        $(".-box-content").on('click','.btn-edit',function () {
+            var form = $(this).parent().find('.edit_form'),
+                formData = form.serialize(), action = form.attr('action'),
+                href = action+"?"+formData;
+            $(".tabs-modify").find("a").attr("href", href);
+            $(".tabs-modify").click().show();
+        });
+
+        // 表单提交
+        $(".-box-content").on('submit', '#modify_form', function () {
+            var self = $(this), url = self.attr('action'), postData = new FormData(self[0]);
+            if(url && postData){
+                $.ajax({
+                    url: url,
+                    type:'POST',
+                    cache:false,
+                    data: postData,
+                    processData:false,
+                    contentType:false
+                }).done(function (data) {
+                    if (data.code == 200){
+                        $(".nav-tabs-custom .nav-tabs li:first").click();
+                    } else{
+                        alert(data.msg);
+                    }
+                }).fail(function (data) {
+                    alert('请求失败');
+                });
+            }
+            return false;
+        });
+
+    })
+</script>

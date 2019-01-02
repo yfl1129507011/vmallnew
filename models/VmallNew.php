@@ -20,12 +20,14 @@ class VmallNewModel {
 
     /**
      * VmallNewModel constructor.
+     * @param null $sellId
      */
-    public function __construct()
+    public function __construct($sellId=null)
     {
         $this->apiUri = Config::get('Vmall.shopbridge.vmall_api_url');
-        $this->sellId = SELLER_ID;
+        $this->sellId = $sellId?$sellId:SELLER_ID;
         $this->baseUrl = $this->apiUri.$this->modules.$this->sellId;
+        $this->sellId = $sellId;
     }
 
     /**

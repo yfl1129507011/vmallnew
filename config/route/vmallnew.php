@@ -121,6 +121,55 @@ $routes['Goods'] = array(
         'match' => '#/cat/update$#',
         'map' => array(),
     ),
+
+    # 标签管理
+    'tag_index'=>array(
+        'match' => '#/tag$#',
+        'map' => array(),
+    ),
+    'tag_list'=>array(
+        'match' => '#/tag/list$#',
+        'map' => array(),
+    ),
+    'tag_modify'=>array(
+        'match' => '#/tag/modify$#',
+        'map' => array(),
+    ),
+    'tag_update'=>array(
+        'match' => '#/tag/update$#',
+        'map' => array(),
+    ),
+    'tag_del'=>array(
+        'match' => '#/tag/del$#',
+        'map' => array(),
+    ),
+
+    # 评价管理
+    'rate_index'=>array(
+        'match' => '#/rate$#',
+        'map' => array(),
+    ),
+    'rate_list'=>array(
+        'match' => '#/rate/list$#',
+        'map' => array(),
+    ),
+    'rate_del'=>array(
+        'match' => '#/rate/del$#',
+        'map' => array(),
+    ),
+    'rate_show'=>array(
+        'match' => '#/rate/show$#',
+        'map' => array(),
+    ),
+    'rate_handle'=>array(
+        'match' => '#/rate/handle$#',
+        'map' => array(),
+    ),
+    'rate_modify'=>array(
+        'match' => '#/rate/modify$#',
+        'map' => array(),
+    ),
+
 );
 
 

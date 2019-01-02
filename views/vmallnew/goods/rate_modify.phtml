@@ -1,0 +1,52 @@
+<div class="box-body">
+    <form id="modify_form" class="form-horizontal" action="/rate/handle" method="post" enctype="multipart/form-data">
+        <div class="box-body">
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label">会员昵称</label>
+                <div class="col-sm-5"><?=$data['nickName']?></div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label">评价内容</label>
+                <div class="col-sm-5"><?=$data['ratingText']?></div>
+            </div>
+            <div class="form-group">
+                <?php
+                $ratingType = array(
+                    '1'=>'好评',
+                    '2'=>'中评',
+                    '3'=>'差评',
+                );
+                ?>
+                <label for="" class="col-sm-2 control-label">评价等级</label>
+                <div class="col-sm-5"><img width="40" height="40" src="<?=$data['picUrl']?>">&nbsp;&nbsp;<?=$ratingType[$data['rating']]?></div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label">是否显示</label>
+                <div class="col-sm-10">
+                    <div class="checkbox">
+                        <label style="padding-left: 0;">
+                            <input <?php if($data['isShow']==true):?>checked<?php endif;?> value="2" checked name="show" type="radio"> 显示
+                        </label>
+                        <label>
+                            <input <?php if($data['isShow']==false):?>checked<?php endif;?> value="1" name="show" type="radio"> 隐藏
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label">回复评论</label>
+                <div class="col-sm-10">
+                    <textarea name="reply" value="<?=$data['sellerRatingText']?>" class="form-control"><?=$data['sellerRatingText']?></textarea>
+                </div>
+            </div>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+            <button type="submit" class="btn btn-primary">提交</button>
+            <?php if (!empty($data)):?>
+                <input type="hidden" name="id" value="<?=$data['id']?>">
+            <?php endif;?>
+        </div>
+        <!-- /.box-footer -->
+    </form>
+</div>
