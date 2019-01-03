@@ -1,0 +1,76 @@
+<div class="box-body">
+    <table id="example1" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>缩略图</th>
+                <th>是否启用</th>
+                <th>上传时间</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <?php if (!empty($results)):?>
+        <?php foreach ($results as $k=>$v):?>
+        <tr>
+            <td><?=$v['id']?></td>
+            <td><image class="pic" width="50" height="40" src="<?=$v['picUrl']?>"></td>
+            <td>
+                <label class="icheck-ajax reload_opt" opt_id="<?=$v['id']?>" field="<?=$v['picUrl']?>" url="poster/open" title="点击执行操作">
+                    <div class="icheckbox_flat-green <?=$v['open']?'checked':''?>" aria-checked="<?=$v['open']?1:2?>" aria-disabled="false" style="position: relative;">
+                        <input type="checkbox" class="flat-red" checked="" style="position: absolute; opacity: 0;">
+                        <ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
+                    </div>
+                </label>
+            </td>
+            <td><?=date('Y-m-d H:i:s',strtotime($v['gmtCreated']))?></td>
+            <td>
+                <div class="btn-group">
+                    <form action="/poster/modify" class="edit_form">
+                        <input type="hidden" name="open" value="<?=$v['open']?>">
+                        <input type="hidden" name="picUrl" value="<?=$v['picUrl']?>">
+                        <input type="hidden" name="id" value="<?=$v['id']?>">
+                    </form>
+                    <button type="button" class="btn btn-default btn-edit">重新上传</button>
+                    <?php if (!$v['open']):?>
+                    <button type="button" url="/poster/del?id=<?=$v['id']?>" class="btn btn-danger btn_del">删除</button>
+                    <?php endif;?>
+                </div>
+            </td>
+        </tr>
+        <?php endforeach;?>
+        <?php endif;?>
+    </table>
+</div>
+
+<div style="float: right;margin-right: 20px;">
+    <div class="dataTables_paginate paging_bootstrap">
+        <ul class="pagination" req_uri="<?=$req_uri?>">
+            <?php echo $page; ?>
+        </ul>
+    </div>
+</div>
+
+<!-- 批量设置弹窗模块 start -->
+<div class="modal fade input_dialog" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="form-group">
+                    <label for="" class="col-sm-2 control-label">请输入</label>
+                    <div class="col-sm-5">
+                        <input type="number" field="" pid="" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" url="/product/field" class="btn btn-primary" data-dismiss="modal">保存</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- 弹窗模块 end -->

@@ -533,6 +533,90 @@ class Vmallnew_GoodsController extends Vmallnew_BaseController{
     }
 ### 评价管理 END ###
 
+### 模板管理 START ###
+    public function poster_indexAction(){
+        $this->display();
+    }
+
+    # 海报模板列表
+    public function poster_listAction(){
+        $curPage = (int)$this->_request->get('page',1);
+        $data = array();
+        $data['curPage'] = $curPage;
+        $rate = new Admin_PosterModel();
+        $res = $rate->getPosters($data);
+        if (!$res) exit('获取数据失败');
+
+        $pageOptions = array(
+            'perPage' => 10,
+            'currentPage' => $curPage,
+            'curPageClass' => 'active',
+            'totalItems' => $res['count']
+        );
+
+        $this->_view->assign('page', Pager::makeLinks($pageOptions));
+        $this->_view->assign('results', $res['results']);
+        $this->display();
+    }
+
+    # 删除模板
+    public function poster_delAction(){
+        $id = (int)$this->_request->getRequest('id');
+        $returnArr = array();
+        $returnArr['code'] = 200;
+        if($id){
+            $poster = new Admin_PosterModel();
+            $res = $poster->posterDel($id);
+            if(!$res){
+                $returnArr['code'] = 401;
+                $returnArr['msg'] = '操作失败';
+            }else{
+                $returnArr['msg'] = '操作成功';
+            }
+        }
+        $this->ajaxReturn($returnArr);
+    }
+
+    # 是否启用模板
+    public function poster_openAction(){
+        $id = (int)$this->_request->getPost('opt_id');
+        $open = (int)$this->_request->getPost('type');
+        $picUrl  = trim($this->_request->getPost('field'));
+        $returnArr = $data = array();
+        $returnArr['code'] = 200;
+        if($id && $open && in_array($open,array(1,2)) && $picUrl){
+            $data['id'] = $id;
+            $data['open'] = ($open==1)?false:true;
+            $data['picUrl'] = $picUrl;
+            $poster = new Admin_PosterModel();
+            $res = $poster->editPoster($data);
+            if(!$res){
+                $returnArr['code'] = 401;
+                $returnArr['msg'] = '操作失败';
+            }else{
+                $returnArr['msg'] = '操作成功';
+            }
+        }
+        $this->ajaxReturn($returnArr);
+    }
+
+    # 模板添加与更新展示
+    public function poster_modifyAction(){
+        $data = $this->_request->getRequest();
+        if ($data) $this->_view->assign('data',$data);
+        $this->display();
+    }
+
+    # 处理添加或更新
+    public function poster_updateAction(){
+        $data = $this->_request->getPost();
+        $data['file_picUrl'] = $_FILES['picUrl'];
+        $poster = new Admin_PosterModel();
+        $res = $poster->modifyPoster($data);
+        $this->ajaxReturn($res);
+    }
+### 模板管理 END ###
+
 
 
 }

@@ -170,6 +170,32 @@ $routes['Goods'] = array(
         'map' => array(),
     ),
 
+    # 模板管理
+    'poster_index'=>array(
+        'match' => '#/poster$#',
+        'map' => array(),
+    ),
+    'poster_list'=>array(
+        'match' => '#/poster/list$#',
+        'map' => array(),
+    ),
+    'poster_del'=>array(
+        'match' => '#/poster/del$#',
+        'map' => array(),
+    ),
+    'poster_open'=>array(
+        'match' => '#/poster/open$#',
+        'map' => array(),
+    ),
+    'poster_modify'=>array(
+        'match' => '#/poster/modify$#',
+        'map' => array(),
+    ),
+    'poster_update'=>array(
+        'match' => '#/poster/update$#',
+        'map' => array(),
+    ),
+
 );
 
 

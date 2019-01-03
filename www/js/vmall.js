@@ -70,12 +70,16 @@ $(function () {
         if(field) postData.field = field;
         $.post(url,postData,function (data) {
             if (data.code==200){
-                if (type == 1) {
-                    icheck.removeClass('checked');
-                    icheck.attr('aria-checked', 2);
+                if(self.hasClass("reload_opt")) {
+                    location.reload();
                 }else{
-                    icheck.addClass('checked');
-                    icheck.attr('aria-checked', 1);
+                    if (type == 1) {
+                        icheck.removeClass('checked');
+                        icheck.attr('aria-checked', 2);
+                    } else {
+                        icheck.addClass('checked');
+                        icheck.attr('aria-checked', 1);
+                    }
                 }
             } else{
                 alert(data.msg);
