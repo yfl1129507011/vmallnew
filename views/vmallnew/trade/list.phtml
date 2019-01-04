@@ -1,0 +1,76 @@
+<div class="box-body">
+    <table id="example1" class="table table-bordered table-striped">
+        <?php if (!empty($results)):?>
+        <?php foreach ($results as $k=>$v):?>
+        <tr style="font-size: 11px;">
+            <td>订单号：<?=$v['tid']?></td>
+            <td>下单时间：<?=date('Y-m-d H:i:s',strtotime($v['gmtCreated']))?></td>
+            <td>收货人：<?=$v['name']?></td>
+            <td>手机：<?=$v['mobile']?></td>
+            <td>收货地址：<?=$v['state'].$v['city'].$v['district'].$v['address']?></td>
+        </tr>
+        <tr>
+            <?php if(count($v['orders'])>1):?>
+                <th colspan="2">
+                    <?php foreach($v['orders'] as $_k=>$_v):?>
+                    <?php if($_k>2){echo '...';break;}?>
+                    <?php if($_v['type']==2):?>
+                        <span style="color:#00a2e8;font-size:18px;">礼</span>
+                    <?php endif;?>
+                        <img height="40" src="<?=$_v['picUrl']?>" alt="">
+                    <?php endforeach;?>
+                </th>
+            <?php else:?>
+                <th>
+                <?php if($v['type']==2):?>
+                    <span style="color:#00a2e8;font-size:18px;">礼</span>
+                <?php endif;?>
+                <img height="40" src="<?=$v['orders'][0]['picUrl']?>" alt="">
+                </th>
+                <th><?=$v['orders'][0]['itemName']?></th>
+            <?php endif;?>
+            <th>¥<?=$v['payment']?$v['payment']:$v['totalFee']?></th>
+            <th><?=$v['statusArr'][0]?></th>
+            <th>
+                <div class="btn-group">
+                    <button type="button" url="/trade/detail/<?=$v['tid']?>" class="btn btn-default btn-edit">查看详情</button>
+                </div>
+            </th>
+        </tr>
+        <?php endforeach;?>
+        <?php endif;?>
+    </table>
+</div>
+
+<div style="float: right;margin-right: 20px;">
+    <div class="dataTables_paginate paging_bootstrap">
+        <ul class="pagination" req_uri="<?=$req_uri?>">
+            <?php echo $page; ?>
+        </ul>
+    </div>
+</div>
+
+<!-- 批量设置弹窗模块 start -->
+<div class="modal fade input_dialog" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="form-group">
+                    <label for="" class="col-sm-2 control-label">请输入</label>
+                    <div class="col-sm-5">
+                        <input type="number" field="" pid="" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" url="/product/field" class="btn btn-primary" data-dismiss="modal">保存</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- 弹窗模块 end -->

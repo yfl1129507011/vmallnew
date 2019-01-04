@@ -198,6 +198,23 @@ $routes['Goods'] = array(
 
 );
 
+$routes['Trade'] = array(
+    'index'=>array(
+        'match' => '#/trade$#',
+        'map' => array(),
+    ),
+    'list'=>array(
+        'match' => '#/trade/list$#',
+        'map' => array(),
+    ),
+    'detail'=>array(
+        'match' => '#/trade/detail/(\d+)$#',
+        'map' => array(
+            1 => 'tid',
+        ),
+    ),
+);
+
 
 # 格式化路由信息
 $conf['regex'] = [];

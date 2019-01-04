@@ -9,6 +9,11 @@ $(function () {
         self.addClass('active');
         $(".tabs-modify").hide();
         $('.search-body').hide();
+        if ($(".search-form").length) {
+            $(".search-form").each(function () {
+                $(this)[0].reset();
+            })
+        }
         if(search_class){
             $('.'+search_class).show();
         }

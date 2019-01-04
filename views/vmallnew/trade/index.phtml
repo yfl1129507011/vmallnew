@@ -1,0 +1,148 @@
+<?php include APP_PATH . '/views/'.strtolower(APP_NAME).'/include/head.phtml'; ?>
+<div class="content-wrapper">
+    <!-- Content Header (页眉) -->
+    <section class="content-header">
+        <h1>
+            订单
+            <small>订单管理</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-edit"></i> 订单</a></li>
+            <li class="active">订单管理</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs" finish-status="true">
+                        <li search-class="all_list"><a href="/trade/list">全部订单</a></li>
+                        <li search-class="other_list"><a href="/trade/list?status=1">待发货(<?=$tradeSum['1']?>)</a></li>
+                        <li search-class="other_list"><a href="/trade/list?status=100">退款/退货审核(<?=$tradeSum['100']?>)</a></li>
+                        <li search-class="other_list"><a href="/trade/list?status=102">退货待收货(<?=$tradeSum['102']?>)</a></li>
+                        <li search-class="other_list"><a href="/trade/list?status=103">待退款(<?=$tradeSum['103']?>)</a></li>
+                        <li class="tabs-modify" style="display: none"><a href="">订单详情</a></li>
+                    </ul>
+
+                    <div class="box-body">
+                        <div class="search-body all_list">
+                            <form method="post" action="" class="search-form">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <div class="input-group">
+                                            <div class="input-group-btn">
+                                                <button type="button" class="btn btn-default">订单号</button>
+                                            </div><!-- /btn-group -->
+                                            <input type="text" class="form-control" name='tid' value="" placeholder="订单号">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <div class="input-group">
+                                            <div class="input-group-btn">
+                                                <button type="button" class="btn btn-default">收货人</button>
+                                            </div><!-- /btn-group -->
+                                            <input type="text" class="form-control" name='buyerName' value="" placeholder="收货人">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <div class="input-group">
+                                            <div class="input-group-btn">
+                                                <button type="button" class="btn btn-default">订单状态</button>
+                                            </div><!-- /btn-group -->
+                                            <select class="form-control" name='status'>
+                                                <option value="0" selected>全部</option>
+                                                <?php if(!empty($orderStatus)):?>
+                                                    <?php foreach ($orderStatus as $k=>$v):?>
+                                                        <option value="<?=$k?>" ><?=$v?></option>
+                                                    <?php endforeach;?>
+                                                <?php endif;?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <button type="button" class="btn btn-success search_btn">搜索</button>
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <input type="submit" class="btn btn-default" name="export" value="数据导出">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="search-body other_list">
+                            <form method="post" action="" class="search-form">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <div class="input-group">
+                                            <div class="input-group-btn">
+                                                <button type="button" class="btn btn-default">订单号</button>
+                                            </div><!-- /btn-group -->
+                                            <input type="text" class="form-control" name='tid' value="" placeholder="订单号">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <div class="input-group">
+                                            <div class="input-group-btn">
+                                                <button type="button" class="btn btn-default">收货人</button>
+                                            </div><!-- /btn-group -->
+                                            <input type="text" class="form-control" name='buyerName' value="" placeholder="收货人">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <button type="button" class="btn btn-success search_btn">搜索</button>
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <input type="submit" class="btn btn-default" name="export" value="数据导出">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-3 overlay" id="refresh">
+                            <i class="fa fa-spinner fa-spin"></i>
+                        </div>
+                    </div>
+
+                    <div class="-box-content">
+
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+<?php include APP_PATH . '/views/'.strtolower(APP_NAME).'/include/foot.phtml'; ?>
+<script>
+    $(function () {
+        // 搜索
+        $('.search_btn').click(function () {
+            var form = $(this).parents('.search-form'), formData = form.serialize(),
+                url = $(".nav-tabs .active a").attr('href');
+            $('.-box-content').html('');
+            $('#refresh').show();
+            $.post(url, formData,function(data){
+                $('.-box-content').html(data);
+                $('#refresh').hide();
+                return false;
+            });
+            return false;
+        });
+
+        // 导出
+        $('.search-form').submit(function () {
+            var url = $(".nav-tabs .active a").attr('href');
+            $(this).attr('action',url);
+        });
+
+        // 查看详情
+        $(".-box-content").on('click','.btn-edit',function () {
+            var url = $(this).attr('url');
+            $(".tabs-modify").find("a").attr("href", url);
+            $(".tabs-modify").click().show();
+        });
+    })
+</script>

@@ -1,0 +1,131 @@
+<div class="box-body">
+    <div class="row">
+        <div class="col-xs-12 table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr class="label-primary">
+                        <th colspan="3">基本信息</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php if(!empty($data['base_info'])):?>
+                <?php foreach ($data['base_info'] as $k=>$v):?>
+                <tr>
+                    <?php foreach ($v as $_k=>$_v):?>
+                    <td><?=$_k?>：<?=$_v?></td>
+                    <?php endforeach;?>
+                </tr>
+                <?php endforeach;?>
+                <?php endif;?>
+                <?php if(!empty($data['opt'])):?>
+                <tr>
+                    <td colspan="3">
+                        <span class="text-body"><?=$data['opt']['key']?>：</span><button type="button" class="btn btn-success search_btn"><?=$data['opt']['val']?></button>
+                    </td>
+                </tr>
+                <?php endif;?>
+                </tbody>
+            </table>
+        </div>
+
+        <?php if(!empty($data['reson'])):?>
+        <div class="col-xs-12 table-responsive">
+            <table class="table table-striped">
+                <tr class="label-primary">
+                    <th>买家留言信息</th>
+                </tr>
+                <tr>
+                    <td><?=$data['reson']['key']?>：<?=$data['reson']['val']?></td>
+                </tr>
+            </table>
+        </div>
+        <?php endif;?>
+
+        <?php if(!empty($data['picUrlArr'])):?>
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <tr class="label-primary">
+                        <th>买家图片反馈信息</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <?php foreach ($data['picUrls'] as $_url):?>
+                                <img src="<?=$_url?>" alt="" width="100" >
+                            <?php endforeach;?>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        <?php endif;?>
+
+        <div class="col-xs-12 table-responsive">
+            <table class="table table-striped">
+                <thead>
+                <tr class="label-primary">
+                    <th colspan="3">收货人信息</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php if(!empty($data['to_info'])):?>
+                    <tr>
+                        <?php foreach ($data['to_info'] as $kk=>$vv):?>
+                            <td><?=$kk?>：<?=$vv?></td>
+                        <?php endforeach;?>
+                    </tr>
+                <?php endif;?>
+                </tbody>
+            </table>
+        </div>
+
+        <?php if(!empty($data['orders'])):?>
+        <div class="col-xs-12 table-responsive">
+            <table class="table table-striped">
+                <tr class="label-primary">
+                    <th colspan="5">商品信息</th>
+                </tr>
+                <tr>
+                    <th>商品ID</th>
+                    <th>商品名称</th>
+                    <th>售价</th>
+                    <th>数量</th>
+                    <th>总价</th>
+                </tr>
+                <?php foreach ($data['orders'] as $_info):?>
+                    <tr>
+                        <td><?=$_info['id']; ?></td>
+                        <td><?=$_info['itemName']; ?></td>
+                        <td><?=$_info['price']; ?></td>
+                        <td><?=$_info['num']; ?></td>
+                        <td><?=$_info['price'] * $_info['num'] . '元' ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+        </div>
+        <?php endif;?>
+    </div>
+</div>
+
+<!-- 批量设置弹窗模块 start -->
+<div class="modal fade input_dialog" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="form-group">
+                    <label for="" class="col-sm-2 control-label">请输入</label>
+                    <div class="col-sm-5">
+                        <input type="number" field="" pid="" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" url="/product/field" class="btn btn-primary" data-dismiss="modal">保存</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- 弹窗模块 end -->
