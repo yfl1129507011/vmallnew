@@ -213,6 +213,14 @@ $routes['Trade'] = array(
             1 => 'tid',
         ),
     ),
+    'delivery'=>array(
+        'match' => '#/trade/delivery$#',
+        'map' => array(),
+    ),
+    'check'=>array(
+        'match' => '#/trade/check#',
+        'map' => array(),
+    ),
 );
 
 

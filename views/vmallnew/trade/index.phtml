@@ -144,5 +144,102 @@
             $(".tabs-modify").find("a").attr("href", url);
             $(".tabs-modify").click().show();
         });
+
+        // 检测必填字段
+        function checkFormRequired(self) {
+            if(!self) return true;
+            var inx = 0;
+            self.find(".required_box").each(function () {
+                var self = $(this), input = self.find('input').length?self.find('input'):self.find('select');
+                var check = self.attr('check');
+                if(!input.val()){
+                    self.addClass("has-error");
+                    if (inx == 0) {
+                        input.focus();
+                        inx++;
+                    }
+                }else{
+                    if(check){
+                        var val = input.val();
+                        var is_check = true;
+                        switch (check) {
+                            case 'phone':
+                                if(!/^1[3-9]\d{9}$/.test(val)){
+                                    is_check = false;
+                                    inx++;
+                                }
+                                break;
+                            case 'money':
+                                var check_val = parseFloat(self.attr('check_val'));
+                                if(parseFloat(val) > check_val ) {
+                                    is_check = false;
+                                    inx++;
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                        if(is_check){
+                            self.find('.text-red').hide();
+                            self.removeClass("has-error");
+                        }else{
+                            self.find('.text-red').show();
+                            self.addClass("has-error");
+                        }
+                    }else {
+                        self.removeClass("has-error");
+                    }
+                }
+            });
+
+            return (inx==0)?true:false;
+        }
+
+        // 订单处理
+        $(".-box-content").on('click','.trade_opt',function () {
+            var text = $(this).text(), data_target = $(this).attr('data-target');
+            $(data_target).find('.modal-title').text(text);
+        });
+        $(".-box-content").on('click','.dialog_opt',function () {
+            var form = $(this).parents(".modal").find(".dialog_form");
+            if(!form.length || !checkFormRequired(form)) return false;
+            var self = $(this), url = self.attr('url'),
+                formData = form.serialize();
+            $.post(url,formData,function (data) {
+                if(data.code==200){
+                    self.parents('.modal').modal('hide');  // 去除弹窗
+                    $(".nav-tabs .active").removeClass("active").click().show();
+                }else{
+                    alert(data.msg);
+                }
+            })
+        });
+
+        // 是否同意退款
+        $(".-box-content").on('click','.afterdetail_dialog .checkbox input:radio',function () {
+            var val = $(this).val(),
+                change_box = $(this).parents('.afterdetail_dialog').find('.change_box');
+            change_box.find('.form-group').removeClass("has-error");
+            if(val==1){
+                change_box.show();
+                change_box.find('.form-group').addClass('required_box');
+            }else{
+                change_box.hide();
+                change_box.find('.form-group').removeClass('required_box');
+            }
+        });
+        $(".-box-content").on('change','.afterdetail_dialog .return_type',function () {
+            var show_class = $(this).find('option:checked').attr('show_class'),
+                slt_box =  $(this).parents('.afterdetail_dialog').find('.slt_box');
+            $(this).parents('.form-group').removeClass('has-error');
+            slt_box.hide();
+            slt_box.find('.form-group').removeClass('has-error');
+            slt_box.find('.form-group').removeClass('required_box');
+            if(show_class){
+                var show_cur = $(this).parents('.afterdetail_dialog').find(show_class);
+                show_cur.show();
+                show_cur.find('.form-group').addClass('required_box');
+            }
+        });
     })
 </script>

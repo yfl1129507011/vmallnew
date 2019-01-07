@@ -20,7 +20,8 @@
                 <?php if(!empty($data['opt'])):?>
                 <tr>
                     <td colspan="3">
-                        <span class="text-body"><?=$data['opt']['key']?>：</span><button type="button" class="btn btn-success search_btn"><?=$data['opt']['val']?></button>
+                        <span class="text-body"><?=$data['opt']['key']?>：</span>
+                        <button data-toggle="modal" data-target="<?=$data['opt']['data-target']?>" type="button" class="btn btn-success trade_opt"><?=$data['opt']['val']?></button>
                     </td>
                 </tr>
                 <?php endif;?>
@@ -49,11 +50,27 @@
                     </tr>
                     <tr>
                         <td>
-                            <?php foreach ($data['picUrls'] as $_url):?>
+                            <?php foreach ($data['picUrlArr'] as $_url):?>
                                 <img src="<?=$_url?>" alt="" width="100" >
                             <?php endforeach;?>
                         </td>
                     </tr>
+                </table>
+            </div>
+        <?php endif;?>
+        <?php if(!empty($data['return_info'])):?>
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <tr class="label-primary">
+                        <th>退货收货人信息</th>
+                    </tr>
+                    <?php if(!empty($data['return_info'])):?>
+                        <tr>
+                            <?php foreach ($data['return_info'] as $r_kk=>$r_vv):?>
+                                <td><?=$r_kk?>：<?=$r_vv?></td>
+                            <?php endforeach;?>
+                        </tr>
+                    <?php endif;?>
                 </table>
             </div>
         <?php endif;?>
@@ -105,8 +122,9 @@
     </div>
 </div>
 
+
 <!-- 批量设置弹窗模块 start -->
-<div class="modal fade input_dialog" tabindex="-1" role="dialog">
+<div class="modal delivery_dialog" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -114,18 +132,149 @@
                 <h4 class="modal-title">Modal title</h4>
             </div>
             <div class="modal-body form-horizontal">
-                <div class="form-group">
-                    <label for="" class="col-sm-2 control-label">请输入</label>
-                    <div class="col-sm-5">
-                        <input type="number" field="" pid="" class="form-control">
+                <table class="table table-striped">
+                    <thead>
+                    <tr class="label-primary">
+                        <th colspan="2">收货人信息</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php if(!empty($data['to_info'])):?>
+                        <?php foreach ($data['to_info'] as $kk=>$vv):?>
+                        <tr>
+                            <td align="right"><?=$kk?>：</td><td><?=$vv?></td>
+                        </tr>
+                        <?php endforeach;?>
+                    <?php endif;?>
+                    </tbody>
+                </table>
+                <form action="" class="dialog_form">
+                    <div class="form-group required_box">
+                        <label for="" class="col-sm-4 control-label">物流公司</label>
+                        <div class="col-sm-5">
+                            <select class="form-control" name="logistics">
+                                <option value="">请选择</option>
+                                <?php if(!empty($logisticsCompanyInfo)):?>
+                                    <?php foreach ($logisticsCompanyInfo as $_key=>$_val):?>
+                                        <option
+                                            <?php if($data['trade_opt_info']['logisticsCompany'] == $_key):?>
+                                                selected
+                                            <?php endif;?>
+                                                value="<?=$_key.'-'.$_val?>"><?=$_val?>
+                                        </option>
+                                    <?php endforeach;?>
+                                <?php endif;?>
+                            </select>
+                        </div>
                     </div>
-                </div>
+                    <div class="form-group required_box">
+                        <label for="" class="col-sm-4 control-label">运单号</label>
+                        <div class="col-sm-5">
+                            <input name="invoiceNo" type="text" maxlength="40" class="form-control" value="<?=$data['trade_opt_info']['invoiceNo']?>">
+                        </div>
+                    </div>
+                    <input type="hidden" name="tid" value="<?=$data['trade_opt_info']['tid']?>">
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" url="/product/field" class="btn btn-primary" data-dismiss="modal">保存</button>
+                <button type="button" url="/trade/delivery" class="btn btn-primary dialog_opt">确认</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <!-- 弹窗模块 end -->
+
+<div class="modal afterdetail_dialog" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <table class="table table-striped">
+                    <thead>
+                    <tr class="label-primary">
+                        <th colspan="2">收货人信息</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php if(!empty($data['to_info'])):?>
+                        <?php foreach ($data['to_info'] as $kk=>$vv):?>
+                            <tr>
+                                <td align="right"><?=$kk?>：</td><td><?=$vv?></td>
+                            </tr>
+                        <?php endforeach;?>
+                    <?php endif;?>
+                    </tbody>
+                </table>
+                <form action="" class="dialog_form">
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">是否同意退款</label>
+                        <div class="col-sm-6">
+                            <div class="checkbox">
+                                <label style="padding-left: 0;">
+                                    <input value="1" checked name="aggree" type="radio"> 是
+                                </label>
+                                <label>
+                                    <input value="0" name="aggree" type="radio"> 否
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="change_box">
+                        <div class="form-group required_box">
+                            <label for="" class="col-sm-4 control-label">退货类型</label>
+                            <div class="col-sm-5">
+                                <select class="form-control return_type" name="return_type">
+                                    <option value="">请选择</option>
+                                    <option value="1">发货中途追回</option>
+                                    <option show_class=".yshjh_slt" value="2">已收货寄回</option>
+                                    <option show_class=".wfhtk_slt" value="3">未发货退款</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="slt_box yshjh_slt" style="display: none">
+                            <div class="form-group">
+                                <label for="" class="col-sm-4 control-label">退货收货人</label>
+                                <div class="col-sm-5">
+                                    <input name="returnReceiverName" type="text" maxlength="10" class="form-control" value="">
+                                </div>
+                            </div>
+                            <div class="form-group" check="phone">
+                                <label for="" class="col-sm-4 control-label">退货收货电话</label>
+                                <div class="col-sm-5">
+                                    <input name="receiverPhone" type="number" maxlength="11" class="form-control" value="">
+                                </div>
+                                <label style="display: none" class="text-red control-label">电话格式不正确</label>
+                            </div>
+                            <div class="form-group">
+                                <label for="" class="col-sm-4 control-label">退货地址</label>
+                                <div class="col-sm-5">
+                                    <input name="returnAddress" type="text" maxlength="150" class="form-control" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slt_box wfhtk_slt" style="display: none">
+                            <div class="form-group" check="money" check_val="<?=$data['trade_opt_info']['payment']?>">
+                                <label for="" class="col-sm-4 control-label">同意退款金额</label>
+                                <div class="col-sm-5">
+                                    <input name="refundAmount" type="text" maxlength="40" class="form-control" value="">
+                                </div>
+                                <label class="text-yellow control-label">订单金额：<?=$data['trade_opt_info']['payment']?></label>
+                                <label class="text-red control-label" style="display: none">退款金额有误</label>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="tid" value="<?=$data['trade_opt_info']['tid']?>">
+                    <input type="hidden" name="refundAmount_check" value="<?=$data['trade_opt_info']['payment']?>">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" url="/trade/check" class="btn btn-primary dialog_opt">确认</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>

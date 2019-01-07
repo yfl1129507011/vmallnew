@@ -77,9 +77,41 @@ class Vmallnew_TradeController extends Vmallnew_BaseController{
             $res = $this->tradeClient->getDetailInfo($tid);
             //echo '<pre>';print_r($res);die;
             if(!$res) exit('获取数据失败');
+            $this->_view->assign('logisticsCompanyInfo', $this->tradeClient->logisticsCompanyInfo);
             $this->_view->assign('data', $res);
             $this->display();
         }
+    }
+
+    # 订单发货
+    public function deliveryAction(){
+        $tid = trim($this->_request->getPost('tid'));
+        $logistics = trim($this->_request->getPost('logistics'));
+        $invoiceNo = trim($this->_request->getPost('invoiceNo'));
+        $returnData = array();
+        $returnData['code'] = 200;
+        if($tid && $logistics && $invoiceNo) {
+            $logisticsInfo = array();
+            $logistics = explode('-', $logistics);
+            $logisticsInfo['invoiceNo'] = $invoiceNo;
+            $logisticsInfo['logisticsCompany'] = $logistics[0];
+            $logisticsInfo['logisticsCompanyCn'] = $logistics[1];
+            $res = $this->tradeClient->tradeDelivery($tid,$logisticsInfo);
+            if($res){
+                $returnData['msg'] = '操作成功';
+            }else{
+                $returnData['code'] = 400;
+                $returnData['msg'] = '操作失败';
+            }
+        }
+        $this->ajaxReturn($returnData);
+    }
+
+    # 订单退款/售后审核
+    public function checkAction(){
+        $data = $this->_request->getRequest();
+        $res = $this->tradeClient->tradeCheck($data);
+        $this->ajaxReturn($res);
     }
 
 }
