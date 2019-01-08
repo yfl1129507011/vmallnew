@@ -147,51 +147,20 @@
             return (inx==0)?true:false;
         }
 
-        // 订单弹窗和处理操作
-        $(".-box-content").on('click','.trade_opt',function () {
-            var text = $(this).text(), data_target = $(this).attr('data-target');
-            $(data_target).find('.modal-title').text(text);
+        // 添加规格值
+        $(".-box-content").on('click','.add_btn',function () {
+            var form_group = $(this).parents('.form-group'),
+                form_group_new = form_group.clone(true),
+                btn_new = form_group_new.find('.btn');
+            form_group_new.find('input').val('');
+            form_group.after(form_group_new);
+            btn_new.removeClass('add_btn').addClass('del_btn');
+            btn_new.find('i').removeClass('fa-plus').addClass('fa-minus').text('删除规格值');
+            form_group_new.find('.one_label').remove();
         });
-        $(".-box-content").on('click','.dialog_opt',function () {
-            var form = $(this).parents(".modal").find(".dialog_form");
-            if(!form.length || !checkFormRequired(form)) return false;
-            var self = $(this), url = self.attr('url'),
-                formData = form.serialize();
-            $.post(url,formData,function (data) {
-                if(data.code==200){
-                    self.parents('.modal').modal('hide');  // 去除弹窗
-                    $(".nav-tabs .active").removeClass("active").click().show();
-                }else{
-                    alert(data.msg);
-                }
-            })
-        });
-
-        // 是否同意退款
-        $(".-box-content").on('click','.afterdetail_dialog .checkbox input:radio',function () {
-            var val = $(this).val(),
-                change_box = $(this).parents('.afterdetail_dialog').find('.change_box');
-            change_box.find('.form-group').removeClass("has-error");
-            if(val==1){
-                change_box.show();
-                change_box.find('.form-group').addClass('required_box');
-            }else{
-                change_box.hide();
-                change_box.find('.form-group').removeClass('required_box');
-            }
-        });
-        $(".-box-content").on('change','.afterdetail_dialog .return_type',function () {
-            var show_class = $(this).find('option:checked').attr('show_class'),
-                slt_box =  $(this).parents('.afterdetail_dialog').find('.slt_box');
-            $(this).parents('.form-group').removeClass('has-error');
-            slt_box.hide();
-            slt_box.find('.form-group').removeClass('has-error');
-            slt_box.find('.form-group').removeClass('required_box');
-            if(show_class){
-                var show_cur = $(this).parents('.afterdetail_dialog').find(show_class);
-                show_cur.show();
-                show_cur.find('.form-group').addClass('required_box');
-            }
+        // 删除规格值
+        $(".-box-content").on('click','.del_btn',function () {
+            $(this).parents('.form-group').remove();
         });
     })
 </script>

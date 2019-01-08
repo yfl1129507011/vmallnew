@@ -2,18 +2,18 @@
 <div class="box-body">
     <div class="form-horizontal">
         <div class="form-group required_box">
-            <label for="" class="col-sm-3 control-label">折扣名称</label>
+            <label for="" class="col-sm-2 control-label">折扣名称</label>
             <div class="col-sm-3">
                 <input value="<?=$data['name']?>" type="text" name="name" maxlength="6" class="form-control" id="" placeholder="折扣名称">
             </div>
             <label class="control-label" data-toggle="tooltip" title="" data-original-title="名称长度不可超过6个字符"><i class="fa fa-info-circle"></i></label>
         </div>
         <div class="form-group required_box">
-            <label for="" class="col-sm-3 control-label">折扣</label>
-            <div class="col-sm-3">
-                <input type="number" name="name" class="form-control" id="" placeholder="折扣值范围(1~10)">
+            <label for="" class="col-sm-2 control-label">折扣</label>
+            <div class="col-sm-2">
+                <input type="number" name="name" class="form-control" id="" placeholder="值范围(1~10)">
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-2">
                 <select class="form-control" name="cid">
                     <option value="">选择会员等级</option>
                     <option value="179_">厨房用品</option>
@@ -22,7 +22,10 @@
                     <option value="178_">jim</option>
                 </select>
             </div>
-            <label class="control-label" data-toggle="tooltip" title="" data-original-title="低等级折扣兼顾高等级会员价，即设置折扣后高于该等级会员都将会有折扣"><i class="fa fa-info-circle"></i></label>
+            <label class="control-label one_label" data-toggle="tooltip" title="" data-original-title="低等级折扣兼顾高等级会员价，即设置折扣后高于该等级会员都将会有折扣"><i class="fa fa-info-circle"></i></label>
+            <div class="col-sm-2">
+                <button type="button" class="btn btn-default add_btn"><i class="fa fa-plus">添加规格值</i></button>
+            </div>
         </div>
     </div>
 </div>
