@@ -227,6 +227,20 @@ $routes['Trade'] = array(
     ),
 );
 
+$routes['Sales'] = array(
+    'crm_index'=>array(
+        'match' => '#/crm$#',
+        'map' => array(),
+    ),
+    'crm_list'=>array(
+        'match' => '#/crm/list$#',
+        'map' => array(),
+    ),
+    'crm_modify'=>array(
+        'match' => '#/crm/modify$#',
+        'map' => array(),
+    ),
+);
 
 # 格式化路由信息
 $conf['regex'] = [];

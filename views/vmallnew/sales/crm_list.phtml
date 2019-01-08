@@ -1,0 +1,73 @@
+<div class="box-body">
+    <table id="example1" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>折扣名称</th>
+                <th>最大折扣</th>
+                <th>最小折扣</th>
+                <th>添加时间</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <?php if (!empty($results)):?>
+        <?php foreach ($results as $k=>$v):?>
+        <tr>
+            <td><?=$v['id']?></td>
+            <td title="<?=$v['name']?>"><?=$v['name']?></td>
+            <td><?=$v['discount_max'][2]*10?>（<?=$v['discount_max'][1]?>）</td>
+            <td><?=$v['discount_min'][2]*10?>（<?=$v['discount_min'][1]?>）</td>
+            <td><?=date('Y-m-d H:i:s', strtotime($v['gmtCreated']))?></td>
+            <td>
+                <div class="btn-group">
+                    <form action="/cat/modify" class="edit_form">
+                        <input type="hidden" name="name" value="<?=$v['name']?>">
+                        <input type="hidden" name="icon" value="<?=$v['icon']?>">
+                        <input type="hidden" name="order" value="<?=$v['order']?>">
+                        <input type="hidden" name="hot" value="<?=$v['hot']?>">
+                        <input type="hidden" name="status" value="<?=$v['status']?>">
+                        <input type="hidden" name="parentCid" value="<?=$v['parentCid']?>">
+                        <input type="hidden" name="id" value="<?=$v['id']?>">
+                    </form>
+                    <button type="button" class="btn btn-default btn-edit">编辑</button>
+                    <button type="button" url="/cat/del?id=<?=$v['id']?>" class="btn btn-danger btn_del">删除</button>
+                </div>
+            </td>
+        </tr>
+        <?php endforeach;?>
+        <?php endif;?>
+    </table>
+</div>
+
+<div style="float: right;margin-right: 20px;">
+    <div class="dataTables_paginate paging_bootstrap">
+        <ul class="pagination" req_uri="<?=$req_uri?>">
+            <?php echo $page; ?>
+        </ul>
+    </div>
+</div>
+
+<!-- 批量设置弹窗模块 start -->
+<div class="modal fade input_dialog" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="form-group">
+                    <label for="" class="col-sm-2 control-label">请输入</label>
+                    <div class="col-sm-5">
+                        <input type="number" field="" pid="" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" url="/product/field" class="btn btn-primary" data-dismiss="modal">保存</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- 弹窗模块 end -->

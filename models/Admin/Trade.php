@@ -123,7 +123,7 @@ class Admin_TradeModel extends VmallNewModel{
         $orderRes = $this->getTrade(array('tid'=>$tid));
         if(!$orderRes) return false;
         $orderInfo = $orderRes['results'][0];
-//echo '<pre>';print_r($orderInfo);die;
+
         if(!empty($orderInfo['refundId'])) {
             $refundRes = $this->getRefundInfo($tid);
             $refundInfo = $refundRes['results'];
@@ -237,7 +237,7 @@ class Admin_TradeModel extends VmallNewModel{
                 $data['opt'] = array(
                     'key'=>'可执行操作',
                     'val'=>'退款',
-                    'data-target'=>'.refundetail_dialog',
+                    'data-target'=>'.return_dialog',
                 );
                 break;
             case 'refunds':  # 已退款
@@ -319,12 +319,13 @@ class Admin_TradeModel extends VmallNewModel{
             'invoiceNo' => $orderInfo['invoiceNo'],
             'logisticsCompany' => $orderInfo['logisticsCompany'],
             'tid' => $orderInfo['tid'],
+            'tplStatus' => $tplStatus,
         );
         if(!empty($orderInfo['payment'])){
             $data['trade_opt_info']['payment'] = $orderInfo['payment'];
         }
         if (!empty($refundInfo['aggreeRefundFee'])){
-            $data['trade_opt_info']['payment'] = $refundInfo['aggreeRefundFee'];
+            $data['trade_opt_info']['aggreeRefundFee'] = $refundInfo['aggreeRefundFee'];
         }
 
         return $data;
@@ -340,7 +341,7 @@ class Admin_TradeModel extends VmallNewModel{
         if(empty($tid) || empty($body)) return false;
         $url = $this->getUrl('/'.$tid.'/delivery');
         $res = $this->curl($url,'put', $body);
-        return $this->checkApiResult($res,$url);
+        return $this->checkApiResult($res,$url,$body);
     }
 
     /**
@@ -353,7 +354,7 @@ class Admin_TradeModel extends VmallNewModel{
         if(empty($tid) || empty($body)) return false;
         $url = $this->getUrl('/'.$tid.'/return-check');
         $res = $this->curl($url,'put', $body);
-        return $this->checkApiResult($res,$url);
+        return $this->checkApiResult($res,$url,$body);
     }
 
     /**

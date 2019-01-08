@@ -63,15 +63,20 @@ class VmallNewModel {
     /**
      * @param $result
      * @param $url
+     * @param array $reqData
      * @return array|bool
      * 检测数据接口的结果
      */
-    protected function checkApiResult($result, $url){
+    protected function checkApiResult($result, $url, array $reqData=array()){
         if($result) {
             if ($result['success'] == true || $result['code'] == 200) {
                 return $result;
             } else {
-                Logger::error("[{$url}]请求错误信息：" . $result['message']);
+                $errMsg = "[{$url}]请求错误信息：" . $result['message'];
+                if($reqData){
+                    $errMsg .= '请求数据：'.var_export($reqData,true);
+                }
+                Logger::error($errMsg);
             }
         }
         return false;
