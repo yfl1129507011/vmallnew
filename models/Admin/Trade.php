@@ -219,7 +219,8 @@ class Admin_TradeModel extends VmallNewModel{
                 $data['base_info'] = $_baseData;
                 $data['opt'] = array(
                     'key'=>'可执行操作',
-                    'val'=>'确认收到退货'
+                    'val'=>'确认收到退货',
+                    'data-target'=>'.return_dialog',
                 );
                 break;
             case 'refundetail': # 退款
@@ -235,7 +236,8 @@ class Admin_TradeModel extends VmallNewModel{
                 $data['base_info'] = $_baseData;
                 $data['opt'] = array(
                     'key'=>'可执行操作',
-                    'val'=>'退款'
+                    'val'=>'退款',
+                    'data-target'=>'.refundetail_dialog',
                 );
                 break;
             case 'refunds':  # 已退款
@@ -321,6 +323,9 @@ class Admin_TradeModel extends VmallNewModel{
         if(!empty($orderInfo['payment'])){
             $data['trade_opt_info']['payment'] = $orderInfo['payment'];
         }
+        if (!empty($refundInfo['aggreeRefundFee'])){
+            $data['trade_opt_info']['payment'] = $refundInfo['aggreeRefundFee'];
+        }
 
         return $data;
     }
@@ -351,6 +356,10 @@ class Admin_TradeModel extends VmallNewModel{
         return $this->checkApiResult($res,$url);
     }
 
+    /**
+     * @param array $data
+     * @return array
+     */
     public function tradeCheck(array $data){
         $returnData = $optData = array();
         $returnData['code'] = 200;
@@ -403,6 +412,27 @@ class Admin_TradeModel extends VmallNewModel{
             }
         }
         return $returnData;
+    }
+
+    /**
+     * @param $tid
+     * @param array $query
+     * @return array|bool
+     * 售后确认收到退货
+     */
+    public function returnGoodConfirm($tid, array $query){
+        if (empty($tid) || empty($query)) return false;
+        $url = $this->getUrl('/'.$tid.'/return-good-confirm',$query);
+        $res = $this->curl($url,'put');
+        return $this->checkApiResult($res,$url);
+    }
+
+    # 订单退款
+    public function tradeRefund($tid, array $query){
+        if (empty($tid) || empty($query)) return false;
+        $url = $this->getUrl('/'.$tid.'/refund',$query);
+        $res = $this->curl($url,'put');
+        return $this->checkApiResult($res,$url);
     }
 
     /**

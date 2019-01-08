@@ -114,4 +114,34 @@ class Vmallnew_TradeController extends Vmallnew_BaseController{
         $this->ajaxReturn($res);
     }
 
+    # 售后确认收到退货
+    public function confirmAction(){
+        $tid = trim($this->_request->getPost('tid'));
+        $refundAmount = (float)$this->_request->getPost('refundAmount');
+        $refundAmountCheck = (float)$this->_request->getPost('refundAmountCheck');
+        $aggreeRefund = (int)$this->_request->getPost('aggreeRefund');
+        $returnData = $data = array();
+        $returnData['code'] = 200;
+        if ($tid && $refundAmount){
+            if ($refundAmount>$refundAmountCheck){
+                $returnData['code'] = 401;
+                $returnData['msg'] = '退款金额有误';
+            }
+            $data['refundAmount'] = sprintf('%2f',$refundAmount);
+            if($aggreeRefund == 1){
+                $data['aggreeRefund'] = true;
+                $res = $this->tradeClient->tradeRefund($tid, $data);
+            }else {
+                $res = $this->tradeClient->returnGoodConfirm($tid, $data);
+            }
+            if($res){
+                $returnData['msg'] = '操作成功';
+            }else{
+                $returnData['code'] = 400;
+                $returnData['msg'] = '操作失败';
+            }
+        }
+        $this->ajaxReturn($returnData);
+    }
+
 }

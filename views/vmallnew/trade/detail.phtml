@@ -123,7 +123,7 @@
 </div>
 
 
-<!-- 批量设置弹窗模块 start -->
+<!-- 发货相关弹窗模块 start -->
 <div class="modal delivery_dialog" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -182,9 +182,8 @@
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- 弹窗模块 end -->
-
+</div>
+<!-- 退款相关弹窗模块 start -->
 <div class="modal afterdetail_dialog" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -274,6 +273,102 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                 <button type="button" url="/trade/check" class="btn btn-primary dialog_opt">确认</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- 确认退货相关弹窗模块 start -->
+<div class="modal return_dialog" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <table class="table table-striped">
+                    <thead>
+                    <tr class="label-primary">
+                        <th colspan="2">收货人信息</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php if(!empty($data['to_info'])):?>
+                        <?php foreach ($data['to_info'] as $kk=>$vv):?>
+                            <tr>
+                                <td align="right"><?=$kk?>：</td><td><?=$vv?></td>
+                            </tr>
+                        <?php endforeach;?>
+                    <?php endif;?>
+                    </tbody>
+                </table>
+                <form action="" class="dialog_form">
+                    <div class="form-group required_box" check="money" check_val="<?=$data['trade_opt_info']['payment']?>">
+                        <label for="" class="col-sm-4 control-label">同意退款金额</label>
+                        <div class="col-sm-5">
+                            <input name="refundAmount" type="text" maxlength="40" class="form-control" value="">
+                        </div>
+                        <label class="text-yellow control-label">订单金额：<?=$data['trade_opt_info']['payment']?></label>
+                        <label class="text-red control-label" style="display: none">退款金额有误</label>
+                    </div>
+                    <input type="hidden" name="tid" value="<?=$data['trade_opt_info']['tid']?>">
+                    <input type="hidden" name="refundAmount_check" value="<?=$data['trade_opt_info']['payment']?>">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" url="/trade/confirm" class="btn btn-primary dialog_opt">确认</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- 确认退款相关弹窗模块 start -->
+<div class="modal refundetail_dialog" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <table class="table table-striped">
+                    <thead>
+                    <tr class="label-primary">
+                        <th colspan="2">收货人信息</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php if(!empty($data['to_info'])):?>
+                        <?php foreach ($data['to_info'] as $kk=>$vv):?>
+                            <tr>
+                                <td align="right"><?=$kk?>：</td><td><?=$vv?></td>
+                            </tr>
+                        <?php endforeach;?>
+                    <?php endif;?>
+                    </tbody>
+                </table>
+                <form action="" class="dialog_form">
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">待退款金额</label>
+                        <div class="col-sm-1"></div>
+                        <label class="text-yellow control-label"><?=$data['trade_opt_info']['payment']?>元</label>
+                    </div>
+                    <div class="form-group required_box" check="money" check_val="<?=$data['trade_opt_info']['payment']?>">
+                        <label for="" class="col-sm-4 control-label">同意退款金额</label>
+                        <div class="col-sm-5">
+                            <input name="refundAmount" type="text" maxlength="40" class="form-control" value="">
+                        </div>
+                        <label class="text-yellow control-label">订单金额：<?=$data['trade_opt_info']['payment']?></label>
+                        <label class="text-red control-label" style="display: none">退款金额有误</label>
+                    </div>
+                    <input type="hidden" name="tid" value="<?=$data['trade_opt_info']['tid']?>">
+                    <input type="hidden" name="aggreeRefund" value="1">
+                    <input type="hidden" name="refundAmount_check" value="<?=$data['trade_opt_info']['payment']?>">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" url="/trade/confirm" class="btn btn-primary dialog_opt">确认</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

@@ -221,6 +221,10 @@ $routes['Trade'] = array(
         'match' => '#/trade/check#',
         'map' => array(),
     ),
+    'confirm'=>array(
+        'match' => '#/trade/confirm#',
+        'map' => array(),
+    ),
 );
 
 

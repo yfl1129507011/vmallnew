@@ -195,7 +195,7 @@
             return (inx==0)?true:false;
         }
 
-        // 订单处理
+        // 订单弹窗和处理操作
         $(".-box-content").on('click','.trade_opt',function () {
             var text = $(this).text(), data_target = $(this).attr('data-target');
             $(data_target).find('.modal-title').text(text);
