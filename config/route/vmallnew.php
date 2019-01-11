@@ -240,6 +240,12 @@ $routes['Sales'] = array(
         'match' => '#/crm/modify$#',
         'map' => array(),
     ),
+    'crm_discount'=>array(
+        'match' => '#/crm/discount/(\d*)$#',
+        'map' => array(
+            1 => 'id',
+        ),
+    ),
 );
 
 # 格式化路由信息

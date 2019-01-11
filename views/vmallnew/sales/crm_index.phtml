@@ -153,9 +153,10 @@
                 form_group_new = form_group.clone(true),
                 btn_new = form_group_new.find('.btn');
             form_group_new.find('input').val('');
-            form_group.after(form_group_new);
+            form_group.parent().append(form_group_new);
+            form_group_new.find('.control-label').html('');
             btn_new.removeClass('add_btn').addClass('del_btn');
-            btn_new.find('i').removeClass('fa-plus').addClass('fa-minus').text('删除规格值');
+            btn_new.find('i').removeClass('fa-plus').addClass('fa-minus').text('移除折扣');
             form_group_new.find('.one_label').remove();
         });
         // 删除规格值

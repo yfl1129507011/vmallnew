@@ -8,6 +8,11 @@
 class Admin_CrmDiscountModel extends VmallNewModel{
     protected $cls = '/crm-discount';
 
+    /**
+     * @param array $data
+     * @return array
+     * 格式化数据
+     */
     private function formatList(array $data){
         if (empty($data) || empty($data['results']) || !is_array($data['results'])) return $data;
         $results = $data['results'];
@@ -30,6 +35,11 @@ class Admin_CrmDiscountModel extends VmallNewModel{
         return $data;
     }
 
+    /**
+     * @param array $query
+     * @return array|bool
+     * 获取会员折扣列表
+     */
     public function getList(array $query){
         $url = $this->getV2Url('',$query);
         $res = $this->curl($url);
@@ -37,5 +47,18 @@ class Admin_CrmDiscountModel extends VmallNewModel{
             return $this->formatList($res);
         }
         return false;
+    }
+
+    /**
+     * @param null $id
+     * @param array $query
+     * 获取折扣和非折扣商品信息
+     * @return array|bool
+     */
+    public function getDiscount($id=null, array $query=array()){
+        $module = empty($id)?'/items':'/'.$id.'/items';
+        $url = $this->getV2Url($module, $query);
+        $res = $this->curl($url);
+        return $this->checkApiResult($res, $url);
     }
 }

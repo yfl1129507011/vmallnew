@@ -1,0 +1,38 @@
+<table id="example1" class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>折扣名称</th>
+        <th>最大折扣</th>
+        <th>最小折扣</th>
+        <th>添加时间</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <?php if (!empty($results)):?>
+        <?php foreach ($results as $k=>$v):?>
+            <tr>
+                <td><?=$v['id']?></td>
+                <td title="<?=$v['name']?>"><?=$v['name']?></td>
+                <td><?=$v['discount_max'][2]*10?>（<?=$v['discount_max'][1]?>）</td>
+                <td><?=$v['discount_min'][2]*10?>（<?=$v['discount_min'][1]?>）</td>
+                <td><?=date('Y-m-d H:i:s', strtotime($v['gmtCreated']))?></td>
+                <td>
+                    <div class="btn-group">
+                        <form action="/cat/modify" class="edit_form">
+                            <input type="hidden" name="name" value="<?=$v['name']?>">
+                            <input type="hidden" name="icon" value="<?=$v['icon']?>">
+                            <input type="hidden" name="order" value="<?=$v['order']?>">
+                            <input type="hidden" name="hot" value="<?=$v['hot']?>">
+                            <input type="hidden" name="status" value="<?=$v['status']?>">
+                            <input type="hidden" name="parentCid" value="<?=$v['parentCid']?>">
+                            <input type="hidden" name="id" value="<?=$v['id']?>">
+                        </form>
+                        <button type="button" class="btn btn-default btn-edit">编辑</button>
+                        <button type="button" url="/cat/del?id=<?=$v['id']?>" class="btn btn-danger btn_del">删除</button>
+                    </div>
+                </td>
+            </tr>
+        <?php endforeach;?>
+    <?php endif;?>
+</table>
