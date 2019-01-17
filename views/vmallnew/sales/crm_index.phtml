@@ -84,13 +84,52 @@
             return false;
         });
 
-        // 导出
-        $('.search-form').submit(function () {
-            var url = $(".nav-tabs .active a").attr('href');
-            $(this).attr('action',url);
+        // 表单提交
+        $(".-box-content").on('click', '.modify_btn', function () {
+            var fromObj = $("#modify_form");
+            if(checkFormRequired(fromObj)){
+                var idArr = [], items_yes = $("input[name=items_yes]").val(),
+                    items = '';
+                $('.id-checkbox:checked').each(function () {
+                    idArr.push($(this).val());
+                });
+                items = items_yes;
+                if(items){
+                    if(idArr.length){
+                        items += ','+idArr.join(',');
+                    }
+                }else {
+                    if (!idArr.length) {
+                        alert('请选择商品！');
+                        return false;
+                    }
+                    items = idArr.join(',');
+                }
+                var url = fromObj.attr('action'), postData = new FormData(fromObj[0]);
+                postData.append('items', items);
+                if(url && postData){
+                    $.ajax({
+                        url: url,
+                        type:'POST',
+                        cache:false,
+                        data: postData,
+                        processData:false,
+                        contentType:false
+                    }).done(function (data) {
+                        if (data.code == 200){
+                            $(".nav-tabs-custom .nav-tabs li:first").click();
+                        } else{
+                            alert(data.msg);
+                        }
+                    }).fail(function (data) {
+                        alert('请求失败');
+                    });
+                }
+            }
+            return false;
         });
 
-        // 查看详情
+        // 编辑
         $(".-box-content").on('click','.btn-edit',function () {
             var url = $(this).attr('url');
             $(".tabs-modify").find("a").attr("href", url);
@@ -98,48 +137,33 @@
         });
 
         // 检测必填字段
-        function checkFormRequired(self) {
-            if(!self) return true;
+        function checkFormRequired(obj){
+            if(!obj) return true;
             var inx = 0;
-            self.find(".required_box").each(function () {
+            obj.find(".required_box").each(function () {
                 var self = $(this), input = self.find('input').length?self.find('input'):self.find('select');
-                var check = self.attr('check');
-                if(!input.val()){
+                var check = self.attr('check'), val = input.val();
+                if(!val){
                     self.addClass("has-error");
                     if (inx == 0) {
                         input.focus();
-                        inx++;
                     }
-                }else{
-                    if(check){
-                        var val = input.val();
-                        var is_check = true;
-                        switch (check) {
-                            case 'phone':
-                                if(!/^1[3-9]\d{9}$/.test(val)){
-                                    is_check = false;
-                                    inx++;
-                                }
-                                break;
-                            case 'money':
-                                var check_val = parseFloat(self.attr('check_val'));
-                                if(parseFloat(val) > check_val ) {
-                                    is_check = false;
-                                    inx++;
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                        if(is_check){
-                            self.find('.text-red').hide();
-                            self.removeClass("has-error");
-                        }else{
-                            self.find('.text-red').show();
-                            self.addClass("has-error");
-                        }
+                    inx++;
+                }else {
+                    var select = self.find('select');
+                    if (select.length && !select.val()) {
+                        self.find('.text-red').html('请选择会员等级').show();
+                        self.addClass("has-error");
+                        if (inx == 0) {select.focus();}
+                        inx++;
+                    }else if(check && (parseFloat(val)<1 || parseFloat(val)>10)){
+                        self.find('.text-red').html('折扣值范围只能1~10').show();
+                        self.addClass("has-error");
+                        if (inx == 0) {input.focus();}
+                        inx++;
                     }else {
                         self.removeClass("has-error");
+                        self.find('.text-red').hide();
                     }
                 }
             });
@@ -153,6 +177,7 @@
                 form_group_new = form_group.clone(true),
                 btn_new = form_group_new.find('.btn');
             form_group_new.find('input').val('');
+            form_group_new.find('select').val('');
             form_group.parent().append(form_group_new);
             form_group_new.find('.control-label').html('');
             btn_new.removeClass('add_btn').addClass('del_btn');
@@ -163,5 +188,24 @@
         $(".-box-content").on('click','.del_btn',function () {
             $(this).parents('.form-group').remove();
         });
+
+        // 修改页面搜索
+        $(".-box-content").on('click','.search_btn',function () {
+            var form = $(this).parents('.search-form'),
+                formData = form.serialize(),
+                discount_info = form.parents(".discount_info"),
+                url = discount_info.attr('url'),
+                discount_body = discount_info.find('.discount_body'),
+                refresh = discount_info.find("#refresh_in");
+            discount_body.html('');
+            refresh.show();
+            $.post(url, formData,function(data){
+                refresh.hide();
+                discount_body.html(data);
+                return false;
+            });
+            return false;
+        })
+
     })
 </script>

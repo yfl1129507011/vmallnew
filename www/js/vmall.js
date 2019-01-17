@@ -43,18 +43,24 @@ $(function () {
 
     // 分页
     $(".-box-content").on('click', '.pagination a', function () {
-        var self = $(this),
-            req_uri = self.parents('.pagination').attr('req_uri'),
-            href = self.attr('href'), postData = $("#search-form").serialize();
+        var self = $(this), pagination = self.parents('.pagination'),
+            req_uri = pagination.attr('req_uri'),
+            show_target = pagination.attr('show_target'),
+            href = self.attr('href'), postData = $(".search-form").serialize();
         if(!req_uri || !href){
             alert('请求参数获取失败！');return false;
         }
-        $('.-box-content').html('');
-        $('#refresh').show();
+        var refresh = "#refresh_in";
+        if(!show_target) {
+            show_target = '.-box-content';
+            refresh = "#refresh";
+        }
+        $(show_target).html('');
+        $(refresh).show();
         var url = req_uri+''+href;
         $.post(url, postData, function (data) {
-            $('.-box-content').html(data);
-            $('#refresh').hide();
+            $(show_target).html(data);
+            $(refresh).hide();
             return false;
         });
         return false;
@@ -109,6 +115,9 @@ $(function () {
         });
     });
 
-
+    // 全选
+    $(".-box-content").on('click','#check-all', function () {
+        $('.id-checkbox').prop('checked', $(this).prop('checked'));
+    });
 
 });

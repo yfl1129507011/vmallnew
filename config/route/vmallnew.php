@@ -246,6 +246,18 @@ $routes['Sales'] = array(
             1 => 'id',
         ),
     ),
+    'crm_update'=>array(
+        'match' => '#/crm/update$#',
+        'map' => array(
+            1 => 'id',
+        ),
+    ),
+    'crm_del'=>array(
+        'match' => '#/crm/del$#',
+        'map' => array(
+            1 => 'id',
+        ),
+    ),
 );
 
 # 格式化路由信息

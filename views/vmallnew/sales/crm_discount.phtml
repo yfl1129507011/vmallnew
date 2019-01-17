@@ -1,11 +1,13 @@
-<table id="example1" class="table table-bordered table-striped">
+<?php if (!empty($_id)):?>
+    <!--已添加的折扣商品信息-->
+    <table id="example1" class="table table-bordered table-striped">
     <thead>
     <tr>
         <th>ID</th>
-        <th>折扣名称</th>
-        <th>最大折扣</th>
-        <th>最小折扣</th>
-        <th>添加时间</th>
+        <th>商品名称</th>
+        <th>分类</th>
+        <th>售价</th>
+        <th>最低售价</th>
         <th>操作</th>
     </tr>
     </thead>
@@ -13,26 +15,48 @@
         <?php foreach ($results as $k=>$v):?>
             <tr>
                 <td><?=$v['id']?></td>
-                <td title="<?=$v['name']?>"><?=$v['name']?></td>
-                <td><?=$v['discount_max'][2]*10?>（<?=$v['discount_max'][1]?>）</td>
-                <td><?=$v['discount_min'][2]*10?>（<?=$v['discount_min'][1]?>）</td>
-                <td><?=date('Y-m-d H:i:s', strtotime($v['gmtCreated']))?></td>
+                <td><?=$v['name']?></td>
+                <td><?=$cats[$v['cid']]?></td>
+                <td><?=$v['price']?></td>
+                <td><?=round(($v['price'] * $disc['min']),2);?></td>
                 <td>
                     <div class="btn-group">
-                        <form action="/cat/modify" class="edit_form">
-                            <input type="hidden" name="name" value="<?=$v['name']?>">
-                            <input type="hidden" name="icon" value="<?=$v['icon']?>">
-                            <input type="hidden" name="order" value="<?=$v['order']?>">
-                            <input type="hidden" name="hot" value="<?=$v['hot']?>">
-                            <input type="hidden" name="status" value="<?=$v['status']?>">
-                            <input type="hidden" name="parentCid" value="<?=$v['parentCid']?>">
-                            <input type="hidden" name="id" value="<?=$v['id']?>">
-                        </form>
-                        <button type="button" class="btn btn-default btn-edit">编辑</button>
-                        <button type="button" url="/cat/del?id=<?=$v['id']?>" class="btn btn-danger btn_del">删除</button>
+                        <button type="button" dis_id="<?=$v['id']?>" class="btn btn-danger btn_remove">删除</button>
                     </div>
                 </td>
             </tr>
         <?php endforeach;?>
     <?php endif;?>
 </table>
+<?php else:?>
+    <!--可添加的折扣商品信息-->
+    <table id="example1" class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th width="8%"><input type="checkbox" id="check-all">全选</th>
+            <th>ID</th>
+            <th>商品名称</th>
+            <th>分类</th>
+            <th>售价</th>
+        </tr>
+        </thead>
+        <?php if (!empty($results)):?>
+            <?php foreach ($results as $k=>$v):?>
+                <tr>
+                    <td><input name="items[]" type="checkbox" value="<?=$v['id']?>" class="id-checkbox"></td>
+                    <td><?=$v['id']?></td>
+                    <td title="<?=$v['name']?>"><?=$v['name']?></td>
+                    <td><?=$cats[$v['cid']]?></td>
+                    <td><?=$v['price']?></td>
+                </tr>
+            <?php endforeach;?>
+        <?php endif;?>
+    </table>
+<?php endif;?>
+<div style="float: right;margin-right: 20px;">
+    <div class="dataTables_paginate paging_bootstrap">
+        <ul class="pagination" req_uri="<?=$req_uri?>" show_target=".discount_body">
+            <?php echo $page; ?>
+        </ul>
+    </div>
+</div>

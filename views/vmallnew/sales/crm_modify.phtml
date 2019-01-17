@@ -1,39 +1,81 @@
-<div class="box-header with-border label-primary"><b>基本信息</b></div>
-<div class="box-body">
-    <div class="form-horizontal">
-        <div class="form-group has-success required_box">
-            <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>折扣名称</label>
-            <div class="col-sm-3">
-                <input value="<?=$data['name']?>" type="text" name="name" maxlength="6" class="form-control" id="" placeholder="折扣名称">
+<form action="/crm/update" id="modify_form">
+    <div class="box-header with-border label-primary"><b>基本信息</b></div>
+    <div class="box-body">
+        <div class="form-horizontal">
+            <div class="form-group has-success required_box">
+                <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>折扣名称</label>
+                <div class="col-sm-3">
+                    <input value="<?=$data['name']?>" type="text" name="crm_name" maxlength="6" class="form-control" id="" placeholder="折扣名称">
+                </div>
+                <label class="control-label" data-toggle="tooltip" title="" data-original-title="名称长度不可超过6个字符"><i class="fa fa-info-circle"></i></label>
             </div>
-            <label class="control-label" data-toggle="tooltip" title="" data-original-title="名称长度不可超过6个字符"><i class="fa fa-info-circle"></i></label>
-        </div>
-        <div class="form-group has-success required_box">
-            <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>折扣</label>
-            <div class="col-sm-2">
-                <input type="number" name="name" class="form-control" id="" placeholder="值范围(1~10)">
+            <?php if (empty($data['levelDiscount_arr'])):?>
+            <div class="form-group has-success required_box" check="number">
+                <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>折扣</label>
+                <div class="col-sm-2">
+                    <input type="number" name="discs[]" class="form-control" id="" placeholder="值范围(1~10)">
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="levels[]">
+                        <option value="">选择会员等级</option>
+                        <?php if(!empty($cardCats)):?>
+                        <?php foreach ($cardCats as $k=>$v):?>
+                        <option value="<?=$k?>-<?=$v?>"><?=$v?></option>
+                        <?php endforeach;?>
+                        <?php endif;?>
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <button type="button" class="btn btn-default add_btn"><i class="fa fa-plus">增加折扣</i></button>
+                </div>
+                <label class="control-label one_label" data-toggle="tooltip" title="" data-original-title="低等级折扣兼顾高等级会员价，即设置折扣后高于该等级会员都将会有折扣"><i class="fa fa-info-circle"></i></label>
+                <label class="control-label text-red" style="display: none;">折扣值范围只能1~10</label>
             </div>
-            <div class="col-sm-2">
-                <select class="form-control" name="cid">
-                    <option value="0">选择会员等级</option>
-                    <?php if(!empty($cardCats)):?>
-                    <?php foreach ($cardCats as $k=>$v):?>
-                    <option value="<?=$k?>"><?=$v?></option>
-                    <?php endforeach;?>
+            <?php else:?>
+            <?php foreach ($data['levelDiscount_arr'] as $kk=>$vv):?>
+            <div class="form-group has-success required_box">
+                <label for="" class="col-sm-2 control-label">
+                    <?php if($kk==0):?>
+                    <i class="fa fa-check-circle">(必填)</i>折扣
                     <?php endif;?>
-                </select>
+                </label>
+                <div class="col-sm-2">
+                    <input value="<?=$vv[2]*10?>" type="number" name="discs[]" class="form-control" id="" placeholder="值范围(1~10)">
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="levels[]">
+                        <option value="">选择会员等级</option>
+                        <?php if(!empty($cardCats)):?>
+                        <?php foreach ($cardCats as $k=>$v):?>
+                        <option value="<?=$k?>-<?=$v?>" <?php if($v==$vv[1]):?>selected<?php endif;?> ><?=$v?></option>
+                        <?php endforeach;?>
+                        <?php endif;?>
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <?php if($kk==0):?>
+                    <button type="button" class="btn btn-default add_btn"><i class="fa fa-plus">增加折扣</i></button>
+                    <?php else:?>
+                    <button type="button" class="btn btn-default del_btn"><i class="fa fa-minus">移除折扣</i></button>
+                    <?php endif;?>
+                </div>
+                <?php if($kk==0):?>
+                <label class="control-label one_label" data-toggle="tooltip" title="" data-original-title="低等级折扣兼顾高等级会员价，即设置折扣后高于该等级会员都将会有折扣"><i class="fa fa-info-circle"></i></label>
+                <?php endif;?>
+                <label class="control-label text-red" style="display: none;">折扣值范围只能1~10</label>
             </div>
-            <div class="col-sm-2">
-                <button type="button" class="btn btn-default add_btn"><i class="fa fa-plus">增加折扣</i></button>
-            </div>
-            <label class="control-label one_label" data-toggle="tooltip" title="" data-original-title="低等级折扣兼顾高等级会员价，即设置折扣后高于该等级会员都将会有折扣"><i class="fa fa-info-circle"></i></label>
-            <label class="control-label text-red" style="display: none;">折扣值范围只能1~10</label>
+            <?php endforeach;?>
+            <?php endif;?>
         </div>
     </div>
-</div>
+    <?php if (!empty($data)):?>
+        <input type="hidden" name="crm_id" value="<?=$data['id']?>">
+        <input type="hidden" name="items_yes" value="<?=$data['items']?>">
+    <?php endif;?>
+</form>
 
 <?php if(!empty($disId)):?>
-<div class="discount_info yes_discount" url="/sales/discount/<?=$disId?>">
+<div class="discount_info yes_discount" url="/crm/discount/<?=$disId?>">
     <div class="box-header with-border label-primary"><b>已添加折扣的商品信息</b></div>
     <div class="box-body">
         <div class="search-body" style="margin-bottom: 15px;">
@@ -44,7 +86,7 @@
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default">商品名称</button>
                             </div><!-- /btn-group -->
-                            <input type="text" class="form-control" name='id' value="" placeholder="商品名称">
+                            <input type="text" class="form-control" name='name' value="" placeholder="商品名称">
                         </div>
                     </div>
                     <div class="col-xs-3">
@@ -52,7 +94,7 @@
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default">商品ID</button>
                             </div><!-- /btn-group -->
-                            <input type="text" class="form-control" name='id' value="" placeholder="商品ID">
+                            <input type="text" class="form-control" name='nid' value="" placeholder="商品ID">
                         </div>
                     </div>
                     <div class="col-xs-3">
@@ -78,7 +120,7 @@
             </form>
         </div>
         <div class="discount_body">
-            <div class="col-md-3 overlay" id="refresh">
+            <div class="col-md-3 overlay" id="refresh_in">
                 <i class="fa fa-spinner fa-spin"></i>
             </div>
         </div>
@@ -86,7 +128,7 @@
 </div>
 <?php endif;?>
 
-<div class="discount_info no_discount" url="/sales/discount/0">
+<div class="discount_info no_discount" url="/crm/discount/0">
     <div class="box-header with-border label-primary"><b>可添加折扣的商品信息</b></div>
     <div class="box-body">
         <div class="search-body" style="margin-bottom: 15px;">
@@ -97,7 +139,7 @@
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default">商品名称</button>
                             </div><!-- /btn-group -->
-                            <input type="text" class="form-control" name='id' value="" placeholder="商品名称">
+                            <input type="text" class="form-control" name='name' value="" placeholder="商品名称">
                         </div>
                     </div>
                     <div class="col-xs-3">
@@ -122,45 +164,47 @@
                 </div>
             </form>
         </div>
-        <table id="example1" class="table table-bordered table-striped">
-            <thead>
-            <tr>
-                <th><input type="checkbox" id="check-all"></th>
-                <th>ID</th>
-                <th>商品名称</th>
-                <th>分类</th>
-                <th>售价</th>
-            </tr>
-            </thead>
-            <?php if (!empty($results)):?>
-                <?php foreach ($results as $k=>$v):?>
-                    <tr>
-                        <td><input type="checkbox" value="1336" class="id-checkbox"></td>
-                        <td><?=$v['id']?></td>
-                        <td title="<?=$v['name']?>"><?=$v['name']?></td>
-                        <td><?=$v['discount_max'][2]*10?>（<?=$v['discount_max'][1]?>）</td>
-                        <td><?=$v['discount_min'][2]*10?>（<?=$v['discount_min'][1]?>）</td>
-                        <td><?=date('Y-m-d H:i:s', strtotime($v['gmtCreated']))?></td>
-                    </tr>
-                <?php endforeach;?>
-            <?php endif;?>
-        </table>
-        <!--<div class="discount_body">
-            <div class="col-md-3 overlay" id="refresh">
+        <div class="discount_box">
+            <div class="col-md-3 overlay" id="refresh_in">
                 <i class="fa fa-spinner fa-spin"></i>
             </div>
-        </div>-->
+            <div class="discount_body"></div>
+        </div>
     </div>
 </div>
 
 <div class="box-footer">
-    <button type="submit" class="btn btn-primary">提交</button>
-    <?php if (!empty($data)):?>
-        <input type="hidden" name="id" value="<?=$data['id']?>">
-        <input type="hidden" name="icon" id="icon_file" value="<?=$data['icon']?>">
-    <?php endif;?>
+    <button type="button" class="btn btn-primary modify_btn">提交</button>
 </div>
 
 <script>
+    $(function () {
+        $(".discount_info").each(function () {
+            var self = $(this), url = self.attr("url"),
+                refresh = self.find("#refresh_in");
+            if (url) {
+                $.post(url,function (data) {
+                    refresh.hide();
+                    self.find(".discount_body").html(data);
+                })
+            }else{
+                refresh.hide();
+                self.find(".discount_body").html('');
+            }
 
+        });
+        // 删除折扣商品
+        $(".yes_discount").on('click','.btn_remove',function () {
+            var self = $(this), dis_id = self.attr('dis_id');
+            if(dis_id && confirm('确认删除')){
+                var items_yes = $("input[name=items_yes]").val();
+                if(items_yes){
+                    var itemsArr = items_yes.split(',');
+                    itemsArr.splice($.inArray(dis_id,itemsArr),1);
+                    $("input[name=items_yes]").val(itemsArr.join(','));
+                    self.parents('tr').remove();
+                }
+            }
+        })
+    })
 </script>
