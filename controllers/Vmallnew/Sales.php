@@ -6,6 +6,8 @@
  * Time: 14:25
  */
 class Vmallnew_SalesController extends Vmallnew_BaseController{
+
+### 会员折扣 START ###
     public function crm_indexAction(){
         $this->display();
     }
@@ -134,5 +136,88 @@ class Vmallnew_SalesController extends Vmallnew_BaseController{
             $this->ajaxReturn($returnData);
         }
     }
+### 会员折扣 END ###
+
+### 礼品中心 START ###
+    public function gift_indexAction(){
+        $this->_view->assign('statusArr', Admin_GiftGivingModel::$statusArr);
+        $this->display();
+    }
+
+    # 赠送礼品列表
+    public function gift_listAction(){
+        $curPage = (int)$this->_request->get('page',1);
+        $status = $this->_request->getPost('status', '');
+        $id = (int)$this->_request->getPost('id');
+        $buyerName = trim($this->_request->getPost('buyerName'));
+        $receiverName = trim($this->_request->getPost('receiverName'));
+        $itemName = trim($this->_request->getPost('itemName'));
+
+        $queryData = array();
+        $queryData['curPage'] = $curPage;
+        if($status!=='') $queryData['status'] = intval($status);
+        if($id) $queryData['id'] = $id;
+        if($buyerName) $queryData['buyerName'] = $buyerName;
+        if($receiverName) $queryData['receiverName'] = $receiverName;
+        if($itemName) $queryData['itemName'] = $itemName;
+
+        $gift = new Admin_GiftGivingModel(3405474861);
+        $res = $gift->getList($queryData);
+        if(!$res) exit('数据获取失败');
+
+        $results = $res['results'];
+        $pageOptions = array(
+            'perPage' => 10,
+            'currentPage' => $curPage,
+            'curPageClass' => 'active',
+            'totalItems' => $res['count']
+        );
+        $this->_view->assign('results',$results);
+        $this->_view->assign('page', Pager::makeLinks($pageOptions));
+        $this->display();
+    }
+
+    # 礼品详情
+    public function gift_descAction(){
+        $id = $this->getRequest()->getParam('id');
+        if($id){
+            $gift = new Admin_GiftGivingModel(3405474861);
+            $res = $gift->giftDesc($id);
+            if(!$res) exit('数据获取失败');
+            # echo '<pre>';print_r($res);die;
+            if ($res['status'] == 2){ # 已收礼，获取订单信息
+                $trade = new Admin_TradeModel(3405474861);
+                $tradeInfo = $trade->getTrade(array('tid'=>$res['tid']));
+                # echo '<pre>';print_r($tradeInfo);die;
+                if($tradeInfo){
+                    $_tradeInfo = $tradeInfo['results'][0];
+                    $this->_view->assign('tradeInfo',$_tradeInfo);
+                }
+            }
+
+            /*$skuArr = array();
+            $item = new Admin_ItemModel(3405474861);
+            $itemSku = $item->getSku($res['numIid']);
+            # echo '<pre>';print_r($itemSku);die;
+            if ($itemSku){
+                foreach ($itemSku as $k=>$v){
+                    if ($v['id'] == $res['skuId']){
+                        $skuArr = $v;
+                    }
+                }
+            }else{
+                $itemRes = $item->getDetail($res['numIid']);
+                if($itemRes){
+                    $skuArr = $itemRes['results'];
+                }
+            }
+            # echo '<pre>';print_r($skuArr);die;
+            $this->_view->assign('skuArr',$skuArr);*/
+
+            $this->_view->assign('data',$res);
+            $this->display();
+        }
+    }
+### 礼品中心 END ###
 
 }

@@ -1,0 +1,87 @@
+<div class="box-body">
+    <div class="row">
+        <div class="col-xs-12 table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr class="label-primary">
+                        <th colspan="3">基本信息</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php if(!empty($data['base_info'])):?>
+                <?php foreach ($data['base_info'] as $k=>$v):?>
+                <tr>
+                    <?php foreach ($v as $_k=>$_v):?>
+                    <td><?=$_k?>：<?=$_v?></td>
+                    <?php endforeach;?>
+                </tr>
+                <?php endforeach;?>
+                <?php endif;?>
+                </tbody>
+            </table>
+        </div>
+
+        <?php if($data['status'] == 2):?>
+        <div class="col-xs-12 table-responsive">
+            <table class="table table-striped">
+                <tr class="label-primary">
+                    <th colspan="2">获赠人收货信息</th>
+                </tr>
+                <tr>
+                    <td>获赠人：<?=$data['receiverName']; ?></td>
+                    <td>姓名：<?=$tradeInfo['name']; ?></td>
+                </tr>
+                <tr>
+                    <td>手机：<?=$tradeInfo['mobile']; ?></td>
+                    <td>地址：<?=$tradeInfo['province'].$tradeInfo['city'].$tradeInfo['district'].$tradeInfo['address']?></td>
+                </tr>
+            </table>
+        </div>
+        <?php endif;?>
+
+        <div class="col-xs-12 table-responsive">
+            <table class="table table-striped">
+                <tr class="label-primary">
+                    <th colspan="5">礼品信息</th>
+                </tr>
+                <tr>
+                    <th>贺卡</th>
+                    <th>祝福语</th>
+                    <th>祝福图片/视频/语音</th>
+                </tr>
+                <tr>
+                    <td><img width="50" src="<?=$data['buyerAvatarUrl']?>" alt=""></td>
+                    <td><?=$data['bless']; ?></td>
+                    <td>
+                        <?php if ($data['mediaUrl']):?>
+                        <?php $pos = strrchr($data['mediaUrl'],'.');
+                        if($pos=='.mp4' || $pos=='.MP4'):?>
+                            <video src="<?=$data['mediaUrl']?>" controls="controls" width="320" height="320">
+                                您的浏览器不支持 video 标签。
+                            </video>
+                        <?php else:?>
+                            <img width="50" src="<?=$data['mediaUrl']?>" alt="">
+                        <?php endif;?>
+                        <?php endif;?>
+                    </td>
+                </tr>
+            </table>
+            <table class="table table-striped">
+                <tr>
+                    <th>商品ID</th>
+                    <th>商品名称</th>
+                    <th>售价</th>
+                    <th>数量</th>
+                    <th>订单总额</th>
+                </tr>
+                <tr>
+                    <td><?=$data['numIid']; ?></td>
+                    <td><?=$data['itemName']; ?></td>
+                    <td><?=round(($data['payment']-$data['postFee'])/$data['num'],2)?></td>
+                    <td><?=$data['num']; ?></td>
+                    <td><?=$data['payment']?></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

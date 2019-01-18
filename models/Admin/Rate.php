@@ -44,6 +44,11 @@ class Admin_RateModel extends VmallNewModel {
         return $this->checkApiResult($res, $url);
     }
 
+    /**
+     * @param array $data
+     * @return array|bool
+     * 评价处理
+     */
     public function rateHandle(array $data){
         if (empty($data)) return false;
         $url = $this->getUrl();

@@ -1,0 +1,77 @@
+<div class="box-body">
+    <table id="example1" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>礼品ID</th>
+                <th>赠送人</th>
+                <th>商品名称</th>
+                <th>数量</th>
+                <th>支付金额</th>
+                <th>获赠人</th>
+                <th>礼品状态</th>
+                <th>赠送时间</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <?php if (!empty($results)):?>
+        <?php foreach ($results as $k=>$v):?>
+        <tr>
+            <td><?=$v['id']?></td>
+            <td>
+                <img width="30" src="<?=$v['buyerAvatarUrl']?>"  alt="">
+                <?=$v['buyerName']?>
+            </td>
+            <td title="<?=$v['itemName']?>"><?=$v['itemName']?></td>
+            <td><?=$v['num']?></td>
+            <td><?=$v['payment']?></td>
+            <td>
+                <img width="30" src="<?=$v['receiverAvatarUrl']?>"  alt="">
+                <?=$v['receiverName']?>
+            </td>
+            <td class="<?=($v['status'] == 0 ||$v['status'] == 1 )?'text-red':'text-green'?>">
+                <?=$v['status_name']?>
+            </td>
+            <td><?=date('Y-m-d H:i:s', strtotime($v['gmtCreated']))?></td>
+            <td>
+                <div class="btn-group">
+                    <button title="礼品详情" type="button" url="/gift/desc/<?=$v['id']?>" class="btn btn-default btn-edit">查看详情</button>
+                </div>
+            </td>
+        </tr>
+        <?php endforeach;?>
+        <?php endif;?>
+    </table>
+</div>
+
+<div style="float: right;margin-right: 20px;">
+    <div class="dataTables_paginate paging_bootstrap">
+        <ul class="pagination" req_uri="<?=$req_uri?>">
+            <?php echo $page; ?>
+        </ul>
+    </div>
+</div>
+
+<!-- 批量设置弹窗模块 start -->
+<div class="modal fade input_dialog" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="form-group">
+                    <label for="" class="col-sm-2 control-label">请输入</label>
+                    <div class="col-sm-5">
+                        <input type="number" field="" pid="" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" url="/product/field" class="btn btn-primary" data-dismiss="modal">保存</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- 弹窗模块 end -->

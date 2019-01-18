@@ -40,6 +40,13 @@ class Admin_ItemModel extends VmallNewModel{
         return $this->checkApiResult($res, $url);
     }
 
+    public function getDetail($id){
+        if (empty($id)) return false;
+        $url = $this->getUrl('/'.$id.'/detail');
+        $res = $this->curl($url);
+        return $this->checkApiResult($res, $url);
+    }
+
     /**
      * @param $numIid
      * @return bool

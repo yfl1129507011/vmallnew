@@ -248,12 +248,22 @@ $routes['Sales'] = array(
     ),
     'crm_update'=>array(
         'match' => '#/crm/update$#',
-        'map' => array(
-            1 => 'id',
-        ),
+        'map' => array(),
     ),
     'crm_del'=>array(
         'match' => '#/crm/del$#',
+        'map' => array(),
+    ),
+    'gift_index'=>array(
+        'match' => '#/gift$#',
+        'map' => array(),
+    ),
+    'gift_list'=>array(
+        'match' => '#/gift/list$#',
+        'map' => array(),
+    ),
+    'gift_desc'=>array(
+        'match' => '#/gift/desc/(\d+)$#',
         'map' => array(
             1 => 'id',
         ),
