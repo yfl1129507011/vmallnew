@@ -1,0 +1,63 @@
+<div class="search-body card_list">
+    <div class="row">
+        <div class="col-xs-10 text-red">尺寸1280x640,大小500kb以内,jpg,png格式</div>
+        <div class="col-xs-2">
+            <button type="button" class="btn btn-success add_card" data-toggle="modal" data-target=".card_dialog">新增贺卡</button>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <?php foreach ($results as $k=>$v):?>
+    <div class="col-lg-3 col-xs-6">
+        <div class="box-header">
+            <h3 class="box-title">贺卡<?=$k+1?><span class="text-red">*</span></h3>
+            <div class="box-tools pull-right">
+                <div class="btn-group" card_id="<?=$v['id']?>" pic_url="<?=$v['picUrl']?>">
+                    <button type="button" class="btn btn-primary btn-sm card_repeat" data-toggle="modal" data-target=".card_dialog" data-widget="remove" title="" data-original-title="重新上传">
+                        <i class="fa fa-repeat"></i>
+                    </button>
+                    <?php if ($k!=0):?>
+                    <button type="button" class="btn btn-danger btn-sm" data-widget="remove" data-toggle="tooltip" title="" data-original-title="移除">
+                        <i class="fa fa-times"></i>
+                    </button>
+                    <?php endif;?>
+                </div>
+            </div>
+        </div>
+        <div class="box-body">
+            <img src="<?=$v['picUrl']?>" alt="" width="200" height="120px">
+        </div>
+    </div>
+    <?php endforeach;?>
+</div>
+
+<!-- 批量设置弹窗模块 start -->
+<div class="modal card_dialog" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">上传贺卡</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <form action="/card/update" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">贺卡图片</label>
+                        <div class="col-sm-4">
+                            <input name="picUrl" id="input_file" type="file" size-limit="500" >
+                            <img id="img_file" src="" height="50" />
+                            <span class="text-red" style="display: none">图片大小不能超过500kb</span>
+                        </div>
+                    </div>
+                    <input type="hidden" name="card_id" value="">
+                    <input type="hidden" name="picUrl_old" value="">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary save_dialog_btn">保存</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- 弹窗模块 end -->

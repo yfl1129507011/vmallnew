@@ -268,6 +268,10 @@ $routes['Sales'] = array(
             1 => 'id',
         ),
     ),
+    'card_list'=>array(
+        'match' => '#/card/list$#',
+        'map' => array(),
+    ),
 );
 
 # 格式化路由信息

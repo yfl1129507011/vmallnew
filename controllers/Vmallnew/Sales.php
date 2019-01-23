@@ -218,6 +218,18 @@ class Vmallnew_SalesController extends Vmallnew_BaseController{
             $this->display();
         }
     }
+
+    # 贺卡列表
+    public function card_listAction(){
+        $queryData = array();
+        $queryData['pageSize'] = 20;  # 贺卡最多20张
+        $greetingCard = new Admin_GreetingCardModel();
+        $res = $greetingCard->getList($queryData);
+        if(!$res) exit('数据获取失败');
+#echo '<pre>';print_r($res);die;
+        $this->_view->assign('results', $res['results']);
+        $this->display();
+    }
 ### 礼品中心 END ###
 
 }

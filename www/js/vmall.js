@@ -120,4 +120,19 @@ $(function () {
         $('.id-checkbox').prop('checked', $(this).prop('checked'));
     });
 
+    // 上传图片展示
+    $(".-box-content").on("change","#input_file",function () {
+        var preview = $("#img_file")[0];
+        var file = $(this).get(0).files[0];
+        var reader = new FileReader();
+        if(file){
+            reader.readAsDataURL(file);
+        }else{
+            preview.src = '';
+        }
+        reader.onloadend = function(){
+            preview.src = reader.result;
+        }
+    })
+
 });
