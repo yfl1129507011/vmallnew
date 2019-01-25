@@ -5,13 +5,13 @@
  * Date: 2019/1/8
  * Time: 14:50
  */
-class Admin_GreetingCardModel extends VmallNewModel{
-    protected $cls = '/greeting-card';
+class Admin_BlessModel extends VmallNewModel{
+    protected $cls = '/bless';
 
     /**
      * @param array $query
      * @return array|bool
-     * 获取贺卡列表
+     * 获取祝福语列表
      */
     public function getList(array $query){
         $url = $this->getV2Url('',$query);
@@ -23,9 +23,9 @@ class Admin_GreetingCardModel extends VmallNewModel{
      * @param $id
      * @param array $body
      * @return array|bool
-     * 编辑贺卡
+     * 编辑祝福语
      */
-    public function editCard(array $body){
+    public function edit(array $body){
         if (empty($body)) return false;
         $url = $this->getV2Url();
         $res = $this->curl($url, 'put', $body);
@@ -35,9 +35,9 @@ class Admin_GreetingCardModel extends VmallNewModel{
     /**
      * @param array $body
      * @return array|bool
-     * 添加贺卡
+     * 添加祝福语
      */
-    public function addCard(array $body){
+    public function add(array $body){
         if (empty($body)) return false;
         $url = $this->getV2Url();
         $res = $this->curl($url, 'post', $body);
@@ -47,7 +47,7 @@ class Admin_GreetingCardModel extends VmallNewModel{
     /**
      * @param array $data
      * @return array
-     * 处理贺卡的添加和修改操作
+     * 处理祝福语的添加和修改操作
      */
     public function update(array $data){
         $returnData = array();
@@ -85,9 +85,9 @@ class Admin_GreetingCardModel extends VmallNewModel{
     /**
      * @param $id
      * @return array|bool
-     * 删除贺卡
+     * 删除祝福语
      */
-    public function delCard($id){
+    public function del($id){
         if (empty($id)) return false;
         $url = $this->getV2Url('/'.$id);
         $res = $this->curl($url,'delete');

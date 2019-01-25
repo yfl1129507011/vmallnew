@@ -272,6 +272,30 @@ $routes['Sales'] = array(
         'match' => '#/card/list$#',
         'map' => array(),
     ),
+    'card_update'=>array(
+        'match' => '#/card/update$#',
+        'map' => array(),
+    ),
+    'card_del'=>array(
+        'match' => '#/card/del/(\d+)#',
+        'map' => array(
+            1 => 'id',
+        ),
+    ),
+    'bless_list'=>array(
+        'match' => '#/bless/list$#',
+        'map' => array(),
+    ),
+    'bless_del'=>array(
+        'match' => '#/bless/del/(\d+)#',
+        'map' => array(
+            1 => 'id',
+        ),
+    ),
+    'bless_update'=>array(
+        'match' => '#/bless/update$#',
+        'map' => array(),
+    ),
 );
 
 # 格式化路由信息

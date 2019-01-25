@@ -226,9 +226,80 @@ class Vmallnew_SalesController extends Vmallnew_BaseController{
         $greetingCard = new Admin_GreetingCardModel();
         $res = $greetingCard->getList($queryData);
         if(!$res) exit('数据获取失败');
-#echo '<pre>';print_r($res);die;
+
         $this->_view->assign('results', $res['results']);
         $this->display();
+    }
+
+    # 处理贺卡的添加或更新操作
+    public function card_updateAction(){
+        $data = $this->_request->getPost();
+        if($_FILES['picUrl']) {
+            $data['file_picUrl'] = $_FILES['picUrl'];
+        }
+        $greetingCard = new Admin_GreetingCardModel();
+        $res = $greetingCard->update($data);
+        $this->ajaxReturn($res);
+    }
+
+    # 删除贺卡
+    public function card_delAction(){
+        $cardId = (int)$this->getRequest()->getParam('id');
+        $returnData = array();
+        $returnData['code'] = 200;
+        if($cardId){
+            $greetingCard = new Admin_GreetingCardModel();
+            $res = $greetingCard->delCard($cardId);
+            if($res){
+                $returnData['msg'] = '操作成功';
+            }else{
+                $returnData['code'] = 400;
+                $returnData['msg'] = '操作失败';
+            }
+        }
+        $this->ajaxReturn($returnData);
+    }
+
+    # 祝福语列表
+    public function bless_listAction(){
+        $curPage = (int)$this->_request->get('page',1);
+        $bless = new Admin_BlessModel();
+        $res = $bless->getList(array('curPage'=>$curPage));
+        if(!$res) exit('获取数据失败');
+
+        $results = $res['results'];
+        $pageOptions = array(
+            'perPage' => 10,
+            'currentPage' => $curPage,
+            'curPageClass' => 'active',
+            'totalItems' => $res['count']
+        );
+        $this->_view->assign('results',$results);
+        $this->_view->assign('page', Pager::makeLinks($pageOptions));
+        $this->display();
+    }
+
+    # 删除祝福语
+    public function bless_delAction(){
+        $blessId = $this->getRequest()->getParam('id');
+        if($blessId){
+            $returnData = array();
+            $bless = new Admin_BlessModel();
+            $res = $bless->del($blessId);
+            if ($res){
+                $returnData['code'] = 200;
+                $returnData['msg'] = '操作成功';
+            }else{
+                $returnData['code'] = 400;
+                $returnData['msg'] = '操作失败';
+            }
+            $this->ajaxReturn($returnData);
+        }
+    }
+
+    # 处理祝福语添加或编辑
+    public function bless_updateAction(){
+
     }
 ### 礼品中心 END ###
 

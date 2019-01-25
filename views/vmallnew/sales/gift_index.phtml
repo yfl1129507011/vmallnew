@@ -20,8 +20,8 @@
                     <ul class="nav nav-tabs" finish-status="true">
                         <li search-class="all_list"><a href="/gift/list">赠礼中心</a></li>
                         <li><a href="/card/list">贺卡</a></li>
-                        <li><a href="/gift/bless">祝福语</a></li>
-                        <li class="tabs-modify" style="display: none"><a href="/gift/modify">祝福语</a></li>
+                        <li><a href="/bless/list">祝福语</a></li>
+                        <li class="tabs-modify" style="display: none"><a href="/gift/modify">赠礼详情</a></li>
                     </ul>
 
                     <div class="box-body">
@@ -117,6 +117,13 @@
             return false;
         });
 
+        // 查看详情
+        $(".-box-content").on('click','.btn-edit',function () {
+            var url = $(this).attr('url');
+            $(".tabs-modify").find("a").attr("href", url);
+            $(".tabs-modify").click().show();
+        });
+
         // 重新上传
         $(".-box-content").on('click', '.card_repeat, .add_card', function () {
             var parent = $(this).parent(),
@@ -158,13 +165,35 @@
                         self.parents('.modal').modal('hide');  // 去除弹窗
                         $(".nav-tabs .active").removeClass("active").click().show();
                     } else{
-                        alert(data.msg);
+                        if(data.msg){
+                            alert(data.msg)
+                        }else{
+                            alert('系统已退出或系统错误');
+                        }
                     }
                 }).fail(function (data) {
                     alert('请求失败');
                 });
             }
             return false;
+        });
+
+        // 删除
+        $(".-box-content").on('click','.remove_btn',function () {
+            var url = $(this).attr('url'), box_field = $(this).parents('.box_field');
+            if(url && confirm('确认删除？')){
+                $.post(url, function (data) {
+                    if(data.code == 200){
+                        box_field.remove();
+                    }else{
+                        if(data.msg){
+                            alert(data.msg)
+                        }else{
+                            alert('系统已退出或系统错误');
+                        }
+                    }
+                })
+            }
         });
 
     })

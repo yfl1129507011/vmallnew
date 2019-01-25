@@ -1,0 +1,71 @@
+<div class="search-body card_list">
+    <div class="row">
+        <div class="col-xs-10 text-red">祝福语控制在40字符以内</div>
+        <div class="col-xs-2">
+            <button type="button" class="btn btn-success add_bless" data-toggle="modal" data-target=".bless_dialog">新增贺卡</button>
+        </div>
+    </div>
+</div>
+<div class="box-body">
+    <table id="example1" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>祝福语</th>
+                <th>使用次数</th>
+                <th>添加时间</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <?php if (!empty($results)):?>
+        <?php foreach ($results as $k=>$v):?>
+        <tr>
+            <td><?=$v['id']?></td>
+            <td title="<?=$v['bless']?>"><?=$v['bless']?></td>
+            <td><?=$v['useCount']?></td>
+            <td><?=date('Y-m-d H:i:s', strtotime($v['gmtCreated']))?></td>
+            <td>
+                <div class="btn-group" bless="<?=$v['bless']?>" bless_id="<?=$v['id']?>">
+                    <button type="button" class="btn btn-default edit_bless" data-toggle="modal" data-target=".bless_dialog">编辑</button>
+                    <button type="button" url="/bless/del/<?=$v['id']?>" class="btn btn-danger btn_del">删除</button>
+                </div>
+            </td>
+        </tr>
+        <?php endforeach;?>
+        <?php endif;?>
+    </table>
+</div>
+
+<div style="float: right;margin-right: 20px;">
+    <div class="dataTables_paginate paging_bootstrap">
+        <ul class="pagination" req_uri="<?=$req_uri?>">
+            <?php echo $page; ?>
+        </ul>
+    </div>
+</div>
+
+<div class="modal bless_dialog" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">祝福语</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <form action="/bless/update" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">祝福语</label>
+                        <div class="col-sm-4">
+                            <textarea name="bless" maxlength="40" cols="30" rows="10"></textarea>
+                        </div>
+                    </div>
+                    <input type="hidden" name="bless_id" value="">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary save_dialog_btn">保存</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>

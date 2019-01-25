@@ -8,16 +8,16 @@
 </div>
 <div class="row">
     <?php foreach ($results as $k=>$v):?>
-    <div class="col-lg-3 col-xs-6">
+    <div class="col-lg-3 col-xs-6 box_field">
         <div class="box-header">
             <h3 class="box-title">贺卡<?=$k+1?><span class="text-red">*</span></h3>
             <div class="box-tools pull-right">
                 <div class="btn-group" card_id="<?=$v['id']?>" pic_url="<?=$v['picUrl']?>">
-                    <button type="button" class="btn btn-primary btn-sm card_repeat" data-toggle="modal" data-target=".card_dialog" data-widget="remove" title="" data-original-title="重新上传">
-                        <i class="fa fa-repeat"></i>
+                    <button type="button" class="btn btn-primary btn-sm card_repeat" data-toggle="modal" data-target=".card_dialog">
+                        <i class="fa fa-repeat" data-toggle="tooltip" title="" data-original-title="重新上传"></i>
                     </button>
                     <?php if ($k!=0):?>
-                    <button type="button" class="btn btn-danger btn-sm" data-widget="remove" data-toggle="tooltip" title="" data-original-title="移除">
+                    <button url="/card/del/<?=$v['id']?>" type="button" class="btn btn-danger btn-sm remove_btn" data-widget="remove" data-toggle="tooltip" title="" data-original-title="移除">
                         <i class="fa fa-times"></i>
                     </button>
                     <?php endif;?>
