@@ -13,7 +13,7 @@ class Admin_BlessModel extends VmallNewModel{
      * @return array|bool
      * 获取祝福语列表
      */
-    public function getList(array $query){
+    public function getList(array $query=array()){
         $url = $this->getV2Url('',$query);
         $res = $this->curl($url);
         return $this->checkApiResult($res,$url);
@@ -64,6 +64,12 @@ class Admin_BlessModel extends VmallNewModel{
             $upData['id'] = $id;
             $res = $this->edit($upData);
         }else{ # 添加
+            $res = $this->getList();
+            if($res && $res['count']>=20){
+                $returnData['code'] = 402;
+                $returnData['msg'] = '系统最多仅允许添加20条！';
+                return $returnData;
+            }
             $res = $this->add($upData);
         }
 

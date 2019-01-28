@@ -296,6 +296,29 @@ $routes['Sales'] = array(
         'match' => '#/bless/update$#',
         'map' => array(),
     ),
+    'distribution_index'=>array(
+        'match' => '#/distribution$#',
+        'map' => array(),
+    ),
+    'distribution_list'=>array(
+        'match' => '#/distribution/list$#',
+        'map' => array(),
+    ),
+);
+
+$routes['Config'] = array(
+    'base_index'=>array(
+        'match' => '#/base$#',
+        'map' => array(),
+    ),
+    'base_mall'=>array(
+        'match' => '#/base/mall$#',
+        'map' => array(),
+    ),
+    'base_save'=>array(
+        'match' => '#/base/save$#',
+        'map' => array(),
+    ),
 );
 
 # 格式化路由信息

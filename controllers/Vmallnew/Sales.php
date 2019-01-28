@@ -308,4 +308,15 @@ class Vmallnew_SalesController extends Vmallnew_BaseController{
     }
 ### 礼品中心 END ###
 
+### 分销管理 START ###
+    public function distribution_indexAction(){
+        $this->display();
+    }
+
+    # 分销商品列表
+    public function distribution_listAction(){
+        echo 'fenlon';die;
+    }
+### 分销管理 END ###
+
 }

@@ -1,0 +1,103 @@
+<?php include APP_PATH . '/views/'.strtolower(APP_NAME).'/include/head.phtml'; ?>
+<div class="content-wrapper">
+    <!-- Content Header (页眉) -->
+    <section class="content-header">
+        <h1>
+            商城设置
+            <small>基础设置</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-gears"></i> 商城设置</a></li>
+            <li class="active">基础设置</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs" finish-status="true">
+                        <li><a href="/base/mall">基本设置</a></li>
+                        <li><a href="/crm/modify">轮播设置</a></li>
+                        <li class="tabs-modify" style="display: none"><a href="/crm/modify">新增广告</a></li>
+                    </ul>
+
+                    <div class="box-body">
+                        <div class="col-md-3 overlay" id="refresh">
+                            <i class="fa fa-spinner fa-spin"></i>
+                        </div>
+                        <div class="-box-content">
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+<?php include APP_PATH . '/views/'.strtolower(APP_NAME).'/include/foot.phtml'; ?>
+<script type="text/javascript" src="/js/wangEditor.js"></script>
+<script>
+    $(function () {
+        // 表单提交
+        $(".-box-content").on('click', '.save_btn', function () {
+            var fromObj = $("#mall_form");
+            if(checkFormRequired(fromObj)){
+                var url = fromObj.attr('action'), postData = new FormData(fromObj[0]);
+                if(url && postData){
+                    $.ajax({
+                        url: url,
+                        type:'POST',
+                        cache:false,
+                        data: postData,
+                        processData:false,
+                        contentType:false
+                    }).done(function (data) {
+                        if (data.code == 200){
+                            $(".nav-tabs-custom .nav-tabs li:first").click();
+                        } else{
+                            alert(data.msg);
+                        }
+                    }).fail(function (data) {
+                        alert('请求失败');
+                    });
+                }
+            }
+            return false;
+        });
+
+        // 检测必填字段
+        function checkFormRequired(obj){
+            if(!obj) return true;
+            var inx = 0;
+            obj.find(".required_box").each(function () {
+                var self = $(this), input = self.find('input').length?self.find('input'):self.find('select');
+                var check = self.attr('check'), val = input.val();
+                if(!val){
+                    var type = input.attr('type'),
+                        src = input.parent().find('img').attr('src');
+                    if (type == 'file' && src) {
+                        self.removeClass("has-error");
+                    }else {
+                        self.addClass("has-error");
+                        if (inx == 0) {
+                            input.focus();
+                        }
+                        inx++;
+                    }
+                }else {
+                    self.removeClass("has-error");
+                }
+            });
+
+            return (inx==0)?true:false;
+        }
+
+
+    })
+</script>
