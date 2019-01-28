@@ -52,25 +52,19 @@ class Admin_BlessModel extends VmallNewModel{
     public function update(array $data){
         $returnData = array();
         $returnData['code'] = 200;
-        if ( empty($data) || empty($data['file_picUrl'])) {
+        if ( empty($data) || empty($data['bless'])) {
             $returnData['code'] = 401;
             $returnData['msg'] = '缺少必要参数';
             return $returnData;
         }
-        $picUrl = $this->uploadImg($data['file_picUrl'], array('jpg', 'jpeg', 'png'), 500 * 1024);
-        if (!$picUrl) {
-            $returnArr['code'] = 402;
-            $returnArr['msg'] = '图片为空或上传失败';
-            return $returnArr;
-        }
         $upData = array();
-        $upData['picUrl'] = $picUrl;
-        $id = (int)$data['card_id'];
+        $upData['bless'] = $data['bless'];
+        $id = (int)$data['bless_id'];
         if($id){ # 更新
             $upData['id'] = $id;
-            $res = $this->editCard($upData);
+            $res = $this->edit($upData);
         }else{ # 添加
-            $res = $this->addCard($upData);
+            $res = $this->add($upData);
         }
 
         if($res){

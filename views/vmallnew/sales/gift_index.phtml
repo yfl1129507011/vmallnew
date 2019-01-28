@@ -196,5 +196,54 @@
             }
         });
 
+        // 新增祝福语
+        $(".-box-content").on('click','.edit_bless,.add_bless',function () {
+            var parent = $(this).parent(),
+                bless_id = parent.attr('bless_id'),
+                bless = parent.attr('bless');
+            if(!bless_id) bless_id = '';
+            if(!bless) bless = '';
+            $('.bless_dialog').find("textarea[name=bless]").val(bless);
+            $('.bless_dialog').find("input[name=bless_id]").val(bless_id);
+        })
+
+        // 保存祝福语
+        $(".-box-content").on('click','.save_dialog_btn_bless',function () {
+            var self = $(this),form = self.parents('.modal').find('form'),
+                url = form.attr('action'), textarea = form.find('textarea[name=bless]');
+            postData = new FormData(form[0]);
+            if(!textarea.val()){
+                alert('请填写祝福语');return false;
+            }else{
+                if (textarea.val().length>40){
+                    alert('祝福语字数太长');return false;
+                }
+            }
+            if(url && postData){
+                $.ajax({
+                    url: url,
+                    type:'POST',
+                    cache:false,
+                    data: postData,
+                    processData:false,
+                    contentType:false
+                }).done(function (data) {
+                    if (data.code == 200){
+                        self.parents('.modal').modal('hide');  // 去除弹窗
+                        $(".nav-tabs .active").removeClass("active").click().show();
+                    } else{
+                        if(data.msg){
+                            alert(data.msg)
+                        }else{
+                            alert('系统已退出或系统错误');
+                        }
+                    }
+                }).fail(function (data) {
+                    alert('请求失败');
+                });
+            }
+            return false;
+        });
+
     })
 </script>

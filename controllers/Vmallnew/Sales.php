@@ -299,7 +299,12 @@ class Vmallnew_SalesController extends Vmallnew_BaseController{
 
     # 处理祝福语添加或编辑
     public function bless_updateAction(){
-
+        $data = $this->_request->getPost();
+        if($data){
+            $bless = new Admin_BlessModel();
+            $res = $bless->update($data);
+            $this->ajaxReturn($res);
+        }
     }
 ### 礼品中心 END ###
 
