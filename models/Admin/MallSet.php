@@ -30,6 +30,11 @@ class Admin_MallSetModel extends VmallNewModel{
         return $this->checkApiResult($res,$url,$body);
     }
 
+    /**
+     * @param array $data
+     * @return array
+     * 基础设置保存操作
+     */
     public function save(array $data){
         $returnData = array();
         $returnData['code'] = 200;
@@ -40,7 +45,7 @@ class Admin_MallSetModel extends VmallNewModel{
             return $returnData;
         }
         $logoFile = $data['logo_old'];
-        if(empty($logoFile)) {
+        if(!empty($data['logo_file'])) {
             $logoFile = $this->uploadImg($data['logo_file'], array('jpg', 'jpeg', 'png'), 500 * 1024);
             if (!$logoFile) {
                 $returnArr['code'] = 402;
@@ -49,9 +54,8 @@ class Admin_MallSetModel extends VmallNewModel{
             }
         }
         $upData = array();
-        if($data['id']) $upData['id'] = (int)$data['id'];
         if($data['mallName']) $upData['mallName'] = trim($data['mallName']);
-        $upData['picUrl'] = $logoFile;
+        $upData['logo'] = $logoFile;
         if($data['freeFee']) $upData['freeFee'] = (int)$data['freeFee'];
         if($data['crmFreeLevel']) {
             $upData['crmFreeLevel'] = (int)$data['crmFreeLevel'];
@@ -66,7 +70,7 @@ class Admin_MallSetModel extends VmallNewModel{
 
         $res = $this->put($upData);
         if ($res){
-            $returnArr['msg'] = '操作成功';
+            $returnData['msg'] = '操作成功';
         }else{
             $returnData['code'] = 400;
             $returnData['msg'] = '操作失败';

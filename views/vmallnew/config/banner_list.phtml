@@ -1,0 +1,57 @@
+<div class="search-body card_list">
+    <div class="row">
+        <div class="col-xs-10 text-red">1～5张，尺寸750*360-1500*720,大小500kb以内,jpg,png格式</div>
+        <div class="col-xs-2">
+            <button url="/banner/modify" title="新增广告" type="button" class="btn btn-success add_banner <?php if ($total>=5):?>disabled<?php endif;?>">新增广告</button>
+        </div>
+    </div>
+</div>
+<div class="box-body">
+    <table id="example1" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>轮播图</th>
+                <th>类型</th>
+                <th>商品分类</th>
+                <th>Url地址</th>
+                <th>商品ID</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <?php if (!empty($results)):?>
+        <?php foreach ($results as $k=>$v):?>
+        <tr>
+            <td><?=$v['id']?></td>
+            <td><img src="<?=$v['bannerUrl']?>" height="40"></td>
+            <td><?=$v['type_name']?></td>
+            <td><?=$catArr[$v['cid']]?></td>
+            <td><?php if(!empty($v['url'])):?><a target="_blank" href="<?=$v['url']?>">图片地址</a><?php endif;?></td>
+            <td><?=$v['numIid']?></td>
+            <td>
+                <div class="btn-group" bless="<?=$v['bless']?>" bless_id="<?=$v['id']?>">
+                    <form class="edit_form" action="/banner/modify">
+                        <input type="hidden" name="bannerUrl" value="<?=$v['bannerUrl']?>">
+                        <input type="hidden" name="type" value="<?=$v['type']?>">
+                        <input type="hidden" name="cid" value="<?=$v['cid']?>">
+                        <input type="hidden" name="numIid" value="<?=$v['numIid']?>">
+                        <input type="hidden" name="url" value="<?=$v['url']?>">
+                        <input type="hidden" name="id" value="<?=$v['id']?>">
+                    </form>
+                    <button title="编辑广告" type="button" class="btn btn-default edit_banner">编辑</button>
+                    <button type="button" url="/banner/del/<?=$v['id']?>" class="btn btn-danger btn_del">删除</button>
+                </div>
+            </td>
+        </tr>
+        <?php endforeach;?>
+        <?php endif;?>
+    </table>
+</div>
+
+<div style="float: right;margin-right: 20px;">
+    <div class="dataTables_paginate paging_bootstrap">
+        <ul class="pagination" req_uri="<?=$req_uri?>">
+            <?php echo $page; ?>
+        </ul>
+    </div>
+</div>

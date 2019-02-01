@@ -319,6 +319,46 @@ $routes['Config'] = array(
         'match' => '#/base/save$#',
         'map' => array(),
     ),
+    'banner_list'=>array(
+        'match' => '#/banner/list$#',
+        'map' => array(),
+    ),
+    'banner_modify'=>array(
+        'match' => '#/banner/modify$#',
+        'map' => array(),
+    ),
+    'banner_update'=>array(
+        'match' => '#/banner/update$#',
+        'map' => array(),
+    ),
+    'banner_del'=>array(
+        'match' => '#/banner/del/(\d+)#',
+        'map' => array(
+            1 => 'id',
+        ),
+    ),
+    'tpl_index'=>array(
+        'match' => '#/tpl$#',
+        'map' => array(),
+    ),
+    'tpl_list'=>array(
+        'match' => '#/tpl/list$#',
+        'map' => array(),
+    ),
+    'tpl_modify'=>array(
+        'match' => '#/tpl/modify$#',
+        'map' => array(),
+    ),
+    'tpl_update'=>array(
+        'match' => '#/tpl/update$#',
+        'map' => array(),
+    ),
+    'tpl_del'=>array(
+        'match' => '#/tpl/del/(\d+)#',
+        'map' => array(
+            1 => 'id',
+        ),
+    ),
 );
 
 # 格式化路由信息

@@ -33,8 +33,6 @@ class Bootstrap extends Yaf_Bootstrap_Abstract {
     public function _initRoute(Yaf_Dispatcher $dispatcher){
         if (!defined('ROUTE_FILE')) return false;
         $routes = Config::get(APP_NAME.'.route.'.ROUTE_FILE.'.regex');
-        /*echo '<pre>';
-        print_r($routes);die;*/
         if(is_array($routes)){
             foreach ($routes as $k=>$v){
                 $dispatcher->getRouter()->addRoute(

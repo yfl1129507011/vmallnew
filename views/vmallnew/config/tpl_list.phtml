@@ -1,0 +1,57 @@
+<div class="search-body card_list">
+    <div class="row">
+        <div class="col-xs-10 text-red"></div>
+        <div class="col-xs-2">
+            <button url="/tpl/modify" title="新增模板" type="button" class="btn btn-success add_tpl">新增模板</button>
+        </div>
+    </div>
+</div>
+<div class="box-body">
+    <?php if (!empty($results)):?>
+    <?php foreach ($results as $k=>$v):?>
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table">
+                    <tr class="label-primary">
+                        <th width="80%"><?=$v['name']?></th>
+                        <th>
+                            <div class="btn-group">
+                                <form class="edit_form" action="/tpl/modify">
+                                    <input type="hidden" name="bannerUrl" value="<?=$v['bannerUrl']?>">
+                                    <input type="hidden" name="type" value="<?=$v['type']?>">
+                                    <input type="hidden" name="cid" value="<?=$v['cid']?>">
+                                    <input type="hidden" name="numIid" value="<?=$v['numIid']?>">
+                                    <input type="hidden" name="url" value="<?=$v['url']?>">
+                                    <input type="hidden" name="id" value="<?=$v['id']?>">
+                                </form>
+                                <button type="button" class="btn btn-info opt_btn" opt_obj=".tpl_box_<?=$v['id']?>">收起</button>
+                                <button title="编辑模板" type="button" class="btn btn-default edit_tpl">编辑</button>
+                                <button type="button" url="/banner/del/<?=$v['id']?>" class="btn btn-danger btn_del">删除</button>
+                            </div>
+                        </th>
+                    </tr>
+                </table>
+                <table class="table table-striped tpl_box_<?=$v['id']?>">
+                    <?php if(!empty($v['tpl_info'])):?>
+                    <?php foreach ($v['tpl_info'] as $kk=>$vv):?>
+                    <tr>
+                        <?php foreach ($vv as $_kk=>$_vv):?>
+                        <th <?php if($_kk==0):?> width="60%" <?php endif;?>><?=$_vv?></th>
+                        <?php endforeach;?>
+                    </tr>
+                    <?php endforeach;?>
+                    <?php endif;?>
+                </table>
+            </div>
+        </div>
+    <?php endforeach;?>
+    <?php endif;?>
+</div>
+
+<div style="float: right;margin-right: 20px;">
+    <div class="dataTables_paginate paging_bootstrap">
+        <ul class="pagination" req_uri="<?=$req_uri?>">
+            <?php echo $page; ?>
+        </ul>
+    </div>
+</div>

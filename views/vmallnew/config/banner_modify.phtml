@@ -1,0 +1,56 @@
+<form id="mall_form" class="form-horizontal" action="/banner/update" method="post" enctype="multipart/form-data">
+    <div class="box-body">
+        <div class="form-group has-success required_box">
+            <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>广告图</label>
+            <div class="col-sm-5">
+                <input name="bannerUrl" id="input_file" type="file" size-limit="500" >
+                <img id="img_file" src="<?=$data['bannerUrl']?>" height="50" />
+                <span class="text-red" style="display: none">图片大小不能超过500kb</span>
+            </div>
+            <label class="control-label" data-toggle="tooltip" title="" data-original-title="请上传500kb以内；建议图片尺寸为750px*630px；格式为jpeg,jpg,png的图片"><i class="fa fa-info-circle"></i><label/>
+        </div>
+        <div class="form-group">
+            <label for="" class="col-sm-2 control-label">轮播图类型</label>
+            <div class="col-sm-5">
+                <select class="form-control" name="type">
+                    <option value="">选择类型</option>
+                    <?php foreach ($typeArr as $k=>$v):?>
+                        <option value="<?=$k?>" <?=$k==$data['type']?'selected':''?>><?=$v?></option>
+                    <?php endforeach;?>
+                </select>
+            </div>
+        </div>
+        <div class="form-group has-success required_box">
+            <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>所属分类</label>
+            <div class="col-sm-5">
+                <select class="form-control" name="cid">
+                    <option value="">选择分类</option>
+                    <?php foreach ($Cats as $_k=>$_v):?>
+                        <option value="<?=$_k?>" <?=$_k==$data['cid']?'selected':''?>><?=$_v?></option>
+                    <?php endforeach;?>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="" class="col-sm-2 control-label">商品ID</label>
+            <div class="col-sm-5">
+                <input value="<?=$data['numIid']?>" name="numIid" type="number" oninput="this.value=this.value.replace(/\D/g,'')" class="form-control" id="" placeholder="商品ID">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="" class="col-sm-2 control-label">自定义连接</label>
+            <div class="col-sm-10">
+                <textarea class="form-control" name="url"><?=$data['url']?></textarea>
+            </div>
+        </div>
+    </div>
+    <!-- /.box-body -->
+    <div class="box-footer">
+        <button type="submit" class="btn btn-primary save_btn" li="1">提交</button>
+        <?php if (!empty($data)):?>
+            <input type="hidden" name="bannerUrl_old" value="<?=$data['bannerUrl']?>">
+            <input type="hidden" name="id" value="<?=$data['id']?>">
+        <?php endif;?>
+    </div>
+    <!-- /.box-footer -->
+</form>

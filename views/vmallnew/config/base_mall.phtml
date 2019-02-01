@@ -50,7 +50,7 @@
             <label for="" class="col-sm-2 control-label">商城服务</label>
             <div class="col-sm-10" id="editor"><?=$data['service']?></div>
             <div style="display:none">
-                <textarea name="service" value="<?=$data['service']?>"></textarea>
+                <textarea name="service"><?=$data['service']?></textarea>
             </div>
         </div>
     </div>
@@ -58,7 +58,6 @@
     <div class="box-footer">
         <button type="submit" class="btn btn-primary save_btn">提交</button>
         <?php if (!empty($data)):?>
-            <input type="hidden" name="id" value="<?=$data['id']?>">
             <input type="hidden" name="logo_old" value="<?=$data['logo']?>">
         <?php endif;?>
     </div>
