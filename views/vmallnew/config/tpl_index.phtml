@@ -1,4 +1,5 @@
 <?php include APP_PATH . '/views/'.strtolower(APP_NAME).'/include/head.phtml'; ?>
+<link href="/css/style.css" type="text/css" rel="stylesheet">
 <div class="content-wrapper">
     <!-- Content Header (页眉) -->
     <section class="content-header">
@@ -40,12 +41,33 @@
     <!-- /.content -->
 </div>
 <?php include APP_PATH . '/views/'.strtolower(APP_NAME).'/include/foot.phtml'; ?>
+<script type="text/javascript" src="/js/City_data.js"></script>
+<script type="text/javascript" src="/js/areadata.js"></script>
+<script type="text/javascript" src="/js/auto_area.js"></script>
 <script>
     $(function () {
+        function handleCity(fromObj){
+            fromObj.find('.duoxuan').each(function () {
+                var data_value = $(this).attr('data-value'),
+                    val = $(this).val();
+                $(this).val(data_value);
+                $(this).attr('data-value', val);
+            });
+        }
+
         // 表单提交
         $(".-box-content").on('click', '.save_btn', function () {
-            var fromObj = $("#mall_form"), li = $(this).attr('li');
-            if(checkFormRequired(fromObj)){
+            var fromObj = $("#form_box"), li = $(this).attr('li');
+            var check = true;
+            fromObj.find('.tpl_area input').each(function () {
+                if($(this).val() === ''){
+                    alert('配送区域字段请填写完整');
+                    check = false;
+                    return false;
+                }
+            });
+            if(check && checkFormRequired(fromObj)){
+                handleCity(fromObj);
                 var url = fromObj.attr('action'), postData = new FormData(fromObj[0]);
                 if(url && postData){
                     $.ajax({
@@ -63,9 +85,11 @@
                                 $(".nav-tabs .active").removeClass("active").click().show();
                             }
                         } else{
+                            handleCity(fromObj);
                             alert(data.msg);
                         }
                     }).fail(function (data) {
+                        handleCity(fromObj);
                         alert('请求失败');
                     });
                 }
@@ -100,7 +124,7 @@
             return (inx==0)?true:false;
         }
 
-        // 编辑或添加广告按钮操作
+        // 编辑或添加按钮操作
         $(".-box-content").on('click','.edit_tpl, .add_tpl',function () {
             var url = $(this).attr('url'), title = $(this).attr('title');
             if(!url) { //编辑
@@ -145,13 +169,13 @@
             }
             $('.tr_menu').html(tr_html);
             if(val == 1 || val == 2){
-                tr_body += "<td><input style=\"width: 100px\" type=\"text\"></td>";
-                tr_body += "<td><input style=\"width: 60px\" type=\"number\" oninput=\"this.value=this.value.replace(/\\D/g,'')\"></td>";
-                tr_body += "<td><input style=\"width: 60px\" type=\"text\" oninput=\"this.value=this.value.match(/\\d+(\\.\\d{0,2})?/)?this.value.match(/\\d+(\\.\\d{0,2})?/)[0]:''\"></td>"
-                tr_body += "<td><input style=\"width: 60px\" type=\"number\" oninput=\"this.value=this.value.replace(/\\D/g,'')\"></td>";
-                tr_body += "<td><input style=\"width: 60px\" type=\"text\" oninput=\"this.value=this.value.match(/\\d+(\\.\\d{0,2})?/)?this.value.match(/\\d+(\\.\\d{0,2})?/)[0]:''\"></td>"
+                tr_body += "<td><input style=\"width: 100px\"  name=\"area[]\" class=\"area-duoxuan duoxuan\" autocomplete=\"off\" type=\"text\" value=\"\" data-value=\"\"></td>";
+                tr_body += "<td><input style=\"width: 60px\" name=\"standards[]\" type=\"number\" oninput=\"this.value=this.value.replace(/\\D/g,'')\"></td>";
+                tr_body += "<td><input style=\"width: 60px\" name=\"fees[]\" type=\"text\" oninput=\"this.value=this.value.match(/\\d+(\\.\\d{0,2})?/)?this.value.match(/\\d+(\\.\\d{0,2})?/)[0]:''\"></td>"
+                tr_body += "<td><input style=\"width: 60px\" name=\"adds[]\" type=\"number\" oninput=\"this.value=this.value.replace(/\\D/g,'')\"></td>";
+                tr_body += "<td><input style=\"width: 60px\" name=\"addFees[]\" type=\"text\" oninput=\"this.value=this.value.match(/\\d+(\\.\\d{0,2})?/)?this.value.match(/\\d+(\\.\\d{0,2})?/)[0]:''\"></td>"
             }else{
-                tr_body += "<td><input type=\"text\"></td>";
+                tr_body += "<td><input  name=\"area[]\" class=\"area-duoxuan duoxuan\" autocomplete=\"off\" type=\"text\" value=\"\" data-value=\"\"></td>";
             }
             tr_body += "</tr>";
             if(val == 1 || val == 2){
@@ -166,9 +190,10 @@
                 this_tr = $(this).parents('tr'),
                 tr_new = tr_body.find('tr').eq(0).clone(true),
                 td = tr_new.find('td').eq(0),
-                td_html = td.html()+"<button type=\"button\" class=\"btn btn-danger del_tr\"><i class=\"fa fa-minus\">删除</i></button>";
+                td_html = td.html()+"<button type=\"button\" class=\"btn btn-danger del_tr\"><i class=\"fa fa-minus\"> 删除</i></button>";
             td.html(td_html);
             tr_new.find('input').val('');
+            tr_new.find('.duoxuan').data('value','');
             this_tr.before(tr_new);
         });
         // 删除

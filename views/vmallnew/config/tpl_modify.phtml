@@ -1,80 +1,118 @@
 <form id="form_box" class="form-horizontal" action="/tpl/update" method="post" enctype="multipart/form-data">
-        <div class="box-body">
-            <div class="form-group has-success required_box">
-                <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>模板名称</label>
-                <div class="col-sm-5">
-                    <input value="<?=$data['name']?>" type="text" name="name" maxlength="40" class="form-control" id="" placeholder="模板名称">
+    <div class="box-body">
+        <div class="form-group has-success required_box">
+            <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>模板名称</label>
+            <div class="col-sm-5">
+                <input value="<?=$data['name']?>" type="text" name="name" maxlength="40" class="form-control" id="" placeholder="模板名称">
+            </div>
+        </div>
+        <div class="form-group has-success required_box">
+            <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>计价方式</label>
+            <div class="col-sm-5">
+                <div class="checkbox type_check">
+                    <label style="padding-left: 0;">
+                        <input <?php if($data['valuation']==1):?>checked<?php endif;?> value="1" checked name="status" type="radio"> 按件数
+                    </label>
+                    <label>
+                        <input <?php if($data['valuation']==2):?>checked<?php endif;?> value="2" name="status" type="radio"> 按重量
+                    </label>
+                    <label>
+                        <input <?php if($data['valuation']==3):?>checked<?php endif;?> value="3" name="status" type="radio"> 商家包邮
+                    </label>
+                    <label>
+                        <input <?php if($data['valuation']==4):?>checked<?php endif;?> value="4" name="status" type="radio"> 固定运费
+                    </label>
                 </div>
             </div>
-            <div class="form-group has-success required_box">
-                <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>计价方式</label>
-                <div class="col-sm-5">
-                    <div class="checkbox type_check">
-                        <label style="padding-left: 0;">
-                            <input <?php if($data['valuation']==1):?>checked<?php endif;?> value="1" checked name="status" type="radio"> 按件数
-                        </label>
-                        <label>
-                            <input <?php if($data['valuation']==2):?>checked<?php endif;?> value="2" name="status" type="radio"> 按重量
-                        </label>
-                        <label>
-                            <input <?php if($data['valuation']==3):?>checked<?php endif;?> value="3" name="status" type="radio"> 商家包邮
-                        </label>
-                        <label>
-                            <input <?php if($data['valuation']==4):?>checked<?php endif;?> value="4" name="status" type="radio"> 固定运费
-                        </label>
-                    </div>
-                </div>
-                <label class="control-label" data-toggle="tooltip" data-html="true" title="" data-placement="right" data-original-title="
-                1、按重量计算模板：不同或相同的商品，设置不同或者相同运费模板，取最大首重价作为运费首重价格，然后分别计算商品独自的续重价格累加；</br>
-                2、按件计算模板：不同或相同的商品，设置不同或者相同运费模板；取最大首件运费，续件按不同或者相同模板设置的规则计算，累加续件运费；</br>
-                3、按重量与按件混合运费模板：对比首件与首重的运费，取最大值作为首件（重）运费，续件与续重运费累加；</br>
-                4、包邮商品不参与运费计算">
-                    <i class="fa fa-info-circle"></i>
-                </label>
-            </div>
-            <div class="form-group has-success required_box">
-                <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>配送区域</label>
-                <div class="col-sm-8">
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr style="background: #eee" class="tr_menu">
-                            <th>可配送区域</th>
+            <label class="control-label" data-toggle="tooltip" data-html="true" title="" data-placement="right" data-original-title="
+            1、按重量计算模板：不同或相同的商品，设置不同或者相同运费模板，取最大首重价作为运费首重价格，然后分别计算商品独自的续重价格累加；</br>
+            2、按件计算模板：不同或相同的商品，设置不同或者相同运费模板；取最大首件运费，续件按不同或者相同模板设置的规则计算，累加续件运费；</br>
+            3、按重量与按件混合运费模板：对比首件与首重的运费，取最大值作为首件（重）运费，续件与续重运费累加；</br>
+            4、包邮商品不参与运费计算">
+                <i class="fa fa-info-circle"></i>
+            </label>
+        </div>
+        <div class="form-group has-success required_box">
+            <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>配送区域</label>
+            <div class="col-sm-8">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr style="background: #eee" class="tr_menu">
+                        <th>可配送区域</th>
+                        <?php if(!in_array($data['valuation'], array(3,4))):?>
+                        <?php if($data['valuation']==2):?>
+                            <th>首重（Kg）</th>
+                            <th>运费（元）</th>
+                            <th>续重（Kg）</th>
+                            <th>运费（元）</th>
+                        <?php else:?>
                             <th>首件（个）</th>
                             <th>运费（元）</th>
                             <th>续件（个）</th>
                             <th>运费（元）</th>
+                        <?php endif;?>
+                        <?php endif;?>
+                    </tr>
+                    </thead>
+                    <tbody class="tr_body">
+                    <?php if(!empty($data['areas_e'])):?>
+                    <?php foreach ($data['areas_e'] as $k=>$v):?>
+                        <tr>
+                            <td>
+                                <input style="width: 100px" type="text" name="area[]" class="area-duoxuan duoxuan" autocomplete="off" value="<?=$data['areas_c'][$k]?>" data-value="<?=$v?>">
+                                <?php if($k!=0):?>
+                                <button type="button" class="btn btn-danger del_tr"><i class="fa fa-minus"> 删除</i></button>
+                                <?php endif;?>
+                            </td>
+                            <?php if(!in_array($data['valuation'], array(3,4))):?>
+                            <td>
+                                <input name="standards[]" value="<?=$data['templateStartStandards'][$k]?>" style="width: 60px" type="number" oninput="this.value=this.value.replace(/\D/g,'')">
+                            </td>
+                            <td>
+                                <input name="fees[]" value="<?=$data['templateStartFees'][$k]?>" style="width: 60px" type="text" oninput="this.value=this.value.match(/\d+(\.\d{0,2})?/)?this.value.match(/\d+(\.\d{0,2})?/)[0]:''">
+                            </td>
+                            <td>
+                                <input name="adds[]" value="<?=$data['templateAddStandards'][$k]?>" style="width: 60px" type="number" oninput="this.value=this.value.replace(/\D/g,'')">
+                            </td>
+                            <td>
+                                <input name="addFees[]" value="<?=$data['templateAddFees'][$k]?>" style="width: 60px" name="" type="text" oninput="this.value=this.value.match(/\d+(\.\d{0,2})?/)?this.value.match(/\d+(\.\d{0,2})?/)[0]:''">
+                            </td>
+                            <?php endif;?>
                         </tr>
-                        </thead>
-                        <tbody class="tr_body">
-                            <tr>
-                                <td>
-                                    <input style="width: 100px" type="text">
-                                </td>
-                                <td>
-                                    <input style="width: 60px" type="number" oninput="this.value=this.value.replace(/\D/g,'')">
-                                </td>
-                                <td>
-                                    <input style="width: 60px" type="text" oninput="this.value=this.value.match(/\d+(\.\d{0,2})?/)?this.value.match(/\d+(\.\d{0,2})?/)[0]:''">
-                                </td>
-                                <td>
-                                    <input style="width: 60px" type="number" oninput="this.value=this.value.replace(/\D/g,'')">
-                                </td>
-                                <td>
-                                    <input style="width: 60px" name="" type="text" oninput="this.value=this.value.match(/\d+(\.\d{0,2})?/)?this.value.match(/\d+(\.\d{0,2})?/)[0]:''">
-                                </td>
-                            </tr>
-                            <tr><td><button type="button" class="btn btn-default add_tr"><i class="fa fa-plus">增加配送区域</i></button></td></tr>
-                        </tbody>
-                    </table>
-                </div>
+                    <?php endforeach;?>
+                    <?php else:?>
+                        <tr>
+                            <td>
+                                <input style="width: 100px" type="text" name="area[]" class="area-duoxuan duoxuan" autocomplete="off" value="" data-value="">
+                            </td>
+                            <td>
+                                <input name="standards[]" style="width: 60px" type="number" oninput="this.value=this.value.replace(/\D/g,'')">
+                            </td>
+                            <td>
+                                <input name="fees[]" style="width: 60px" type="text" oninput="this.value=this.value.match(/\d+(\.\d{0,2})?/)?this.value.match(/\d+(\.\d{0,2})?/)[0]:''">
+                            </td>
+                            <td>
+                                <input name="adds[]" style="width: 60px" type="number" oninput="this.value=this.value.replace(/\D/g,'')">
+                            </td>
+                            <td>
+                                <input name="addFees[]" style="width: 60px" name="" type="text" oninput="this.value=this.value.match(/\d+(\.\d{0,2})?/)?this.value.match(/\d+(\.\d{0,2})?/)[0]:''">
+                            </td>
+                        </tr>
+                    <?php endif;?>
+                        <?php if(!in_array($data['valuation'], array(3,4))):?>
+                        <tr><td><button type="button" class="btn btn-default add_tr"><i class="fa fa-plus">增加配送区域</i></button></td></tr>
+                        <?php endif;?>
+                    </tbody>
+                </table>
             </div>
         </div>
-        <!-- /.box-body -->
-        <div class="box-footer">
-            <button type="submit" class="btn btn-primary">提交</button>
-            <?php if (!empty($data)):?>
-                <input type="hidden" name="id" value="<?=$data['id']?>">
-            <?php endif;?>
-        </div>
-        <!-- /.box-footer -->
-    </form>
+    </div>
+    <!-- /.box-body -->
+    <div class="box-footer">
+        <button type="submit" class="btn btn-primary save_btn" li="0">提交</button>
+        <?php if (!empty($data)):?>
+            <input type="hidden" name="id" value="<?=$data['id']?>">
+        <?php endif;?>
+    </div>
+    <!-- /.box-footer -->
+</form>

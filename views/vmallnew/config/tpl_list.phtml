@@ -13,20 +13,22 @@
             <div class="col-xs-12 table-responsive">
                 <table class="table">
                     <tr class="label-primary">
-                        <th width="80%"><?=$v['name']?></th>
+                        <th width="80%" style="font-size: 20px"><?=$v['name']?></th>
                         <th>
                             <div class="btn-group">
                                 <form class="edit_form" action="/tpl/modify">
-                                    <input type="hidden" name="bannerUrl" value="<?=$v['bannerUrl']?>">
-                                    <input type="hidden" name="type" value="<?=$v['type']?>">
-                                    <input type="hidden" name="cid" value="<?=$v['cid']?>">
-                                    <input type="hidden" name="numIid" value="<?=$v['numIid']?>">
-                                    <input type="hidden" name="url" value="<?=$v['url']?>">
+                                    <input type="hidden" name="templateDests" value="<?=$v['templateDests']?>">
+                                    <input type="hidden" name="templateStartStandards" value="<?=$v['templateStartStandards']?>">
+                                    <input type="hidden" name="templateStartFees" value="<?=$v['templateStartFees']?>">
+                                    <input type="hidden" name="templateAddStandards" value="<?=$v['templateAddStandards']?>">
+                                    <input type="hidden" name="templateAddFees" value="<?=$v['templateAddFees']?>">
+                                    <input type="hidden" name="valuation" value="<?=$v['valuation']?>">
+                                    <input type="hidden" name="name" value="<?=$v['name']?>">
                                     <input type="hidden" name="id" value="<?=$v['id']?>">
                                 </form>
                                 <button type="button" class="btn btn-info opt_btn" opt_obj=".tpl_box_<?=$v['id']?>">收起</button>
                                 <button title="编辑模板" type="button" class="btn btn-default edit_tpl">编辑</button>
-                                <button type="button" url="/banner/del/<?=$v['id']?>" class="btn btn-danger btn_del">删除</button>
+                                <button li="0" type="button" url="/tpl/del/<?=$v['id']?>" class="btn btn-danger btn_del">删除</button>
                             </div>
                         </th>
                     </tr>

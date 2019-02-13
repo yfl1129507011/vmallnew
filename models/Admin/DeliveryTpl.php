@@ -55,6 +55,31 @@ class Admin_DeliveryTplModel extends VmallNewModel{
     }
 
     /**
+     * @param array $body
+     * @return array|bool
+     * 添加
+     */
+    public function add(array $body){
+        if (empty($body)) return false;
+        $url = $this->getV2Url();
+        $res = $this->curl($url,'post',$body);
+        return $this->checkApiResult($res,$url,$body);
+    }
+
+    /**
+     * @param $id
+     * @param array $body
+     * @return array|bool
+     * 编辑
+     */
+    public function edit($id, array $body){
+        if (!intval($id) || empty($body)) return false;
+        $url = $this->getV2Url('/'.$id);
+        $res = $this->curl($url,'put',$body);
+        return $this->checkApiResult($res,$url,$body);
+    }
+
+    /**
      * @param array $params
      * @param bool $isRes
      * @return bool
@@ -68,4 +93,57 @@ class Admin_DeliveryTplModel extends VmallNewModel{
         }
         return false;
     }
+
+    /**
+     * @param array $data
+     * @return array
+     * 执行更新或添加操作
+     */
+    public function update(array $data){
+        $returnData = $upData = array();
+        $returnData['code'] = 200;
+        if(empty($data) || empty($data['name']) || empty($data['status']) || empty($data['area'])){
+            $returnData['code'] = 401;
+            $returnData['msg'] = '缺少必填参数';
+        }
+        $status = (int)$data['status'];
+        $upData['sellerId'] = SELLER_ID;
+        $upData['valuation'] = $status;
+        $upData['name'] = trim($data['name']);
+        $dispatchAreas = array();
+        foreach ($data['area'] as $k=>$v){
+            $dispatchAreas[$k]['templateDests'] = str_replace('-',',',$v);
+            $dispatchAreas[$k]['templateStartStandards'] = floatval($data['standards'][$k]);
+            $dispatchAreas[$k]['templateStartFees'] = floatval($data['fees'][$k]);
+            $dispatchAreas[$k]['templateAddStandards'] = floatval($data['adds'][$k]);
+            $dispatchAreas[$k]['templateAddFees'] = floatval($data['addFees'][$k]);
+        }
+        $upData['dispatchAreas'] = $dispatchAreas;
+        $id = intval($data['id']);
+        if ($id){ # 编辑
+            $res = $this->edit($id, $upData);
+        }else{
+            $res = $this->add($upData);
+        }
+        if ($res){
+            $returnData['msg'] = '操作成功';
+        }else{
+            $returnData['code'] = 400;
+            $returnData['msg'] = '操作失败';
+        }
+        return $returnData;
+    }
+
+    /**
+     * @param $id
+     * @return array|bool
+     * 模板删除
+     */
+    public function del($id){
+        if(empty($id)) return false;
+        $url = $this->getV2Url('/'.$id);
+        $res = $this->curl($url,'delete');
+        return $this->checkApiResult($res,$url);
+    }
+
 }

@@ -103,12 +103,16 @@ $(function () {
     // btn删除
     $(".-box-content").on('click','.btn_del',function () {
         var self = $(this),url = self.attr('url'),text = self.text(),
-        tr = $(this).parent().parent().parent();
+        tr = $(this).parent().parent().parent(), li = $(this).attr('li');
         if(!url) return false;
         if(text && !confirm('确认执行'+text)) return false;
         $.post(url,function(data){
             if (data.code == 200) {
-                tr.remove();
+                if(li){
+                    $(".nav-tabs li").eq(li).removeClass('active').click();
+                }else {
+                    tr.remove();
+                }
             }else{
                 alert(data.msg);
             }
