@@ -359,6 +359,18 @@ $routes['Config'] = array(
             1 => 'id',
         ),
     ),
+    'pay_index'=>array(
+        'match' => '#/pay$#',
+        'map' => array(),
+    ),
+    'pay_info'=>array(
+        'match' => '#/pay/info$#',
+        'map' => array(),
+    ),
+    'pay_edit'=>array(
+        'match' => '#/pay/edit$#',
+        'map' => array(),
+    ),
 );
 
 # 格式化路由信息

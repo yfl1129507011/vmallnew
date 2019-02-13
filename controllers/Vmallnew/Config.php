@@ -200,7 +200,27 @@ class Vmallnew_ConfigController extends Vmallnew_BaseController{
 
 ### 支付设置 START ###
     public function pay_indexAction(){
+        $this->display();
+    }
 
+    # 支付设置页面
+    public function pay_infoAction(){
+        $bind = new Admin_BindModel();
+        $res = $bind->getInfo();
+        if($res){
+            $this->_view->assign('results', $res['results']);
+        }
+        $this->display();
+    }
+
+    # 编辑支付设置
+    public function pay_editAction(){
+        $data = $this->_request->getPost();
+        if($data){
+            $bind = new Admin_BindModel();
+            $res = $bind->edit($data);
+            $this->ajaxReturn($res);
+        }
     }
 ### 支付设置 END ###
 

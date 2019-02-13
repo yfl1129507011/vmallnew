@@ -1,0 +1,90 @@
+<?php include APP_PATH . '/views/'.strtolower(APP_NAME).'/include/head.phtml'; ?>
+<div class="content-wrapper">
+    <!-- Content Header (页眉) -->
+    <section class="content-header">
+        <h1>
+            商城设置
+            <small>支付设置</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-gears"></i> 商城设置</a></li>
+            <li class="active">支付设置</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs" finish-status="true">
+                        <li><a href="/pay/info">支付设置</a></li>
+                    </ul>
+
+                    <div class="box-body">
+                        <div class="col-md-3 overlay" id="refresh">
+                            <i class="fa fa-spinner fa-spin"></i>
+                        </div>
+                        <div class="-box-content">
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+<?php include APP_PATH . '/views/'.strtolower(APP_NAME).'/include/foot.phtml'; ?>
+<script>
+    $(function () {
+        // 表单提交
+        $(".-box-content").on('click', '.save_btn', function () {
+            var data = {}, api_key = $("input[name=api_key]").val(),
+                type = $('.icheckbox_flat-green').attr('aria-checked'),
+                url = $(this).attr('url');
+            if(!api_key || !/^[0-9a-zA-Z]+$/.test(api_key)){
+                alert('请填写正确的商户号！');return false;
+            }
+            data.api_key = api_key; data.type = type;
+            $.post(url, data, function (data) {
+                if(data.code == 200){
+                    $(".nav-tabs .active").removeClass("active").click()
+                }else{
+                    alert(data.msg);
+                }
+            });
+        });
+
+        // 收起展开
+        $(".-box-content").on('click','.opt_btn',function () {
+            var text = $(this).text(), opt_obj = $(this).attr('opt_obj');
+            if(text == '收起'){
+                $(this).text('展开');
+                $(opt_obj).fadeOut();
+            }else{
+                $(this).text('收起');
+                $(opt_obj).fadeIn();
+            }
+        });
+
+        // 启用与取消
+        $(".-box-content").on('click','.pay_icheck',function () {
+            var self = $(this), icheck = self.find('.icheckbox_flat-green'),
+                type = icheck.attr('aria-checked');
+            if(type == 1){  // 取消设置
+                alert('必须开启一种支付方式');return false;
+            }else{  // 开启设置
+                if(confirm("切换支付通道可能会影响之前的交易，导致无法支付、退款等情况，是否继续切换")){
+                    icheck.attr('aria-checked', 1);
+                    icheck.addClass('checked');
+                    return false;
+                }
+                return false;
+            }
+        })
+    })
+</script>

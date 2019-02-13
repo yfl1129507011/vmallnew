@@ -1,0 +1,38 @@
+<div class="row">
+    <div class="col-xs-12 table-responsive">
+        <table class="table">
+            <tr class="label-primary">
+                <th width="85%"><span style="font-size: 20px">美团支付</span>(资金结算至美团支付商户账户)</th>
+                <th align="center">
+                    <label style="margin-top: 5px" class="pay_icheck" title="点击启用设置">
+                        <div class="icheckbox_flat-green <?php if($results['payType']==1):?>checked<?php endif;?>" aria-checked="<?php if($results['payType']==1):?>1<?php else:?>2<?php endif;?>" aria-disabled="false" style="position: relative;">
+                            <input type="checkbox" class="flat-red" checked="" style="position: absolute; opacity: 0;">
+                            <ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
+                        </div>
+                    </label>
+                </th>
+                <th>
+                    <button type="button" class="btn btn-info opt_btn" opt_obj=".pay_info">收起</button>
+                </th>
+            </tr>
+        </table>
+        <table class="table table-striped pay_info">
+            <tr>
+                <th colspan="2">支持美团收款商户，具有实时到账，费率低等优点。<a href="https://passport.meituan.com/account/unitivesignup">前往创建美团智能收款账号</a></th>
+            </tr>
+            <tr>
+                <td align="right" style="font-size: 18px;font-weight: bold">商户号<span class="text-red">*</span></td>
+                <th>
+                    <div class="col-sm-6">
+                        <input type="text" name="api_key" class="form-control">
+                    </div>
+                </th>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <button url="/pay/edit" type="submit" class="btn btn-primary save_btn">提交</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
