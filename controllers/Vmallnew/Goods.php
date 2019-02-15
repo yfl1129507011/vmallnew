@@ -207,18 +207,36 @@ class Vmallnew_GoodsController extends Vmallnew_BaseController{
         $this->ajaxReturn($returnArr);
     }
 
-    #商品编辑
+    #商品添加或编辑展示
     public function product_modifyAction(){
         $this->assignProductCat(true);  # 商品分类
         $this->assignProductTag(); # 商品标签
         $this->assignSkuInfo(); # 规格信息
         $this->assignProductTpl(); # 运费模板
 
+        $id = (int)$this->_request->getRequest('id');
+        if($id){
+            $item = new Admin_ItemModel();
+            $res = $item->getDetail($id);
+            if($res) {
+                $data = $res['results'];
+                /*if($data['crmmemberPrice']){
+                    $data['crmmemberPrice'] = array_column($data['crmmemberPrice'], 'price', 'level');
+                }*/
+                $this->_view->assign('data',$data);
+            }
+            $skuRes = $item->getSku($id);
+            $skuInfo = $item->formatSku($skuRes);
+            if($skuInfo){
+                $this->_view->assign('skuInfo',$skuInfo);
+            }
+        }
+
         $this->display();
     }
 
-    #商品添加或更新
-    public function product_addAction(){
+    #商品添加或更新处理
+    public function product_updateAction(){
         if($this->_request->isPost()){
             $postData = $this->_request->getPost();
             $postData['upFile'] = $_FILES;

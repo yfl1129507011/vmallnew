@@ -1,10 +1,10 @@
 <div class="box-body">
-    <form id="product_modify_form" class="form-horizontal" action="/product/add" method="post" enctype="multipart/form-data">
+    <form id="product_modify_form" class="form-horizontal" action="/product/update" method="post" enctype="multipart/form-data">
         <div class="box-body">
             <div class="form-group has-success required_box">
                 <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>商品名称</label>
                 <div class="col-sm-5">
-                    <input type="text" name="name" maxlength="20" class="form-control" id="" placeholder="商品名称">
+                    <input value="<?=$data['name']?>" type="text" name="name" maxlength="20" class="form-control" id="" placeholder="商品名称">
                 </div>
                 <label class="control-label" data-toggle="tooltip" title="" data-original-title="商品名称长度不可超过20个字符"><i class="fa fa-info-circle"></i></label>
             </div>
@@ -15,7 +15,7 @@
                         <option value="">请选择</option>
                         <?php if(!empty($cats)): ?>
                         <?php foreach ($cats as $k=>$v):?>
-                        <option value="<?=$v['id'].'_'.$v['quantityUnit']?>"><?=$v['name']?></option>
+                        <option value="<?=$v['id'].'_'.$v['quantityUnit']?>" <?php if($data['cid']==$v['id']):?>selected<?php endif;?> ><?=$v['name']?></option>
                         <?php endforeach;?>
                         <?php endif;?>
                     </select>
@@ -26,7 +26,7 @@
                 <div class="col-sm-5">
                     <div class="checkbox">
                         <label>
-                            <input value="1" type="checkbox" name="hot"> 加入推荐
+                            <input <?php if(!empty($data['hot'])):?>checked<?php endif;?> value="1" type="checkbox" name="hot"> 加入推荐
                         </label>
                     </div>
                 </div>
@@ -38,16 +38,16 @@
                         <option value="">请选择</option>
                         <?php if(!empty($tags)):?>
                         <?php foreach ($tags as $_k=>$_v):?>
-                        <option value="<?=$_v['id']?>"><?=$_v['tag']?></option>
+                        <option value="<?=$_v['id']?>" <?php if($data['tags']==$_v['id']):?>selected<?php endif;?>><?=$_v['tag']?></option>
                         <?php endforeach;?>
                         <?php endif;?>
                     </select>
                 </div>
             </div>
-            <div class="form-group has-success required_box">
+            <div class="form-group has-success required_box" <?php if(!empty($skuInfo)):?>style="display: none"<?php endif;?>>
                 <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>商品售价</label>
                 <div class="col-sm-5">
-                    <input name="price" type="text" class="form-control" id="" placeholder="商品售价" oninput="this.value=this.value.match(/\d+(\.\d{0,2})?/)?this.value.match(/\d+(\.\d{0,2})?/)[0]:''">
+                    <input <?php if(empty($skuInfo)):?>value="<?=$data['price']?>"<?php endif;?> name="price" type="text" class="form-control" id="" placeholder="商品售价" oninput="this.value=this.value.match(/\d+(\.\d{0,2})?/)?this.value.match(/\d+(\.\d{0,2})?/)[0]:''">
                 </div>
             </div>
             <div class="form-group">
@@ -55,7 +55,7 @@
                 <div class="col-sm-10">
                     <div class="checkbox">
                         <label>
-                            <input value="2" name="type" type="checkbox"> 支持送礼
+                            <input <?php if($data['type']==2):?>checked<?php endif;?> value="2" name="type" type="checkbox"> 支持送礼
                             <span class="text-yellow"> <i class="fa fa-bullhorn"></i>礼品需包邮且在小程序商城礼品赠送区域</span>
                         </label>
                     </div>
@@ -68,100 +68,199 @@
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">一级规格名</label>
                         <div class="col-sm-3">
-                            <select class="form-control select-input" id_name="one_sku_name">
+                            <select class="form-control select-input" id_name="one_sku_name" name="skuNameOne">
                                 <option value="">请选择</option>
                                 <?php if(!empty($skuNames)):?>
                                 <?php foreach ($skuNames as $key=>$val):?>
-                                <option value="<?=$val['id'].'-'.$val['name'];?>"><?=$val['name']?></option>
+                                <option value="<?=$val['id'].'-'.$val['name'];?>" <?php if($skuInfo['skuNameOne_key']==$val['id']):?>selected<?php endif;?>><?=$val['name']?></option>
                                 <?php endforeach;?>
                                 <?php endif;?>
                             </select>
-                            <input id_name="one_sku_name" type="text" class="form-control sku_input" name="skuNameOne" maxlength="4" style="position:absolute;width: 70%;top: 0;">
+                            <input id="one_sku_level" value="<?=$skuInfo['skuNameOne']?>" id_name="one_sku_name" type="text" class="form-control sku_input" maxlength="4" style="position:absolute;width: 70%;top: 0;">
                         </div>
                         <label class="control-label" data-toggle="tooltip" title="" data-original-title="仅支持为第一组规格设置规格图片，买家选择不同规格会看到对应规格图片，建议尺寸：800 x 800像素"><i class="fa fa-info-circle"></i></label>
                     </div>
+                    <?php if(!empty($skuInfo['one_sku'])):?>
+                    <?php foreach ($skuInfo['one_sku'] as $one_k=>$one_v):?>
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">规格值</label>
                         <div class="col-sm-3 tr_num_one">
-                            <select class="form-control select-input">
+                            <select class="form-control select-input" name="skuValOne[]">
                                 <option value="">请选择</option>
                                 <?php if(!empty($skuVals)):?>
                                 <?php foreach ($skuVals as $_key=>$_val):?>
-                                <option value="<?=$_key.'-'.$_val?>"><?=$_val?></option>
+                                <option value="<?=$_key.'-'.$_val?>" <?php if($one_v['key']==$_key):?>selected<?php endif;?>><?=$_val?></option>
                                 <?php endforeach;?>
                                 <?php endif;?>
                             </select>
-                            <input type="text" class="form-control sku_input" name="skuValOne[]" maxlength="6" style="position:absolute;width: 70%;top: 0;">
+                            <input value="<?=$one_v['name']?>" type="text" class="form-control sku_input" maxlength="6" style="position:absolute;width: 70%;top: 0;">
                         </div>
-                        <div class="col-sm-3">
-                            <input type="file">
+                        <div class="col-sm-2">
+                            <input name="imageUrl[]" type="file" class="input_file">
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-2">
+                            <img class="img_file" src="<?=$one_v['image']?>" height="30" />
+                            <input type="hidden" name="imageUrl_old[]" value="<?=$one_v['image']?>?>">
+                        </div>
+                        <div class="col-sm-2">
+                            <?php if($one_k==0):?>
                             <button type="button" class="btn btn-default add_btn skuValOne"><i class="fa fa-plus">添加规格值</i></button>
+                            <?php else:?>
+                            <button type="button" class="btn btn-default del_btn skuValOne"><i class="fa fa-minus">删除规格值</i></button>
+                            <?php endif;?>
                         </div>
                     </div>
+                    <?php endforeach;?>
+                    <?php else:?>
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">规格值</label>
+                            <div class="col-sm-3 tr_num_one">
+                                <select class="form-control select-input" name="skuValOne[]">
+                                    <option value="">请选择</option>
+                                    <?php if(!empty($skuVals)):?>
+                                        <?php foreach ($skuVals as $_key=>$_val):?>
+                                            <option value="<?=$_key.'-'.$_val?>"><?=$_val?></option>
+                                        <?php endforeach;?>
+                                    <?php endif;?>
+                                </select>
+                                <input type="text" class="form-control sku_input" maxlength="6" style="position:absolute;width: 70%;top: 0;">
+                            </div>
+                            <div class="col-sm-2">
+                                <input name="imageUrl[]" type="file" class="input_file">
+                            </div>
+                            <div class="col-sm-2">
+                                <img class="img_file" src="" height="30" />
+                                <input type="hidden" name="imageUrl_old[]" value="">
+                            </div>
+                            <div class="col-sm-2">
+                                <button type="button" class="btn btn-default add_btn skuValOne"><i class="fa fa-plus">添加规格值</i></button>
+                            </div>
+                        </div>
+                    <?php endif;?>
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">二级规格名</label>
                         <div class="col-sm-3">
-                            <select class="form-control select-input" id_name="two_sku_name">
+                            <select class="form-control select-input" id_name="two_sku_name" name="skuNameTwo">
                                 <option value="">请选择</option>
                                 <?php if(!empty($skuNames)):?>
                                     <?php foreach ($skuNames as $key=>$val):?>
-                                        <option value="<?=$val['id'].'-'.$val['name'];?>"><?=$val['name']?></option>
+                                        <option value="<?=$val['id'].'-'.$val['name'];?>" <?php if($skuInfo['skuNameTwo_key']==$val['id']):?>selected<?php endif;?>><?=$val['name']?></option>
                                     <?php endforeach;?>
                                 <?php endif;?>
                             </select>
-                            <input id_name="two_sku_name" type="text" class="form-control sku_input" name="skuNameTwo" maxlength="4" style="position:absolute;width: 70%;top: 0;">
+                            <input value="<?=$skuInfo['skuNameTwo']?>" id_name="two_sku_name" type="text" class="form-control sku_input" maxlength="4" style="position:absolute;width: 70%;top: 0;">
                         </div>
                     </div>
+                    <?php if(!empty($skuInfo['two_sku'])):?>
+                    <?php foreach ($skuInfo['two_sku'] as $two_k=>$two_v):?>
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">规格值</label>
                         <div class="col-sm-3 tr_num_two">
-                            <select class="form-control select-input">
+                            <select class="form-control select-input" name="skuValTwo[]">
                                 <option value="">请选择</option>
                                 <?php if(!empty($skuVals)):?>
                                     <?php foreach ($skuVals as $_key=>$_val):?>
-                                        <option value="<?=$_key.'-'.$_val?>"><?=$_val?></option>
+                                        <option value="<?=$_key.'-'.$_val?>" <?php if($two_v['key']==$_key):?>selected<?php endif;?>><?=$_val?></option>
                                     <?php endforeach;?>
                                 <?php endif;?>
                             </select>
-                            <input type="text" class="form-control sku_input" name="skuValTwo[]" maxlength="6" style="position:absolute;width: 70%;top: 0;">
+                            <input value="<?=$two_v['name']?>" type="text" class="form-control sku_input" maxlength="6" style="position:absolute;width: 70%;top: 0;">
                         </div>
                         <div class="col-sm-3">
+                            <?php if($two_k==0):?>
                             <button type="button" class="btn btn-default add_btn"><i class="fa fa-plus">添加规格值</i></button>
+                            <?php else:?>
+                            <button type="button" class="btn btn-default del_btn"><i class="fa fa-minus">删除规格值</i></button>
+                            <?php endif;?>
                         </div>
                     </div>
+                    <?php endforeach;?>
+                    <?php else:?>
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">规格值</label>
+                            <div class="col-sm-3 tr_num_two">
+                                <select class="form-control select-input" name="skuValTwo[]">
+                                    <option value="">请选择</option>
+                                    <?php if(!empty($skuVals)):?>
+                                        <?php foreach ($skuVals as $_key=>$_val):?>
+                                            <option value="<?=$_key.'-'.$_val?>"><?=$_val?></option>
+                                        <?php endforeach;?>
+                                    <?php endif;?>
+                                </select>
+                                <input type="text" class="form-control sku_input" maxlength="6" style="position:absolute;width: 70%;top: 0;">
+                            </div>
+                            <div class="col-sm-3">
+                                <button type="button" class="btn btn-default add_btn"><i class="fa fa-plus">添加规格值</i></button>
+                            </div>
+                        </div>
+                    <?php endif;?>
                 </div>
-                <div class="box-body sku-info" style="display: none">
+                <?php if(!empty($skuInfo['data_info'])):?>
+                <div class="box-body sku-info">
                     <table class="table table-bordered">
                         <thead>
                         <tr style="background: #eee">
-                            <th id="one_sku_name"></th>
-                            <th id="two_sku_name"></th>
+                            <th id="one_sku_name"><?=$skuInfo['skuNameOne']?></th>
+                            <th id="two_sku_name"><?=$skuInfo['skuNameTwo']?></th>
                             <th><span class="text-red">*</span>库存</th>
                             <th>重量(kg)</th>
                             <th><span class="text-red">*</span>售价(元)</th>
                         </tr>
                         </thead>
                         <tbody>
+                        <?php foreach ($skuInfo['data_info'] as $info_k=>$info_v):?>
+                            <tr>
+                                <td><?=$info_v['oneName']?></td>
+                                <td><?=$info_v['twoName']?></td>
+                                <td><input value="<?=$info_v['stock']?>" class="kc_val" name="stock[]" type="number" oninput="this.value=this.value.replace(/\D/g,'')"></td>
+                                <td><input value="<?=$info_v['weight']?>" class="kc_val" name="weight[]" type="number" oninput="this.value=this.value.replace(/\D/g,'')"></td>
+                                <td><input value="<?=$info_v['price']?>" class="kc_val" name="price[]" type="number" oninput="this.value=this.value.replace(/\D/g,'')"></td>
+                            </tr>
+                        <?php endforeach;?>
                         </tbody></table>
                 </div>
-                <div class="box-footer clearfix bulk_box" style="border: none;display: none">
+                <div class="box-footer clearfix bulk_box">
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">批量设置</label>
                         <div class="col-sm-5 btn-group bulk_set_btn">
-                                <button type="button" class="btn btn-default text-blue" data-toggle="modal" data-target=".bulk_set" class_name="kc">库存</button>
-                                <button type="button" class="btn btn-default text-blue" data-toggle="modal" data-target=".bulk_set" class_name="zl">重量</button>
-                                <button type="button" class="btn btn-default text-blue" data-toggle="modal" data-target=".bulk_set" class_name="sj">售价</button>
+                            <button type="button" class="btn btn-default text-blue" data-toggle="modal" data-target=".bulk_set" class_name="kc">库存</button>
+                            <button type="button" class="btn btn-default text-blue" data-toggle="modal" data-target=".bulk_set" class_name="zl">重量</button>
+                            <button type="button" class="btn btn-default text-blue" data-toggle="modal" data-target=".bulk_set" class_name="sj">售价</button>
                         </div>
                     </div>
                 </div>
+                <?php else:?>
+                    <div class="box-body sku-info" style="display: none">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr style="background: #eee">
+                                <th id="one_sku_name"></th>
+                                <th id="two_sku_name"></th>
+                                <th><span class="text-red">*</span>库存</th>
+                                <th>重量(kg)</th>
+                                <th><span class="text-red">*</span>售价(元)</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody></table>
+                    </div>
+                    <div class="box-footer clearfix bulk_box" style="border: none;display: none">
+                        <div class="form-group">
+                            <label for="" class="col-sm-2 control-label">批量设置</label>
+                            <div class="col-sm-5 btn-group bulk_set_btn">
+                                <button type="button" class="btn btn-default text-blue" data-toggle="modal" data-target=".bulk_set" class_name="kc">库存</button>
+                                <button type="button" class="btn btn-default text-blue" data-toggle="modal" data-target=".bulk_set" class_name="zl">重量</button>
+                                <button type="button" class="btn btn-default text-blue" data-toggle="modal" data-target=".bulk_set" class_name="sj">售价</button>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif;?>
             </div>
 
             <div class="form-group has-success required_box">
                 <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>商品库存</label>
                 <div class="col-sm-5">
-                    <input type="number" oninput="this.value=this.value.replace(/\D/g,'')" name="stock" class="form-control" id="" placeholder="商品库存">
+                    <input value="<?=$data['stock']?>" type="number" oninput="this.value=this.value.replace(/\D/g,'')" name="stock" class="form-control" id="" placeholder="商品库存">
                 </div>
             </div>
             <div class="form-group has-success required_box">
@@ -171,7 +270,7 @@
                         <option value="">请选择</option>
                         <?php if(!empty($tpls)):?>
                         <?php foreach ($tpls as $kk=>$vv):?>
-                        <option value="<?=$vv['id']?>" data-type="<?=$vv['valuation']?>"><?=$vv['name']?></option>
+                        <option value="<?=$vv['id']?>" data-type="<?=$vv['valuation']?>" <?php if($data['deliveryTemplateId']==$vv['id']):?>selected<?php endif;?>><?=$vv['name']?></option>
                         <?php endforeach;?>
                         <?php endif;?>
                     </select>
@@ -180,53 +279,84 @@
             </div>
             <div class="form-group has-success required_box">
                 <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>商品封面图</label>
-                <div class="col-sm-5">
-                    <input name="picUrl" type="file">
+                <div class="col-sm-2">
+                    <input name="picUrl" class="input_file" type="file">
+                </div>
+                <div class="col-sm-2">
+                    <img class="img_file" src="<?=$data['picUrl']?>" height="30" />
+                    <input type="hidden" name="picUrl_old[]" value="<?=$data['picUrl']?>">
                 </div>
                 <label class="control-label" data-toggle="tooltip" title="" data-original-title="请上传500kb以内；建议图片尺寸为750px*630px；格式为jpeg,jpg,png的图片"><i class="fa fa-info-circle"></i><label/>
             </div>
+            <?php if(empty($data['images'])):?>
             <div class="form-group has-success required_box">
                 <label for="" class="col-sm-2 control-label"><i class="fa fa-check-circle">(必填)</i>商品相册</label>
-                <div class="col-sm-5">
-                    <input name="album[]" type="file"><p class="help-block">相册1</p>
-                    <input name="album[]" type="file"><p class="help-block">相册2</p>
-                    <input name="album[]" type="file"><p class="help-block">相册3</p>
-                    <input name="album[]" type="file"><p class="help-block">相册4</p>
-                    <input name="album[]" type="file"><p class="help-block">相册5</p>
-                    <input name="album[]" type="file"><p class="help-block">相册6</p>
+                <div class="col-sm-2 img_group">
+                    <input name="album[]" class="input_file" type="file">
+                </div>
+                <div class="col-sm-2">
+                    <img class="img_file" src="<?=$data['icon']?>" height="30" />
+                    <input type="hidden" name="album_old[]" value="">
+                </div>
+                <div class="col-sm-2">
+                    <button type="button" class="btn btn-default add_img_btn"><i class="fa fa-plus">添加相册</i></button>
                 </div>
                 <label class="control-label" data-toggle="tooltip" title="" data-original-title="请上传500kb以内；建议图片尺寸为750px*630px；格式为jpeg,jpg,png的图片"><i class="fa fa-info-circle"></i></label>
             </div>
+            <?php else:?>
+            <?php foreach ($data['images'] as $_urlKey=>$_url):?>
+                <div class="form-group has-success required_box">
+                    <label for="" class="col-sm-2 control-label">
+                        <?php if($_urlKey == 0):?>
+                        <i class="fa fa-check-circle">(必填)</i>商品相册
+                        <?php endif;?>
+                    </label>
+                    <div class="col-sm-2 img_group">
+                        <input name="album[]" class="input_file" type="file">
+                    </div>
+                    <div class="col-sm-2">
+                        <img class="img_file" src="<?=$_url?>" height="30" />
+                        <input type="hidden" name="album_old[]" value="<?=$_url?>">
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" class="btn btn-default add_img_btn"><i class="fa fa-plus">添加相册</i></button>
+                    </div>
+                    <label class="control-label" data-toggle="tooltip" title="" data-original-title="请上传500kb以内；建议图片尺寸为750px*630px；格式为jpeg,jpg,png的图片">
+                        <?php if($_urlKey == 0):?><i class="fa fa-info-circle"></i><?php endif;?>
+                    </label>
+                </div>
+            <?php endforeach;?>
+            <?php endif;?>
 
             <div class="form-group">
                 <label for="" class="col-sm-2 control-label">库存警告</label>
                 <div class="col-sm-5">
-                    <input name="warnNum" type="number" oninput="this.value=this.value.replace(/\D/g,'')" class="form-control" id="" placeholder="库存警告">
+                    <input value="<?=$data['warnNum']?>" name="warnNum" type="number" oninput="this.value=this.value.replace(/\D/g,'')" class="form-control" id="" placeholder="库存警告">
                 </div>
             </div>
             <div class="form-group">
                 <label for="" class="col-sm-2 control-label">产地</label>
                 <div class="col-sm-5">
-                    <input name="location" type="text" class="form-control" id="" placeholder="产地">
+                    <input value="<?=$data['location']?>" name="location" type="text" class="form-control" id="" placeholder="产地">
                 </div>
             </div>
             <div class="form-group">
                 <label for="" class="col-sm-2 control-label">储存条件</label>
                 <div class="col-sm-5">
-                    <input name="storageCondition" type="text" class="form-control" id="" placeholder="储存条件">
+                    <input value="<?=$data['storageCondition']?>" name="storageCondition" type="text" class="form-control" id="" placeholder="储存条件">
                 </div>
             </div>
             <div class="form-group">
                 <label for="" class="col-sm-2 control-label">商品品牌</label>
                 <div class="col-sm-5">
-                    <input name="brand" type="text" class="form-control" id="" placeholder="商品品牌">
+                    <input value="<?=$data['brand']?>" name="brand" type="text" class="form-control" id="" placeholder="商品品牌">
                 </div>
             </div>
             <div class="form-group">
                 <label for="" class="col-sm-2 control-label">商品详情</label>
-                <div class="col-sm-10" id="editor"></div>
+                <div class="col-sm-10" id="editor"><?=$data['descr']?></div>
                 <div style="display:none">
-                    <textarea name="desc" value=""></textarea>
+                    <textarea name="descr"><?=$data['descr']?></textarea>
                 </div>
             </div>
         </div>

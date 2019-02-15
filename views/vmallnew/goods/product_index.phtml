@@ -216,17 +216,21 @@
 
         // 编辑按钮操作
         $(".-box-content").on('click','.btn-edit',function () {
+            var url = $(this).attr('url');
+            $(".tabs-modify").find('a').attr('href',url);
             $(".tabs-modify").click().show();
         });
 
         // 添加规格值
         $(".-box-content").on('click','.add_btn',function () {
             var form_group = $(this).parents('.form-group'),
-                form_group_new = form_group.clone(true);
+                form_group_new = form_group.clone(true),
+                add_btn = form_group_new.find('.add_btn');
             form_group_new.find('input').val('');
+            form_group_new.find('.img_file').attr('src','');
+            add_btn.removeClass('add_btn').addClass('del_btn');
+            add_btn.find('i').removeClass('fa-plus').addClass('fa-minus').text('删除规格值');
             form_group.after(form_group_new);
-            $(this).removeClass('add_btn').addClass('del_btn');
-            $(this).find('i').removeClass('fa-plus').addClass('fa-minus').text('删除规格值');
         });
         // 删除规格值
         $(".-box-content").on('click','.del_btn',function () {
@@ -247,8 +251,8 @@
         function setSkuInfo(self) {
             var val = self.val(),
                 id_name = self.attr('id_name');
-            if(val && !$("input[name='skuNameOne']").val()){
-                $("input[name='skuNameOne']").focus();
+            if(val && !$("#one_sku_level").val()){
+                $("#one_sku_level").focus();
                 self.parent().find('input').val('');
                 self.val('');return false;
             }
@@ -293,9 +297,9 @@
                             html += "<tr>";
                             html += "<td>" + tr_num_one[i] + "</td>";
                             html += "<td>" + tr_num_two[j] + "</td>";
-                            html += '<td><input class="kc_val" type="number" oninput="this.value=this.value.replace(/\\D/g,\'\')"></td>';
-                            html += '<td><input class="zl_val" type="text" oninput="this.value=this.value.match(/\\d+(\\.\\d{0,2})?/)?this.value.match(/\\d+(\\.\\d{0,2})?/)[0]:\'\'"></td>';
-                            html += '<td><input class="sj_val" name="" type="text" oninput="this.value=this.value.match(/\\d+(\\.\\d{0,2})?/)?this.value.match(/\\d+(\\.\\d{0,2})?/)[0]:\'\'"></td></tr>';
+                            html += '<td><input class="kc_val" name="stock[]" type="number" oninput="this.value=this.value.replace(/\\D/g,\'\')"></td>';
+                            html += '<td><input class="zl_val" name="weight[]" type="text" oninput="this.value=this.value.match(/\\d+(\\.\\d{0,2})?/)?this.value.match(/\\d+(\\.\\d{0,2})?/)[0]:\'\'"></td>';
+                            html += '<td><input class="sj_val" name="price[]" type="text" oninput="this.value=this.value.match(/\\d+(\\.\\d{0,2})?/)?this.value.match(/\\d+(\\.\\d{0,2})?/)[0]:\'\'"></td></tr>';
                         }
                     }
                 }
@@ -315,7 +319,7 @@
                 $("input[name=stock]").prop('readonly', true);
             }
             $(".sku-info tbody").append(html);
-            if(!$("input[name=skuNameOne]").val() && !$("input[name=skuNameOne]").val()) {
+            if(!$("#one_sku_level").val() && !$("#one_sku_level").val()) {
                 $(".sku-info").hide();$(".bulk_box").hide();
             }
         }
@@ -394,5 +398,43 @@
 
             return (inx==0)?true:false;
         }
+
+        // 添加相册
+        $(".-box-content").on('click', '.add_img_btn', function () {
+            if ($("input[name='album[]']").length > 7) {
+                alert('相册最多只能添加8张相片');return;
+            }
+            var self = $(this), form_group = self.parents('.form-group'),
+                form_group_new = form_group.clone(true),
+                new_self = form_group_new.find('.add_img_btn');
+            form_group_new.removeClass('required_box');
+            form_group_new.find('input').val('');
+            form_group_new.find('label').html('');
+            form_group_new.find('.img_file').attr('src','');
+            form_group.after(form_group_new);
+            new_self.removeClass('add_img_btn').addClass('del_img_btn');
+            new_self.find('i').removeClass('fa-plus').addClass('fa-minus').text('删除相册');
+        });
+        //删除相册
+        $(".-box-content").on('click','.del_img_btn',function () {
+            $(this).parents('.form-group').remove();
+        });
+
+        // 上传图片展示
+        $(".-box-content").on("change",".input_file",function () {
+            var img_file = $(this).parents('.form-group').find('.img_file');
+            var preview = img_file[0];
+            var file = $(this).get(0).files[0];
+            var reader = new FileReader();
+            if(file){
+                reader.readAsDataURL(file);
+            }else{
+                preview.src = '';
+            }
+            reader.onloadend = function(){
+                preview.src = reader.result;
+            }
+        })
+
     })
 </script>

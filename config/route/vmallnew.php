@@ -63,8 +63,8 @@ $routes['Goods'] = array(
         'match' => '#/product/list$#',
         'map' => array(),
     ),
-    'product_add'=>array(
-        'match' => '#/product/add$#',
+    'product_update'=>array(
+        'match' => '#/product/update$#',
         'map' => array(),
     ),
     'product_trash'=>array(

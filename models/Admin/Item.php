@@ -40,6 +40,11 @@ class Admin_ItemModel extends VmallNewModel{
         return $this->checkApiResult($res, $url);
     }
 
+    /**
+     * @param $id
+     * @return array|bool
+     * 获取商品详情
+     */
     public function getDetail($id){
         if (empty($id)) return false;
         $url = $this->getUrl('/'.$id.'/detail');
@@ -60,6 +65,56 @@ class Admin_ItemModel extends VmallNewModel{
             return $res['results'];
         }
         return false;
+    }
+
+    /**
+     * @param array $data
+     * @return array|bool
+     * 格式化规格数据
+     */
+    public function formatSku(array $data){
+         if (!$data) return false;
+         $skuInfo = array();
+         foreach ($data as $k=>$v){
+             $dataInfo = array();
+             $properties = explode(';',$v['properties']);
+             $propertiesName = explode(';',$v['propertiesName']);
+             foreach ($properties as $kk=>$vv){
+                 $oneSku = $twoSku = array();
+                 $propArr = explode(':',$vv);
+                 $propNameArr = explode(':',$propertiesName[$kk]);
+                 if($kk==0){  # 一级规格
+                     if(!isset($skuInfo['skuNameOne_key'])) {
+                         $skuInfo['skuNameOne_key'] = $propArr[0];
+                         $skuInfo['skuNameOne'] = $propNameArr[0];
+                     }
+                     if(!in_array($propArr[1], array_column($skuInfo['one_sku'],'key'))) {
+                         $oneSku['key'] = $propArr[1];
+                         $oneSku['name'] = $propNameArr[1];
+                         $oneSku['image'] = $v['image'];
+                         $skuInfo['one_sku'][] = $oneSku;
+                     }
+                     $dataInfo['oneName'] = $propNameArr[1];
+                 }elseif ($kk==1){ # 二级规格
+                     if(!isset($skuInfo['skuNameTwo_key'])) {
+                         $skuInfo['skuNameTwo_key'] = $propArr[0];
+                         $skuInfo['skuNameTwo'] = $propNameArr[0];
+                     }
+                     if(!in_array($propArr[1], array_column($skuInfo['two_sku'],'key'))) {
+                         $twoSku['key'] = $propArr[1];
+                         $twoSku['name'] = $propNameArr[1];
+                         $skuInfo['two_sku'][] = $twoSku;
+                     }
+                     $dataInfo['twoName'] = $propNameArr[1];
+                 }
+             }
+             $dataInfo['price'] = $v['price'];
+             $dataInfo['stock'] = $v['stock'];
+             $dataInfo['weight'] = $v['weight'];
+             $skuInfo['data_info'][] = $dataInfo;
+         }
+
+         return $skuInfo;
     }
 
     /**
@@ -244,29 +299,13 @@ class Admin_ItemModel extends VmallNewModel{
         return $data;
     }
 
-    /**
-     * @param array $upFile
-     * @return int
-     * 图片上传
-     */
-    private function __uploadImg(array $upFile){
-        if(empty($upFile) || empty($upFile['name']) || $upFile['error']>0) return -1;
-        $_type = $upFile['type'];
-        $sizeLimit = 500*1024;
-        $ext = substr($_type, strrpos($_type,'/')+1);
-        $_size = $upFile['size'];
-        if (!in_array($ext, $this->imgType) || $_size>$sizeLimit) return -2;
 
-        $dir = '/vmallnew/item/'.SELLER_ID. '/'.time().$ext;
-        $_FILES['file'] = $upFile;
-        $upload = new WL_FileUploader($this->imgType, $sizeLimit);
-        $res = $upload->handleUploadOSS(Config::get('WeLife.oss.global'), $dir, false ,Config::get('WeLife.oss.global.buckets.wlpublicmedias'));
-        if (!empty($res['errcode']) || !empty($res['result']['url'])) {
-            return -3; # 上传失败
+    public function update(array $data){
+        $returnData = $upData = array();
+        $returnData['code'] = 200;
+        if($data){
+
         }
-        return $res['result']['url'];
     }
-
-
 
 }

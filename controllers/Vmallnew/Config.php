@@ -206,7 +206,8 @@ class Vmallnew_ConfigController extends Vmallnew_BaseController{
     # 支付设置页面
     public function pay_infoAction(){
         $bind = new Admin_BindModel();
-        $res = $bind->getInfo();
+        # $res = $bind->getInfo();
+        $res = false;
         if($res){
             $this->_view->assign('results', $res['results']);
         }
