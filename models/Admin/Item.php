@@ -140,7 +140,7 @@ class Admin_ItemModel extends VmallNewModel{
         if (empty($params)) return false;
         $url = $this->getV2Url();
         $res = $this->curl($url, 'post', $params);
-        return $this->checkApiResult($res,$url);
+        return $this->checkApiResult($res,$url,$params);
     }
 
     /**

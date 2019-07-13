@@ -373,6 +373,16 @@ $routes['Config'] = array(
     ),
 );
 
+
+$routes['Test'] = array(
+    'index'=>array(
+        'match' => '#/test$#',
+        'map' => array(),
+    ),
+);
+
+
+
 # 格式化路由信息
 $conf['regex'] = [];
 foreach ($routes as $_controller=>$v){

@@ -74,7 +74,7 @@ class VmallNewModel {
             } else {
                 $errMsg = "[{$url}]请求错误信息：" . $result['message'];
                 if($reqData){
-                    $errMsg .= '请求数据：'.var_export($reqData,true);
+                    $errMsg .= '请求数据：'.json_encode($reqData);
                 }
                 Logger::error($errMsg);
             }
